@@ -1,0 +1,220 @@
+/*!
+ * Xpra HTML Client
+ *
+ * This is a refactored (modernized) version of
+ * https://xpra.org/trac/browser/xpra/trunk/src/html5/
+ *
+ * @author Anders Evenrud <andersevenrud@gmail.com>
+ * @preserve
+ */
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #e6e6e6;
+  font-family: sans-serif;
+  font-size: 16px;
+  min-width: 640px;
+  min-height: 480px;
+}
+
+/**
+ * Screen
+ */
+.screen {
+
+}
+
+/**
+ * Connection dialog
+ */
+.dialog {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 2em rgba(0, 0, 0, 0.25);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 0.5em;
+}
+
+.dialog::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  content: '';
+  background: transparent url('./logo-large.png') no-repeat center center;
+  background-size: auto 100%;
+  opacity: 0.05;
+}
+
+.dialog > div {
+  position: relative;
+  z-index: 2;
+}
+
+.dialog--header {
+}
+
+.dialog--header h1  {
+  padding: 0.5em;
+  text-align: center;
+}
+
+.dialog--content {
+  flex: 1 1;
+  padding: 0.5em;
+}
+
+.dialog--row {
+  display: flex;
+}
+
+.dialog--footer {
+  padding: 0.5em;
+  text-align: right;
+}
+
+.dialog label {
+  margin: 0.2em;
+  display: flex;
+  align-items: center;
+}
+
+.dialog button,
+.dialog input[type=number],
+.dialog input[type=text],
+.dialog input[type=password] {
+  font-family: inherit;
+  font-size: inherit;
+  border: 1px solid #e6e6e6;
+  background: #fff;
+  padding: 0.5em;
+  display: block;
+  flex: 1 1;
+  margin: 0.2em;
+}
+
+.dialog button {
+  cursor: pointer;
+  display: inline-block;
+}
+
+/**
+ * Status box
+ */
+.status {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10000000;
+  background: #fff;
+  box-shadow: 0 0 2em rgba(0, 0, 0, 0.25);
+  padding: 0.2em;
+  width: 8em;
+  text-align: center;
+}
+
+.status > span {
+  padding: 0.2em;
+}
+
+.status > span > i {
+  margin-right: 0.4em;
+}
+
+.status--text {
+  display: block;
+}
+
+.status--button {
+  display: none;
+  cursor: pointer;
+}
+
+.status:hover .status--text {
+  display: none;
+}
+
+.status:hover .status--button {
+  display: block;
+}
+
+/**
+ * Windows
+ */
+.window {
+  position: absolute;
+  background-color: #fff;
+  box-shadow: 0 0 2em rgba(0, 0, 0, 0.25);
+  user-select: none;
+  touch-action: none;
+
+  /* This actually increases performance */
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  -moz-perspective: 1000;
+  perspective: 1000;
+}
+
+.window--top {
+  min-height: 2.125em;
+  display: flex;
+  align-items: center;
+  background-color: #e6e6e6;
+  user-select: none;
+}
+
+.window--top > div {
+  padding: 0.5em;
+  box-sizing: border-box;
+}
+
+.window--top--icon {
+  display: flex;
+  align-items: center;
+}
+
+.window--top--icon > img {
+  width: 1em;
+  height: 1em;
+  border: 0 none;
+}
+
+.window--top--title {
+  flex: 1 1;
+}
+
+.window--top--buttons > div {
+  cursor: pointer;
+}
+
+.window--content {
+  position: relative;
+  pointer-events: none;
+}
+
+.window--canvas {
+  position: relative;
+  z-index: 1;
+}
+
+.window--overlay {
+  position: absolute;
+  z-index: 10;
+}
