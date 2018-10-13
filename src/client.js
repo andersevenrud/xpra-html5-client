@@ -73,9 +73,9 @@ const createSurface = (parent, wid, x, y, w, h, metadata, properties, send) => {
   return {wid, x, y, w, h, parent, overlay, canvas, context, metadata, properties, draw, updateMetadata, destroy};
 };
 
-const createConnectionGate = bus => {
+const createConnectionGate = (bus, env) => {
   if (window.Worker) {
-    const worker = new Worker('worker.js');
+    const worker = new Worker(env.worker);
 
     worker.onmessage = ({data}) => {
       if (data.event === 'data') {
@@ -99,9 +99,13 @@ const createConnectionGate = bus => {
 /**
  * Creates a new Xpra client
  */
-export const createClient = (defaultConfig = {}) => {
+export const createClient = (defaultConfig = {}, env = {}) => {
+  env = Object.assign({
+    worker: 'worker.js',
+  }, env);
+
   const bus = new EventHandler('XpraClient');
-  const connection = createConnectionGate(bus);
+  const connection = createConnectionGate(bus, env);
   const {send} = connection;
 
   const ping = () => send('ping', timestamp());
