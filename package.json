@@ -4,7 +4,10 @@
   "description": "Xpra HTML5 Client",
   "main": "build/main.js",
   "browser": "build/main.js",
-  "module": "index.js",
+  "files": [
+    "build/",
+    "README.md"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint src/**/*.js index.js example/**/*.js",
