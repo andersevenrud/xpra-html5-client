@@ -1,6 +1,6 @@
 {
   "name": "xpra-html5-client",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Xpra HTML5 Client",
   "main": "build/main.js",
   "browser": "build/main.js",

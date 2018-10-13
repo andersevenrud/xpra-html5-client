@@ -15,7 +15,7 @@ The differences here are:
 * Separate client module
 * Separate frontend example
 
-~~You can try this yourself at https://andersevenrud.github.io/xpra-html5-client~~ (coming soon)
+You can try this yourself at https://andersevenrud.github.io/xpra-html5-client (you need to set up an Xpra server yourself).
 
 ![Screenshot](doc/screenshot.png)
 
