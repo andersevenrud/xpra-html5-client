@@ -154,8 +154,8 @@ const getMouse = (ev, surface) => {
     relY = top - surface.y;
   }
 
-  const x = ev.clientX - relX;
-  const y = ev.clientY - relY;
+  const x = parseInt(ev.clientX - relX, 10);
+  const y = parseInt(ev.clientY - relY, 10);
   const buttons = [];
   const button = getMouseButton(ev);
 
