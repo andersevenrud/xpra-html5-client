@@ -214,6 +214,4 @@ xpra --no-daemon --bind-tcp=127.0.0.1:10000 --start=firefox --html=on start :10
 
 ## License
 
-*For third party licenses, see the dependencies in package.json and their sources*
-
-MIT
+See LICENSE file(s)
