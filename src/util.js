@@ -1,6 +1,16 @@
 /**
  * Xpra HTML Client
  *
+ * ---
+ *
+ * Xpra
+ * Copyright (C) 2016 Antoine Martin <antoine@devloop.org.uk>
+ * Copyright (c) 2016 Spikes, Inc.
+ * Licensed under MPL 2.0, see:
+ * http://www.mozilla.org/MPL/2.0/
+ *
+ * ---
+ *
  * This is a refactored (modernized) version of
  * https://xpra.org/trac/browser/xpra/trunk/src/html5/
  *
