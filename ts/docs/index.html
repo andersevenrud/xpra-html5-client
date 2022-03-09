@@ -2,12 +2,11 @@
 <a href="#xpra-ts" id="xpra-ts" style="color: inherit; text-decoration: none;">
   <h1>xpra-ts</h1>
 </a>
-<p>A rewrite of the officual Xpra HTML5 project with focus on modularity and embedding.</p>
-<p>This repository consists of two projects:</p>
-<ul>
-<li>Xpra TypeScript client</li>
-<li>React web client</li>
-</ul>
+<p>This is the monorepo for the unofficial typescript Xpra HTML5 client.</p>
+<p>Focuses on modularity, embedding, general improvements and is based off the
+<a href="https://github.com/Xpra-org/xpra-html5">official</a> client.</p>
+<p><strong><a href="https://andersevenrud.github.io/xpra-html5-client/ts/client/">Live demo</a></strong></p>
+<p><strong><a href="https://andersevenrud.github.io/xpra-html5-client/ts/docs/">Documentation</a></strong></p>
 
 <a href="#notes" id="notes" style="color: inherit; text-decoration: none;">
   <h2>Notes</h2>
@@ -16,19 +15,32 @@
 <p>Please note that <strong>rendering is a bit broken</strong> because the rendering protocol and queue system
 is being reworked and some control flows might be incorrect.</p>
 
-<a href="#development" id="development" style="color: inherit; text-decoration: none;">
-  <h2>Development</h2>
+<a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
+  <h2>Setup</h2>
 </a>
-<p>To set up a development environment:</p>
-<pre><code class="language-bash"><span class="hl-0"># Start a nested x server for testing purposes</span><br/><span class="hl-1">Xephyr -br -ac -noreset -screen 800x600 :10</span><br/><br/><span class="hl-0"># Start an xpra session on the new X server</span><br/><span class="hl-1">xpra --no-daemon --bind-ws=127.0.0.1:10000 --start=xterm --html=off start :10</span><br/><br/><span class="hl-0"># Start up a development http server</span><br/><span class="hl-1">npm run dev</span>
-</code></pre>
-<p>To automatically connect to a target, use <code>http://localhost:3000/?host=ws://ip:port&amp;connect=true</code>.
-You can also apply any option defined in <code>XpraConnectionOptions</code>, like <code>username</code> and <code>password</code>.</p>
+<p>This project requires <code>node</code> and <code>npm</code>.</p>
+<p>Run <code>npm install</code> to install all required dependencies.</p>
+
+<a href="#running" id="running" style="color: inherit; text-decoration: none;">
+  <h3>Running</h3>
+</a>
+<p>Run <code>npm run preview</code> to start a production server.</p>
+<p>To automatically connect to a target, use <code>http://localhost:port/?host=ws://ip:port&amp;connect=true</code>.</p>
+<p>You can also apply any option defined in <a href="https://andersevenrud.github.io/xpra-html5-client/ts/docs/interfaces/XpraConnectionOptions.html"><code>XpraConnectionOptions</code></a>,
+like <code>username</code> and <code>password</code>.</p>
 
 <a href="#deployment" id="deployment" style="color: inherit; text-decoration: none;">
-  <h2>Deployment</h2>
+  <h3>Deployment</h3>
 </a>
 <p>Run <code>npm run build</code> and copy the artifacts in <code>dist/</code> to your destination.</p>
+
+<a href="#development" id="development" style="color: inherit; text-decoration: none;">
+  <h3>Development</h3>
+</a>
+<p>Run <code>npm run dev</code> to start a development server.</p>
+<p>To set up a X11 environment for testing purposes:</p>
+<pre><code class="language-bash"><span class="hl-0"># Start a nested X server</span><br/><span class="hl-1">Xephyr -br -ac -noreset -screen 800x600 :10</span><br/><br/><span class="hl-0"># Start an xpra session on the new X server</span><br/><span class="hl-1">xpra --no-daemon --bind-ws=127.0.0.1:10000 --start=xterm --html=off start :10</span>
+</code></pre>
 
 <a href="#custom-integration" id="custom-integration" style="color: inherit; text-decoration: none;">
   <h2>Custom integration</h2>
