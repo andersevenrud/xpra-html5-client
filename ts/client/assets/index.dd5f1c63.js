@@ -240,4 +240,4 @@ var et=Object.defineProperty,tt=Object.defineProperties;var nt=Object.getOwnProp
  * @author Anders Evenrud <andersevenrud@gmail.com>
  * @license Mozilla Public License Version 2.0
  */async function Tn(){const o=document.querySelector("#app"),e=new Un,t=new un(e),n=new mn(t);await t.init(),o&&st.render(A.exports.createElement(Pn,{xpra:t,wm:n}),o),window.xpra={xpra:t}}window.addEventListener("DOMContentLoaded",()=>{Tn()});
-//# sourceMappingURL=index.32770555.js.map
+//# sourceMappingURL=index.dd5f1c63.js.map
