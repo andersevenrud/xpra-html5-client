@@ -264,4 +264,4 @@ var et=Object.defineProperty,tt=Object.defineProperties;var nt=Object.getOwnProp
  * @author Anders Evenrud <andersevenrud@gmail.com>
  * @license Mozilla Public License Version 2.0
  */async function _n(){const o=document.querySelector("#app"),e=new Tn,t=new pn(e),n=new fn(t);await t.init(),n.init(),o&&st.render(g.exports.createElement(Un,{xpra:t,wm:n}),o),window.xpra={xpra:t}}window.addEventListener("DOMContentLoaded",()=>{_n()});
-//# sourceMappingURL=index.9b83d226.js.map
+//# sourceMappingURL=index.28317eb9.js.map
