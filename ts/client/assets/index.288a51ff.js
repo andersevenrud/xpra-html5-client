@@ -258,10 +258,10 @@ var et=Object.defineProperty,tt=Object.defineProperties;var nt=Object.getOwnProp
  * @link https://github.com/andersevenrud/xpra-html5-client
  * @author Anders Evenrud <andersevenrud@gmail.com>
  * @license Mozilla Public License Version 2.0
- */function Pn(){const{state:o}=g.exports.useContext(P);return a.createElement(a.Fragment,null,a.createElement(X,{toggled:!o.connected},a.createElement(Nn,null)),a.createElement(X,{toggled:!o.started&&o.connected},a.createElement(Bn,null)),a.createElement(Mn,null,o.connected&&a.createElement(Dn,null)),a.createElement(X,{toggled:o.started},a.createElement(On,null)))}function Un({xpra:o,wm:e}){return a.createElement(En,{wm:e,xpra:o},a.createElement(Pn,null))}function Tn(){return new Worker("assets/webworker.c83fb137.js",{type:"module"})}/**
+ */function Pn(){const{state:o}=g.exports.useContext(P);return a.createElement(a.Fragment,null,a.createElement(X,{toggled:!o.connected},a.createElement(Nn,null)),a.createElement(X,{toggled:!o.started&&o.connected},a.createElement(Bn,null)),a.createElement(Mn,null,o.connected&&a.createElement(Dn,null)),a.createElement(X,{toggled:o.started},a.createElement(On,null)))}function Un({xpra:o,wm:e}){return a.createElement(En,{wm:e,xpra:o},a.createElement(Pn,null))}function Tn(){return new Worker("assets/webworker.cba96d95.js",{type:"module"})}/**
  * Xpra Typescript Client Example
  * @link https://github.com/andersevenrud/xpra-html5-client
  * @author Anders Evenrud <andersevenrud@gmail.com>
  * @license Mozilla Public License Version 2.0
  */async function _n(){const o=document.querySelector("#app"),e=new Tn,t=new pn(e),n=new fn(t);await t.init(),n.init(),o&&st.render(g.exports.createElement(Un,{xpra:t,wm:n}),o),window.xpra={xpra:t}}window.addEventListener("DOMContentLoaded",()=>{_n()});
-//# sourceMappingURL=index.29697418.js.map
+//# sourceMappingURL=index.288a51ff.js.map
