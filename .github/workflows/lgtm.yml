@@ -15,5 +15,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - run: npm ci
-      - run: npm run lint
+      - run: npm install -g yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn workspace xpra-ts lint
+      - run: yarn workspace xpra-ts-ui lint

@@ -8,9 +8,9 @@
 import './style.css'
 import ReactDOM from 'react-dom'
 import { createElement } from 'react'
-import { XpraClient, XpraWindowManager } from './xpra'
-import { App } from './ui/App'
-import XpraWorker from './xpra/workers/webworker?worker'
+import { XpraClient, XpraWindowManager } from 'xpra-ts'
+import { App } from './app/App'
+import XpraWorker from './worker?worker'
 
 async function main() {
   const app = document.querySelector<HTMLDivElement>('#app')
@@ -24,8 +24,6 @@ async function main() {
   if (app) {
     ReactDOM.render(createElement(App, { xpra, wm }), app)
   }
-
-  window.xpra = { xpra }
 }
 
 window.addEventListener('DOMContentLoaded', () => {

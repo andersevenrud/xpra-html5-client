@@ -109,7 +109,7 @@ export const AURORA_CODECS = {
 }
 
 export function getMediaSourceClass() {
-  return window.MediaSource || window.WebKitMediaSource
+  return self.MediaSource || self.WebKitMediaSource
 }
 
 export function getMediaSource() {

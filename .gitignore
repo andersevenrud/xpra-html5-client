@@ -12,6 +12,9 @@ node_modules
 dist
 dist-ssr
 *.local
+.rollup.cache
+tsconfig.tsbuildinfo
+.yarn
 
 # Editor directories and files
 .vscode/*

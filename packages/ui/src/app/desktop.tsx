@@ -23,7 +23,7 @@ import {
   detectCorner,
 } from './utils'
 import { ActionTypes, AppWindowState } from './store'
-import { XpraWindowManagerWindow, XpraVector } from '../xpra'
+import { XpraWindowManagerWindow, XpraVector } from 'xpra-ts'
 import { FadeInOutTransition } from './transitions'
 import { AppContext } from './context'
 import defaultCursor from './cursor.png'

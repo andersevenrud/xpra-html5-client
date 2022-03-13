@@ -15,7 +15,7 @@ import {
   AppConnectingPanel,
 } from './panels'
 import { FadeInOutTransition } from './transitions'
-import { XpraClient, XpraWindowManager } from '../xpra'
+import { XpraClient, XpraWindowManager } from 'xpra-ts'
 
 export function AppInner() {
   const { state } = useContext(AppContext)

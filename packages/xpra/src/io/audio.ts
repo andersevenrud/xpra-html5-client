@@ -46,7 +46,7 @@ export type XpraAudioEventEmitters = {
   stop: () => void
 }
 
-const AV = window.AV
+const AV = self.AV
 
 const CONCAT = true
 

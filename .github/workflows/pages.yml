@@ -17,14 +17,17 @@ jobs:
         with:
           node-version: '16'
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm install -g yarn
+          yarn install --frozen-lockfile
       - name: Build
         run: |
-          npm run build
-          npm run docs
+          yarn workspace xpra-ts build
+          yarn workspace xpra-ts docs
+          yarn workspace xpra-ts-ui build
           mkdir -p public
-          cp -r dist public/client
-          cp -r docs public/docs
+          cp -r packages/ui/dist public/client
+          cp -r packages/xpra/docs public/docs
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
         with:

@@ -16,7 +16,7 @@ import {
   XPRA_KEYBOARD_LAYOUTS,
   XpraConnectionOptions,
   browserLoadFile,
-} from '../xpra'
+} from 'xpra-ts'
 
 interface AppMenuItem {
   icon?: string

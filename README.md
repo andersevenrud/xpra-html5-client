@@ -20,26 +20,34 @@ is being reworked and some procedures does not work optimally.
 
 ## Setup
 
-This project requires `node` and `npm`.
+This project requires `node` and `yarn`.
 
-Run `npm install` to install all required dependencies.
+Run `yarn install` to install all required dependencies.
 
-### Running
+### Library
 
-Run `npm run preview` to start a production server.
+Run `yarn workspace xpra-ts build` to build the Xpra client library.
+
+### UI
+
+After building the Xpra client library you can set up the included user interface.
+
+#### Running
+
+Run `yarn workspace xpra-ts-ui preview` to start a production server.
 
 To automatically connect to a target, use `http://localhost:port/?host=ws://ip:port&connect=true`.
 
 You can also apply any option defined in [`XpraConnectionOptions`](https://andersevenrud.github.io/xpra-html5-client/ts/docs/interfaces/XpraConnectionOptions.html),
 like `username` and `password`.
 
-### Deployment
+#### Deployment
 
-Run `npm run build` and copy the artifacts in `dist/` to your destination.
+Run `yarn workspace xpra-ts-ui build` and copy the artifacts in `packages/ui/dist/` to your destination.
 
-### Development
+#### Development
 
-Run `npm run dev` to start a development server.
+Run `yarn workspace xpra-ts-ui dev` to start a development server.
 
 To set up a X11 environment for testing purposes:
 
@@ -57,47 +65,62 @@ You can build your own clients and user interfaces by using the shipped librarie
 
 Base application example:
 
-> Assuming a bundler with loader support
+> Assuming a bundler with loader support, i.e. Vite
+
+### `main.ts`
 
 ```javascript
-import XpraWorker from 'xpra-ts/workers/webworker?worker'
+import XpraWorker from './worker?worker'
 import { XpraClient, XpraWindowManager } from 'xpra-ts'
 
-const worker = new XpraWorker()
-const xpra = new XpraClient(worker)
+async function createXpraClient() {
+  const worker = new XpraWorker()
+  const xpra = new XpraClient(worker)
 
-// Set up events
-// Refer to documentation of `XpraConnectionEventEmitters` for all events
-xpra.on('connect', () => console.log('connected to host'))
-xpra.on('disconnect', () => console.warn('disconnected from host'))
-xpra.on('error', (message) => console.error('connection error', message))
-xpra.on('sessionStarted', () => console.info('session has been started'))
+  // Set up internals
+  await xpra.init()
 
-// Set up internals
-await xpra.init()
+  // Set up events
+  // Refer to documentation of `XpraConnectionEventEmitters` for all events
+  xpra.on('connect', () => console.log('connected to host'))
+  xpra.on('disconnect', () => console.warn('disconnected from host'))
+  xpra.on('error', (message) => console.error('connection error', message))
+  xpra.on('sessionStarted', () => console.info('session has been started'))
 
-// Window Manager abstraction for custom UIs
-// See included React example for usage
-const wm = new XpraWindowManager(xpra)
-wm.init()
+  return xpra
+}
 
-// Finally establish a connection
-xpra.connect('ws://localhost:10000', {
-  username: 'user',
-  password: 'pass',
-})
+async function main() {
+  const xpra = await createXpraClient()
+
+  // Window Manager abstraction for custom UIs
+  // See included React example for usage
+  const wm = new XpraWindowManager(xpra)
+  wm.init()
+
+  // Finally establish a connection
+  xpra.connect('ws://localhost:10000', {
+    username: 'user',
+    password: 'pass',
+  })
+}
+
+document.addEventListener('DOMContentLoaded', () => main())
+```
+
+### `worker.ts`
+
+```javascript
+import { createXpraWebWorker } from 'xpra-ts'
+createXpraWebWorker()
 ```
 
 ## TODO
 
-* Monorepo
-  * [ ] Set up a `packages/` layout
-  * [ ] Separate builds
-  * [ ] Set up linked projects
 * Xpra library
   * [x] Connectivity
   * [x] Authentication
-  * [ ] Encryption (WIP)
+  * [ ] Encryption (**WIP**)
   * [x] Capability detection
   * [x] Packet decoding and proxying
   * [x] Error handling
@@ -114,17 +137,19 @@ xpra.connect('ws://localhost:10000', {
   * [x] Bell
   * [x] Tray
   * [x] Webworker
-  * [ ] Offscreen canvas
-* Rendering support
-  * [x] PNG/JPEG/WebP
-  * [x] RGB32/RGB24
-  * [x] AVIF
-  * [ ] MPEG1
-  * [ ] MPEG4
-  * [ ] h264
-  * [ ] VP8
-  * [x] Void
-  * [x] Scroll
+  * Rendering support
+    * [x] Direct rendering
+    * [ ] Offscreen canvas
+    * Formats
+      * [x] PNG/JPEG/WebP
+      * [x] RGB32/RGB24
+      * [x] AVIF
+      * [ ] MPEG1
+      * [ ] MPEG4
+      * [ ] h264
+      * [ ] VP8
+      * [x] Void
+      * [x] Scroll
 * UI
   * [ ] On-screen keyboard
   * [ ] Client-side scaling

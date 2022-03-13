@@ -3994,7 +3994,7 @@ for (key in _ref) {
   exports[key] = val;
 }
 
-window.AV = exports
+self.AV = exports
 
 require('./src/devices/webaudio');
 

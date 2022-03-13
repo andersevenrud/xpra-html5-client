@@ -21,7 +21,7 @@ import {
   defaultXpraConnectionOptions,
   initialXpraConnectionStats,
   createXpraWindowBaseZindex,
-} from '../xpra'
+} from 'xpra-ts'
 
 export interface AppWindowState {
   id: number

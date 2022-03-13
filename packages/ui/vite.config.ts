@@ -7,10 +7,10 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          if (id.includes('node_modules')) {
+          if (id.includes('packages/xpra/dist')) {
+            return 'shared'
+          } else if (id.includes('node_modules')) {
             return 'vendor'
-          } else if (id.includes('src/xpra/lib')) {
-            return 'lib'
           }
         },
       },
