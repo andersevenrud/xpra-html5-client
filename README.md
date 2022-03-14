@@ -28,7 +28,7 @@ Run `yarn install` to install all required dependencies.
 
 ### Library
 
-Run `yarn workspace xpra-ts build` to build the Xpra client library.
+Run `yarn workspace xpra-html5-client build` to build the Xpra client library.
 
 ### UI
 
@@ -36,7 +36,9 @@ After building the Xpra client library you can set up the included user interfac
 
 #### Running
 
-Run `yarn workspace xpra-ts-ui preview` to start a production server.
+First, run `uarn workspace xpra-html5-client-react build` to build the application.
+
+Run `yarn workspace xpra-html5-client-react preview` to start a production server.
 
 To automatically connect to a target, use `http://localhost:port/?host=ws://ip:port&connect=true`.
 
@@ -45,11 +47,11 @@ like `username` and `password`.
 
 #### Deployment
 
-Run `yarn workspace xpra-ts-ui build` and copy the artifacts in `packages/ui/dist/` to your destination.
+Run `yarn workspace xpra-html5-client-react build` and copy the artifacts in `packages/ui/dist/` to your destination.
 
 #### Development
 
-Run `yarn workspace xpra-ts-ui dev` to start a development server.
+Run `yarn workspace xpra-html5-client-react dev` to start a development server.
 
 To set up a X11 environment for testing purposes:
 
