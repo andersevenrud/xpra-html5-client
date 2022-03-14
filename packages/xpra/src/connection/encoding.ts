@@ -13,11 +13,14 @@
  */
 
 import { bdecode, bencode } from '../lib/bencode'
-import { rencodeplus, rencodelegacy } from '../lib/rencode'
-import { rdecodelegacy, rdecodeplus } from '../lib/rencode'
 import { XpraInvalidEncoderError } from '../errors'
-import { XpraSendPacket, XpraPacketEncoder } from '../types'
-import { XpraEncodeBit } from '../types'
+import { XpraSendPacket, XpraPacketEncoder, XpraEncodeBit } from '../types'
+import {
+  rdecodelegacy,
+  rdecodeplus,
+  rencodeplus,
+  rencodelegacy,
+} from '../lib/rencode'
 
 export function decodeXpraPacketData(
   packetData: Uint8Array,

@@ -87,7 +87,7 @@ async function createXpraClient() {
   await xpra.init()
 
   // Set up events
-  // Refer to documentation of `XpraConnectionEventEmitters` for all events
+  // Refer to documentation of `XpraClientEventEmitters` for all events
   xpra.on('connect', () => console.log('connected to host'))
   xpra.on('disconnect', () => console.warn('disconnected from host'))
   xpra.on('error', (message) => console.error('connection error', message))

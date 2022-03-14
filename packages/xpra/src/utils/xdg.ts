@@ -15,21 +15,18 @@
 import { XpraXDGMenu, XpraXDGReducedMenu } from '../types'
 import { imageSourceFromData } from '../utils/image'
 
+const createIcon = (type?: string, data?: string) =>
+  data && type ? imageSourceFromData(type, data) : undefined
+
 export const createXDGMenu = (value: XpraXDGMenu): XpraXDGReducedMenu =>
   Object.values(value as XpraXDGMenu).map((sub) => ({
     name: sub.Name,
-    icon:
-      sub.IconData && sub.IconType
-        ? imageSourceFromData(sub.IconType, sub.IconData)
-        : undefined,
+    icon: createIcon(sub.IconType, sub.IconData),
     entries: Object.entries(sub.Entries).map(
       ([name, { IconType, IconData, ...attributes }]) => ({
         name,
         exec: attributes.Exec.replace(/%[uUfF]/g, ''),
-        icon:
-          IconData && IconType
-            ? imageSourceFromData(IconType, IconData)
-            : undefined,
+        icon: createIcon(IconType, IconData),
         attributes,
       })
     ),
