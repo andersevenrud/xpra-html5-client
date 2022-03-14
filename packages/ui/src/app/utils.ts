@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { XpraCursor, XpraWindowMetadata } from 'xpra-ts'
+import { XpraCursor, XpraWindowMetadata } from 'xpra-html5-client'
 
 export function createCursorBackgroundCSS(cursor: XpraCursor | null) {
   if (cursor) {

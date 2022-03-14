@@ -2,7 +2,7 @@ name: Commit Checks
 on:
   push:
     branches:
-      - typescript
+      - master
   pull_request:
 jobs:
   lint:

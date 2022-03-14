@@ -1,4 +1,4 @@
-# xpra-ts
+# xpra-html5-client
 
 This is the monorepo for the unofficial typescript Xpra HTML5 client.
 
@@ -9,7 +9,7 @@ Focuses on modularity, embedding, general improvements and is based off the
 
 **[Documentation](https://andersevenrud.github.io/xpra-html5-client/ts/docs/)**
 
-![xpra-ts-client-screenshot](https://user-images.githubusercontent.com/161548/157789860-dabe3617-52e3-4b8d-9fee-950f018f879b.png)
+![xpra-html5-client-react](https://user-images.githubusercontent.com/161548/157789860-dabe3617-52e3-4b8d-9fee-950f018f879b.png)
 
 ## Notes
 
@@ -17,6 +17,8 @@ This is a work in progress and some features are not fully implemented or not fu
 
 Please note that **rendering is a bit broken** at this moment because the rendering module
 is being reworked and some procedures does not work optimally.
+
+[Old version of this project](https://github.com/andersevenrud/xpra-html5-client/tree/legacy)
 
 ## Setup
 
@@ -67,11 +69,15 @@ Base application example:
 
 > Assuming a bundler with loader support, i.e. Vite
 
+```bash
+npm install xpra-html5-client@^2
+```
+
 ### `main.ts`
 
 ```javascript
 import XpraWorker from './worker?worker'
-import { XpraClient, XpraWindowManager } from 'xpra-ts'
+import { XpraClient, XpraWindowManager } from 'xpra-html5-client'
 
 async function createXpraClient() {
   const worker = new XpraWorker()
@@ -111,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => main())
 ### `worker.ts`
 
 ```javascript
-import { createXpraWebWorker } from 'xpra-ts'
+import { createXpraWebWorker } from 'xpra-html5-client'
 createXpraWebWorker()
 ```
 

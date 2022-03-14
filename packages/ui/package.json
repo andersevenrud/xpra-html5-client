@@ -1,5 +1,5 @@
 {
-  "name": "xpra-ts-ui",
+  "name": "xpra-html5-client-react",
   "version": "0.5.0",
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "Apache-2.0",
@@ -29,7 +29,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-transition-group": "^4.4.2",
-    "xpra-ts": "^0.5.0"
+    "xpra-html5-client": "^2.0.0"
   },
   "eslintConfig": {
     "parserOptions": {

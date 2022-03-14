@@ -2,7 +2,7 @@ name: LGTM Checks
 on:
   push:
     branches:
-      - typescript
+      - master
   pull_request:
 jobs:
   eslint:
@@ -17,5 +17,5 @@ jobs:
           node-version: '16'
       - run: npm install -g yarn
       - run: yarn install --frozen-lockfile
-      - run: yarn workspace xpra-ts lint
-      - run: yarn workspace xpra-ts-ui lint
+      - run: yarn workspace xpra-html5-client lint
+      - run: yarn workspace xpra-html5-client-react lint

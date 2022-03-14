@@ -2,7 +2,7 @@ name: Github Pages
 on:
   push:
     branches:
-      - typescript
+      - master
 jobs:
   deploy:
     name: eslint
@@ -22,9 +22,9 @@ jobs:
           yarn install --frozen-lockfile
       - name: Build
         run: |
-          yarn workspace xpra-ts build
-          yarn workspace xpra-ts docs
-          yarn workspace xpra-ts-ui build
+          yarn workspace xpra-html5-client build
+          yarn workspace xpra-html5-client docs
+          yarn workspace xpra-html5-client-react build
           mkdir -p public
           cp -r packages/ui/dist public/client
           cp -r packages/xpra/docs public/docs

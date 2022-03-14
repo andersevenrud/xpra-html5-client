@@ -1,6 +1,6 @@
 {
-  "name": "xpra-ts",
-  "version": "0.5.0",
+  "name": "xpra-html5-client",
+  "version": "2.0.0",
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "Apache-2.0",
   "main": "dist/xpra.es.js",
@@ -12,6 +12,11 @@
       "require": "./dist/xpra.umd.js"
     }
   },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc --noEmit && vite build",
     "lint": "eslint 'src/**/*.{ts,tsx}'",

@@ -29,7 +29,7 @@ import {
   XpraXDGReducedMenu,
   createXpraConnectionOptionsFromUrl,
   parseUrlQuerySearch,
-} from 'xpra-ts'
+} from 'xpra-html5-client'
 import {
   ActionTypes,
   AppState,

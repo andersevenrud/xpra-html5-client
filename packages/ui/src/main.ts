@@ -8,7 +8,7 @@
 import './style.css'
 import ReactDOM from 'react-dom'
 import { createElement } from 'react'
-import { XpraClient, XpraWindowManager } from 'xpra-ts'
+import { XpraClient, XpraWindowManager } from 'xpra-html5-client'
 import { App } from './app/App'
 import XpraWorker from './worker?worker'
 

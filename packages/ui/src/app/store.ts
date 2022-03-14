@@ -21,7 +21,7 @@ import {
   defaultXpraConnectionOptions,
   initialXpraConnectionStats,
   createXpraWindowBaseZindex,
-} from 'xpra-ts'
+} from 'xpra-html5-client'
 
 export interface AppWindowState {
   id: number
