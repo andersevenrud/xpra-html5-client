@@ -21,7 +21,7 @@ import TypedEmitter from 'typed-emitter'
 import EventEmitter from 'events'
 import { uint8fromString } from '../utils/data'
 import { XPRA_MAX_AUDIO_BUFFERS } from '../constants'
-import { XpraInvalidAudioCodec, XpraAudioError } from '../errors'
+import { XpraInvalidAudioCodecError, XpraAudioError } from '../errors'
 import {
   XpraServerCapabilities,
   XpraAudioFramework,
@@ -186,7 +186,7 @@ export class XpraMediaSourceAdapter extends XpraAudioAdapter {
               }
             } else {
               reject(
-                new XpraInvalidAudioCodec(
+                new XpraInvalidAudioCodecError(
                   `Media codec '${this.audioCodec}' unsupported`
                 )
               )

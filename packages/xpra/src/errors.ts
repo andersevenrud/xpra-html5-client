@@ -10,7 +10,7 @@ export class XpraInvalidEncoderError extends TypeError {}
 export class XpraInvalidHeaderError extends Error {}
 export class XpraPacketError extends Error {}
 export class XpraConnectionError extends Error {}
-export class XpraInvalidAudioCodec extends Error {}
+export class XpraInvalidAudioCodecError extends Error {}
 export class XpraAudioError extends Error {}
 export class XpraChallengeError extends Error {}
 export class XpraDisconnectionError extends Error {}
