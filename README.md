@@ -4,6 +4,8 @@ This is an (unofficial) clone of the [Xpra HTML5 client](https://xpra.org/trac/b
 
 It consists of a library and a frontend to connect to remote [Xpra](https://xpra.org/) servers to view X11 sessions inside the browser.
 
+**THIS VERSION IS DEPRECATED**
+
 **THIS IS NOT DONE. SEE [TODO](#todo) LIST BELOW**
 
 The differences here are:
@@ -66,7 +68,7 @@ Runs by default on http://localhost:9999/
 If you're using this as a library:
 
 ```bash
-npm install --save-dev xpra-html5-client
+npm install xpra-html5-client@^1
 ```
 
 Then in your source:
