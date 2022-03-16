@@ -82,8 +82,10 @@ import XpraWorker from './worker?worker'
 import { XpraClient, XpraWindowManager } from 'xpra-html5-client'
 
 async function createXpraClient() {
+  // Off-load data handling to a separate worker to increase performance.
+  // This is not a requirement, but is highly recommended.
   const worker = new XpraWorker()
-  const xpra = new XpraClient(worker)
+  const xpra = new XpraClient({ worker })
 
   // Set up internals
   await xpra.init()
@@ -119,8 +121,9 @@ document.addEventListener('DOMContentLoaded', () => main())
 ### `worker.ts`
 
 ```javascript
-import { createXpraWebWorker } from 'xpra-html5-client'
-createXpraWebWorker()
+import { XpraWebWorker } from 'xpra-html5-client'
+
+new XpraWebWorker()
 ```
 
 ## TODO

@@ -15,7 +15,7 @@ import XpraWorker from './worker?worker'
 async function main() {
   const app = document.querySelector<HTMLDivElement>('#app')
   const worker = new XpraWorker()
-  const xpra = new XpraClient(worker)
+  const xpra = new XpraClient({ worker })
   const wm = new XpraWindowManager(xpra)
 
   await xpra.init()

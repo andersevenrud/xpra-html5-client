@@ -20,7 +20,8 @@ import { XpraClipboard } from '../io/clipboard'
 import { XpraAudio } from '../io/audio'
 import { XpraKeyboard } from '../io/keyboard'
 import { XpraMouse } from '../io/mouse'
-import { XpraConnectionWorker } from './worker'
+import { XpraConnectionWorkerProxy } from './proxy'
+import { XpraNullWorker, XpraWorker } from '../io/worker'
 import { XpraLogger, XpraLoggerArguments } from '../io/logger'
 import { defaultXpraConnectionOptions } from './options'
 import { createXpraChallengeResponse } from './auth'
@@ -101,6 +102,10 @@ export type XpraClientEventEmitters = {
   updateXDGMenu: (menu: XpraXDGReducedMenu) => void
 }
 
+export interface XpraClientOptions {
+  worker?: Worker | XpraWorker
+}
+
 export const initialXpraConnectionStats: XpraConnectionStats = {
   lastServerPing: 0,
   lastClientEcho: 0,
@@ -121,7 +126,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
   private pingInterval = 0
   private inited = false
   private started = false
-  private readonly worker
+  private readonly proxy = new XpraConnectionWorkerProxy()
   private readonly audio = new XpraAudio()
   private readonly ws = new XpraWebsocket()
   public readonly clipboard = new XpraClipboard()
@@ -168,9 +173,16 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     disconnect: this.processDisconnect,
   }
 
-  constructor(worker: Worker) {
+  constructor(options: Partial<XpraClientOptions>) {
     super()
-    this.worker = new XpraConnectionWorker(worker)
+
+    const { worker } = options
+    if (worker) {
+      this.proxy.setWorker(worker)
+    } else {
+      console.warn('XpraClient#constructor', 'using null worker')
+      this.proxy.setWorker(new XpraNullWorker())
+    }
   }
 
   async init() {
@@ -178,7 +190,6 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
       return
     }
 
-    await this.worker.init()
     await this.audio.init()
 
     this.inited = true
@@ -188,11 +199,11 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     this.ws.on('close', (err?: Error) => this.disconnect(err))
     this.ws.on('connect', (s) => this.emit('connect', s))
     this.ws.on('disconnect', (s) => this.emit('disconnect', s))
-    this.ws.on('message', (d: Uint8Array) => this.worker.pushRecieve(d))
+    this.ws.on('message', (d: Uint8Array) => this.proxy.pushRecieve(d))
 
-    this.worker.on('recieve', (p: XpraRecievePacket) => this.recieve(p))
-    this.worker.on('send', (d: ArrayBuffer) => this.ws.send(d))
-    this.worker.on('failure', (e: Error) => this.disconnect(e))
+    this.proxy.on('recieve', (p: XpraRecievePacket) => this.recieve(p))
+    this.proxy.on('send', (d: ArrayBuffer) => this.ws.send(d))
+    this.proxy.on('failure', (e: Error) => this.disconnect(e))
 
     this.audio.on('start', () => this.sendSoundStart())
     this.audio.on('stop', () => this.sendSoundStop())
@@ -227,8 +238,8 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
 
     try {
       this.clipboard.configure(this.options)
-      this.worker.configure(this.options)
-      this.worker.setConnected(true)
+      this.proxy.configure(this.options)
+      this.proxy.setConnected(true)
       this.ws.connect(host, this.options)
     } catch (e) {
       this.emit('error', (e as Error).message)
@@ -252,7 +263,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
 
     this.clearTimers()
     this.audio.stop()
-    this.worker.setConnected(false)
+    this.proxy.setConnected(false)
     this.clipboard.reset()
     this.serverCapabilities = null
     this.ws.disconnect(reconnect)
@@ -293,7 +304,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
         return
       }
 
-      this.worker.pushSend(packet)
+      this.proxy.pushSend(packet)
     }
   }
 
