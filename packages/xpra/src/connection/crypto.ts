@@ -13,7 +13,7 @@
  */
 
 import forge from 'node-forge'
-import { uintToString } from '../lib/bencode'
+import { uintToString } from '../lib'
 import { XpraCipherCapability } from '../types'
 import { XpraCryptoError } from '../errors'
 import {

@@ -13,8 +13,7 @@
  */
 
 import * as zlib from 'pako'
-import * as brotli from '../lib/brotli'
-import lz4 from '../lib/lz4'
+import { brotli, lz4 } from '../lib'
 import { XpraInflateBit, XpraRecievePacket } from '../types'
 
 /**

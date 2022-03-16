@@ -13,7 +13,7 @@
  */
 
 import forge from 'node-forge'
-import { ord } from '../lib/bencode'
+import { ord } from '../lib'
 import { rgb24ToRgb32, rgb32Restride } from '../utils/image'
 import { uint8fromStringOrString, uint8fromString } from '../utils/data'
 import { createXpraCipher, decryptXpraPacketData } from '../connection/crypto'

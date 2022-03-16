@@ -12,11 +12,6 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import '../lib/aurora/aurora'
-import '../lib/aurora/aac'
-import '../lib/aurora/mp3'
-import '../lib/aurora/flac'
-import '../lib/aurora/aurora-xpra'
 import TypedEmitter from 'typed-emitter'
 import EventEmitter from 'events'
 import { uint8fromString } from '../utils/data'
@@ -30,23 +25,22 @@ import {
   XpraAudioMetadata,
 } from '../types'
 import {
+  AV,
   getMediaSourceAudioCodecs,
   getDefaultAudioCodec,
   getMediaSourceClass,
   getAuroraAudioCodecs,
   getMediaSource,
-  get_supported_codecs,
-  get_best_codec,
+  getSupportedCodecs,
+  getBestCodec,
   CODEC_STRING,
   PREFERRED_CODEC_ORDER,
-} from '../lib/media'
+} from '../lib'
 
 export type XpraAudioEventEmitters = {
   start: () => void
   stop: () => void
 }
-
-const AV = self.AV
 
 const CONCAT = true
 
@@ -385,13 +379,13 @@ export class XpraAudio extends (EventEmitter as unknown as new () => TypedEmitte
     }
 
     if (this.enabled) {
-      const supported = get_supported_codecs(
+      const supported = getSupportedCodecs(
         this.audioFramework === 'mediasource',
         this.audioFramework === 'aurora',
         false
       )
 
-      const best = get_best_codec(supported)
+      const best = getBestCodec(supported)
 
       if (best) {
         const [framework, codec] = best.split(':')

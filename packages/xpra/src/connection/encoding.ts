@@ -12,15 +12,16 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import { bdecode, bencode } from '../lib/bencode'
 import { XpraInvalidEncoderError } from '../errors'
 import { XpraSendPacket, XpraPacketEncoder, XpraEncodeBit } from '../types'
 import {
+  bdecode,
+  bencode,
   rdecodelegacy,
   rdecodeplus,
   rencodeplus,
   rencodelegacy,
-} from '../lib/rencode'
+} from '../lib'
 
 /**
  * Decodes packet data from spesified decoder

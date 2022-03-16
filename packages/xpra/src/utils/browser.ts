@@ -12,7 +12,7 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import { LANGUAGE_TO_LAYOUT } from '../lib/keycodes'
+import { LANGUAGE_TO_LAYOUT } from '../lib'
 import { XPRA_COLOR_GAMUT, XPRA_PLATFORM } from '../constants'
 
 export interface BrowserFile {
