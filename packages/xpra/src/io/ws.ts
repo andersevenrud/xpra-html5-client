@@ -42,6 +42,7 @@ export function createXpraCloseError(ev: CloseEvent | Event): Error {
 }
 
 /**
+ * Connection websocket abstraction to handle reconnects etc.
  * @noInheritDoc
  */
 export class XpraWebsocket extends (EventEmitter as unknown as new () => TypedEmitter<XpraWebsocketEventEmitters>) {

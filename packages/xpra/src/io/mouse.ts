@@ -12,6 +12,10 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
+/**
+ * Mouse wrapper to handle input across a range of platforms
+ * as well as translate into native input data.
+ */
 export class XpraMouse {
   getButton(ev: MouseEvent) {
     let button = 0

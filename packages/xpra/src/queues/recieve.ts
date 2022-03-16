@@ -44,6 +44,9 @@ function rencodeConvert(data: string) {
   return u8a
 }
 
+/**
+ * Processes packets that comes from an Xpra server
+ */
 export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
   private header: XpraRecieveHeader = []
   private raw: any[] = []

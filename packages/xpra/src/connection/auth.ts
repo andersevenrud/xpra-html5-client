@@ -16,6 +16,9 @@ import forge from 'node-forge'
 import { xorString, createRandomSecureString } from '../utils/data'
 import { XpraChallengeError } from '../errors'
 
+/**
+ * Creates a digest from a challenge
+ */
 export function createXpraChallengeDigest(
   digest: string,
   password: string,
@@ -38,6 +41,10 @@ export function createXpraChallengeDigest(
   return null
 }
 
+/**
+ * Processes a connection challenge and creates data
+ * for an appropriate response
+ */
 export function createXpraChallengeResponse(
   serverSalt: string,
   digest: string,

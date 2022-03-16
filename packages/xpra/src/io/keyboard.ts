@@ -23,6 +23,8 @@ export type XpraKeyboardEventEmitters = {
 }
 
 /**
+ * Keyboard wrapper to handle input across a range of platforms
+ * as well as translate into native input data.
  * @noInheritDoc
  */
 export class XpraKeyboard extends (EventEmitter as unknown as new () => TypedEmitter<XpraKeyboardEventEmitters>) {

@@ -30,6 +30,10 @@ export type XpraWorkerProxyEventEmitters = {
   failure: (error: Error) => void
 }
 
+/**
+ * A proxy to handle messaging between the client and a worker
+ * @noInheritDoc
+ */
 export class XpraWorkerProxy extends (EventEmitter as unknown as new () => TypedEmitter<XpraWorkerProxyEventEmitters>) {
   private webworker: Worker | XpraWorker | null = null
 

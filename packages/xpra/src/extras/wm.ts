@@ -38,6 +38,11 @@ export interface XpraWindowManagerWindow {
   destroyed: boolean
 }
 
+/**
+ * Creates a new z-index for a window (or surface).
+ * This is calculated from a base index which is derived
+ * from the window type(s).
+ */
 export function createXpraWindowBaseZindex(win: XpraWindow, zIndex: number) {
   let baseIndex = 5000
 
@@ -71,6 +76,10 @@ export function createXpraWindowBaseZindex(win: XpraWindow, zIndex: number) {
   return baseIndex + zIndex
 }
 
+/**
+ * A basic abstraction to make integraion of custom user interfaces
+ * a bit simpler by providing some glue for general events and input.
+ */
 export class XpraWindowManager {
   private windows: XpraWindowManagerWindow[] = []
   private xpra: XpraClient

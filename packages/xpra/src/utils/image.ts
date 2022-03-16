@@ -14,6 +14,9 @@
 
 import { uint8fromString, arrayBufferToBase64 } from './data'
 
+/**
+ * A promise wrapper for loading images in DOM
+ */
 export const loadImage = (src: string) =>
   new Promise<HTMLImageElement | null>((resolve) => {
     const image = new Image()
@@ -30,6 +33,9 @@ export const loadImage = (src: string) =>
     image.src = src
   })
 
+/**
+ * Creates an "image source" (aka URL) from image data
+ */
 export function imageSourceFromData(
   encoding: string,
   data: Uint8Array | string
@@ -42,9 +48,11 @@ export function imageSourceFromData(
   return `data:image/${enc};base64,${src}`
 }
 
-// re-striding
-// might be quicker to copy 32bit at a time using Uint32Array
-// and then casting the result?
+/**
+ * re-striding
+ * might be quicker to copy 32bit at a time using Uint32Array
+ * and then casting the result?
+ */
 export function rgb32Restride(
   data: Uint8Array,
   width: number,
@@ -63,6 +71,9 @@ export function rgb32Restride(
   return uint
 }
 
+/**
+ * Converts RBG24 to RGB32
+ */
 export function rgb24Toagb32(
   data: number[],
   width: number,

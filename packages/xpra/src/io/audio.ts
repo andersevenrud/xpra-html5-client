@@ -58,7 +58,10 @@ const hasAV =
   AV.Decoder != null &&
   AV.Player.fromXpraSource != null
 
-export class XpraAudioAdapter {
+/**
+ * Provides audio buffer queues to adapters
+ */
+export abstract class XpraAudioAdapter {
   protected readonly audio: HTMLAudioElement
   protected readonly audioCodec: XpraAudioCodecType
 
@@ -153,6 +156,9 @@ export class XpraAudioAdapter {
   }
 }
 
+/**
+ * MediaSource Audio Adapter
+ */
 export class XpraMediaSourceAdapter extends XpraAudioAdapter {
   private mediaSource: MediaSource | null = null
   private mediaSourceReady = false
@@ -242,6 +248,9 @@ export class XpraMediaSourceAdapter extends XpraAudioAdapter {
   }
 }
 
+/**
+ * Aurora Audio Adapter
+ */
 export class XpraAuroraAdapter extends XpraAudioAdapter {
   private auroraSource: AuroraSource | null = null
 
@@ -281,6 +290,7 @@ export class XpraAuroraAdapter extends XpraAudioAdapter {
 }
 
 /**
+ * Provides audio playback for a client session
  * @noInheritDoc
  */
 export class XpraAudio extends (EventEmitter as unknown as new () => TypedEmitter<XpraAudioEventEmitters>) {

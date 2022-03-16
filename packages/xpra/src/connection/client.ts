@@ -115,6 +115,8 @@ export const initialXpraConnectionStats: XpraConnectionStats = {
 }
 
 /**
+ * The Xpra Client.
+ * Handles connections and I/O for Xpra sessions.
  * @noInheritDoc
  */
 export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitter<XpraClientEventEmitters>) {

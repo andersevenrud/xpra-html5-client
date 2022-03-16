@@ -24,6 +24,9 @@ import {
   XpraCipherCapability,
 } from '../types'
 
+/**
+ * Processes packets that is to be sent to a Xpra server
+ */
 export class XpraSendQueue extends XpraQueue<XpraSendPacket, ArrayBufferLike> {
   private packetEncoder: XpraPacketEncoder = 'bencode'
 

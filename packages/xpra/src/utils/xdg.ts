@@ -18,6 +18,10 @@ import { imageSourceFromData } from '../utils/image'
 const createIcon = (type?: string, data?: string) =>
   data && type ? imageSourceFromData(type, data) : undefined
 
+/**
+ * Creates an array-based data structure from the XDG data recieced
+ * from the server. This makes it a lot easier to use in states, etc.
+ */
 export const createXDGMenu = (value: XpraXDGMenu): XpraXDGReducedMenu =>
   Object.values(value as XpraXDGMenu).map((sub) => ({
     name: sub.Name,

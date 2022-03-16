@@ -18,11 +18,18 @@ import { XpraSendQueue } from '../queues/send'
 import { XpraRecieveQueue } from '../queues/recieve'
 import { XpraRecievePacket, XpraWorkerMessage, XpraWorkerData } from '../types'
 
+/**
+ * Events emitted from the null worker to simulate a web worker
+ */
 export type XpraWorkerEventEmitters = {
   post: (data: XpraWorkerData) => void
   message: (data: XpraWorkerData) => void
 }
 
+/**
+ * Base class for handling worker messages and queues
+ * @noInheritDoc
+ */
 export abstract class XpraWorker extends (EventEmitter as unknown as new () => TypedEmitter<XpraWorkerEventEmitters>) {
   private sendQueue = new XpraSendQueue()
   private recieveQueue = new XpraRecieveQueue()
@@ -41,13 +48,19 @@ export abstract class XpraWorker extends (EventEmitter as unknown as new () => T
     this.recieveQueue.on('message', (message: XpraRecievePacket) => {
       this.send('recieve', message)
     })
+
+    this.init()
   }
 
-  send(_cmd: string, _data: XpraWorkerData) {
+  protected init() {
+    /* noop */
+  }
+
+  protected send(_cmd: string, _data: XpraWorkerData) {
     console.debug('XpraWorker#send', 'no handler defined')
   }
 
-  setConnected(connected: boolean) {
+  protected setConnected(connected: boolean) {
     if (connected) {
       this.recieveQueue.clear()
       this.sendQueue.clear()
@@ -57,7 +70,7 @@ export abstract class XpraWorker extends (EventEmitter as unknown as new () => T
     this.recieveQueue.setConnected(connected)
   }
 
-  processMessage(cmd: XpraWorkerMessage, data: XpraWorkerData) {
+  protected processMessage(cmd: XpraWorkerMessage, data: XpraWorkerData) {
     switch (cmd) {
       case 'connected':
         this.setConnected(data)
@@ -81,28 +94,32 @@ export abstract class XpraWorker extends (EventEmitter as unknown as new () => T
   }
 }
 
+/**
+ * Local worker instance.
+ * Runs in main thread so this has performance impacts.
+ */
 export class XpraNullWorker extends XpraWorker {
-  constructor() {
-    super()
+  protected init() {
     this.on('post', ([cmd, data]) => this.processMessage(cmd, data))
   }
 
-  send(cmd: string, data: XpraWorkerData) {
+  protected send(cmd: string, data: XpraWorkerData) {
     this.emit('message', [cmd, data])
   }
 }
 
+/**
+ * Web worker instance.
+ */
 export class XpraWebWorker extends XpraWorker {
-  constructor() {
-    super()
-
+  init() {
     self.addEventListener('message', (ev: MessageEvent) => {
       const [cmd, data] = ev.data
       this.processMessage(cmd, data)
     })
   }
 
-  send(cmd: string, data: XpraWorkerData) {
+  protected send(cmd: string, data: XpraWorkerData) {
     self.postMessage([cmd, data])
   }
 }

@@ -17,6 +17,9 @@ import { XpraConnectionOptions } from '../types'
 
 const [defaultKeyboardLayout] = getBrowserLanguages()
 
+/**
+ * Complete set of default connection options
+ */
 export const defaultXpraConnectionOptions: XpraConnectionOptions = {
   reconnect: true,
   connectionTimeout: 30000,
@@ -92,6 +95,9 @@ const numberParams: string[] = [
   'reconnectInterval',
 ]
 
+/**
+ * Creates a partial connection option set from the current URL
+ */
 export const createXpraConnectionOptionsFromUrl = () =>
   parseUrlQuerySearch<Partial<XpraConnectionOptions>>(
     booleanParams,

@@ -39,6 +39,7 @@ export type XpraClipboardEventEmitters = {
 }
 
 /**
+ * Provides clipboard functionality to the Xpra client
  * @noInheritDoc
  */
 export class XpraClipboard extends (EventEmitter as unknown as new () => TypedEmitter<XpraClipboardEventEmitters>) {

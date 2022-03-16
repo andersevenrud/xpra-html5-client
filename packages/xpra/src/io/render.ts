@@ -15,6 +15,9 @@
 import { XpraDraw, XpraDrawScrollData } from '../types'
 import { imageSourceFromData, loadImage } from '../utils/image'
 
+/**
+ * Creates image data from draw data
+ */
 export async function encodeXpraDrawData(
   draw: XpraDraw
 ): Promise<CanvasImageSource | ImageData | null> {
@@ -47,6 +50,9 @@ export async function encodeXpraDrawData(
   return null
 }
 
+/**
+ * Draws image data onto a canvas surface
+ */
 export async function renderXpraDrawData(
   canvas: HTMLCanvasElement,
   draw: XpraDraw

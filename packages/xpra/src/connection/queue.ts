@@ -48,9 +48,10 @@ export type XpraQueueEventEmitters<_, M> = {
 }
 
 /**
+ * A queue abstraction for processing packets
  * @noInheritDoc
  */
-export class XpraQueue<T, M> extends (EventEmitter as unknown as {
+export abstract class XpraQueue<T, M> extends (EventEmitter as unknown as {
   new <T, M>(): TypedEmitter<XpraQueueEventEmitters<T, M>>
 })<T, M> {
   protected connected = true

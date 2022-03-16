@@ -47,14 +47,24 @@ import {
   getBrowserColorGamut,
 } from '../utils/browser'
 
+/**
+ * Creates a set of gigest types to use in challenges
+ */
 const getSupportedDigests = () => {
   const additions = Object.keys(forge.md.algorithms).map((s) => `hmac+${s}`)
   return ['hmac', 'hmac+md5', 'xor', ...additions]
 }
 
+/**
+ * Creates a set of compatible clipboard types
+ */
 const getSupportedClipboard = (images: boolean) =>
   images ? [...XPRA_CLIPBOARD_TARGETS, 'image/png'] : XPRA_CLIPBOARD_TARGETS
 
+/**
+ * Creates session data that determines how the session should
+ * start and stop
+ */
 function createNewSessionData({
   startNewSession,
   exitWithChildren,
@@ -74,6 +84,10 @@ function createNewSessionData({
   return {}
 }
 
+/**
+ * Creates a (single) new screen with display information
+ * generated from browser data.
+ */
 export function createXpraScreen(w: number, h: number): XpraScreen[] {
   const dpi = getBrowserDPI()
   const wmm = Math.round((w * 25.4) / dpi)
@@ -85,6 +99,10 @@ export function createXpraScreen(w: number, h: number): XpraScreen[] {
   return [screen]
 }
 
+/**
+ * Build a set of capabilities to be sent in a hello
+ * message
+ */
 export function createXpraCapabilities(
   capabilities: Partial<XpraCapabilities> = {},
   check = true
@@ -286,6 +304,10 @@ export function createXpraCapabilities(
   ) as unknown as XpraCapabilities
 }
 
+/**
+ * Build a new partial set of capabilities based on options
+ * given to the client
+ */
 export function createXpraCapabilitiesFromOptions(
   options: XpraConnectionOptions
 ): Partial<XpraCapabilities> {

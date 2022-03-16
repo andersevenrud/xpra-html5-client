@@ -33,6 +33,9 @@ export interface XpraCipher {
   iv: string
 }
 
+/**
+ * Encrypts packet data with a cipher
+ */
 export function encryptXpraPacketData(
   data: Uint8Array | string,
   size: number,
@@ -69,6 +72,9 @@ export function encryptXpraPacketData(
   return cipher.output.getBytes()
 }
 
+/**
+ * Decrypts packet data with a cipher
+ */
 export function decryptXpraPacketData(
   packet: Uint8Array,
   size: number,
@@ -90,6 +96,9 @@ export function decryptXpraPacketData(
   return packetData
 }
 
+/**
+ * Validates and creates cipher data
+ */
 export function createXpraCipher(
   caps: XpraCipherCapability,
   key: string

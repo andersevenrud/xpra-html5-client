@@ -17,6 +17,9 @@ import * as brotli from '../lib/brotli'
 import lz4 from '../lib/lz4'
 import { XpraInflateBit, XpraRecievePacket } from '../types'
 
+/**
+ * Decompress packet data from given level
+ */
 export function decompressXpraPacketData(
   packetData: Uint8Array,
   level: number
@@ -35,6 +38,9 @@ export function decompressXpraPacketData(
   return packetData
 }
 
+/**
+ * Decompresses draw data from compression bit set in draw packet
+ */
 export function decompressXpraDrawData(packet: XpraRecievePacket) {
   const data = packet[7]
   const options = packet[10] || {}

@@ -27,6 +27,7 @@ const mapped: Record<XpraLoggerType, XpraLogLevel> = {
 }
 
 /**
+ * Console logger wrapper that is used for remote logging
  * @noInheritDoc
  */
 export class XpraLogger extends (EventEmitter as unknown as new () => TypedEmitter<XpraLoggerEventEmitters>) {

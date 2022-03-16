@@ -22,6 +22,9 @@ import {
   rencodelegacy,
 } from '../lib/rencode'
 
+/**
+ * Decodes packet data from spesified decoder
+ */
 export function decodeXpraPacketData(
   packetData: Uint8Array,
   protoFlags: number
@@ -35,6 +38,9 @@ export function decodeXpraPacketData(
   }
 }
 
+/**
+ * Encodes packet data from spesified encoder
+ */
 export function encodeXpraPacket(
   packet: XpraSendPacket,
   encoder: XpraPacketEncoder
