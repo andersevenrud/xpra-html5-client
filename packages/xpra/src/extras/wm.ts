@@ -103,6 +103,10 @@ export class XpraWindowManager {
     this.xpra.on('newWindow', this.createWindow.bind(this))
     this.xpra.on('newTray', this.createWindow.bind(this))
 
+    this.xpra.on('eos', () => {
+      /* TODO */
+    })
+
     this.xpra.on('connect', () => {
       Notification.requestPermission()
     })
@@ -119,14 +123,14 @@ export class XpraWindowManager {
         const len = found.renderQueue.push(draw)
 
         // FIXME: Find a saner limit for this
-        if (len > 10) {
+        if (len > 20) {
           console.debug(
             'XpraWindowManager <- draw',
             'truncated draw queue for',
             draw.wid
           )
 
-          found.renderQueue.splice(-10)
+          found.renderQueue.splice(-20)
         }
       }
     })

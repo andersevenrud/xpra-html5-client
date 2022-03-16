@@ -74,10 +74,12 @@ export abstract class XpraAudioAdapter {
     this.audioCodec = codec
   }
 
+  /** @virtual */
   async setup() {
     console.warn('XpraAudioAdapter#setup', 'unhandled event')
   }
 
+  /** @virtual */
   async start() {
     console.warn('XpraAudioAdapter#start', 'unhandled event')
   }
@@ -107,6 +109,7 @@ export abstract class XpraAudioAdapter {
     this.processQueue(minStartBuffers)
   }
 
+  /** @virtual */
   protected pushBuffer(_buffer: Uint8Array) {
     console.warn('XpraAudioAdapter#pushBuffer', 'unhandled event')
   }

@@ -488,7 +488,7 @@ export interface XpraConnectionOptions {
 
 export interface XpraDrawOptions {
   decode_time?: number
-  flush?: boolean
+  flush?: number
   zlib?: number
   lz4?: number
 }

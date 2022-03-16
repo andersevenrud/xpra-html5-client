@@ -292,6 +292,7 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
     if (packet[0] === 'draw') {
       packet[6] = uint8fromStringOrString(packet[6])
 
+      // FIXME: This should be in the rendering implementation
       const img_data = packet[7]
       if (typeof img_data === 'string') {
         packet[7] = rencodeConvert(img_data)

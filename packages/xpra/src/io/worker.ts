@@ -52,10 +52,12 @@ export abstract class XpraWorker extends (EventEmitter as unknown as new () => T
     this.init()
   }
 
+  /** @virtual */
   protected init() {
     /* noop */
   }
 
+  /** @virtual */
   protected send(_cmd: string, _data: XpraWorkerData) {
     console.debug('XpraWorker#send', 'no handler defined')
   }

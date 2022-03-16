@@ -90,7 +90,6 @@ export const AppContextProvider: FC<AppContextProps> = ({
   xpra,
 }) => {
   const [state, dispatch] = useReducer(stateReducer, initialCreatedState)
-
   const [root, setRoot] = useState<HTMLElement | null>(null)
   const [cursor, setCursor] = useState<HTMLElement | null>(null)
 
@@ -194,10 +193,6 @@ export const AppContextProvider: FC<AppContextProps> = ({
     }
   }
 
-  const eos = () => {
-    /* TODO: Implement */
-  }
-
   const setError = (error: string) =>
     dispatch({
       type: ActionTypes.SetError,
@@ -232,7 +227,6 @@ export const AppContextProvider: FC<AppContextProps> = ({
     xpra.on('hideNotification', hideNotification)
     xpra.on('pointerPosition', pointerPosition)
     xpra.on('newTray', addWindow)
-    xpra.on('eos', eos)
     xpra.on('updateXDGMenu', updateMenu)
     xpra.on('error', setError)
     xpra.on('sessionStarted', sessionStarted)
@@ -253,7 +247,6 @@ export const AppContextProvider: FC<AppContextProps> = ({
       xpra.off('hideNotification', hideNotification)
       xpra.off('pointerPosition', pointerPosition)
       xpra.off('newTray', addWindow)
-      xpra.off('eos', eos)
       xpra.off('updateXDGMenu', updateMenu)
       xpra.off('error', setError)
       xpra.off('sessionStarted', sessionStarted)

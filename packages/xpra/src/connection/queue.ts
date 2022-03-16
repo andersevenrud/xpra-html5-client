@@ -67,10 +67,12 @@ export abstract class XpraQueue<T, M> extends (EventEmitter as unknown as {
     this.queue = []
   }
 
+  /** @virtual */
   setupCipher(_caps: XpraCipherCapability, _key: string) {
     console.debug('Unhandled XpraQueue#setupCipher')
   }
 
+  /** @virtual */
   configure(_options: XpraConnectionOptions) {
     console.debug('Unhandled XpraQueue#configure')
   }

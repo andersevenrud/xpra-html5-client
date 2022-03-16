@@ -5,14 +5,15 @@
  * @license Mozilla Public License Version 2.0
  */
 
-export class XpraCapabilityError extends TypeError {}
-export class XpraInvalidEncoderError extends TypeError {}
-export class XpraInvalidHeaderError extends Error {}
-export class XpraPacketError extends Error {}
-export class XpraConnectionError extends Error {}
-export class XpraInvalidAudioCodecError extends Error {}
-export class XpraAudioError extends Error {}
-export class XpraChallengeError extends Error {}
-export class XpraDisconnectionError extends Error {}
-export class XpraWorkerError extends Error {}
-export class XpraCryptoError extends Error {}
+export class XpraError extends Error {}
+export class XpraCapabilityError extends XpraError {}
+export class XpraInvalidEncoderError extends XpraError {}
+export class XpraInvalidHeaderError extends XpraError {}
+export class XpraPacketError extends XpraError {}
+export class XpraConnectionError extends XpraError {}
+export class XpraInvalidAudioCodecError extends XpraError {}
+export class XpraAudioError extends XpraError {}
+export class XpraChallengeError extends XpraError {}
+export class XpraDisconnectionError extends XpraError {}
+export class XpraWorkerError extends XpraError {}
+export class XpraCryptoError extends XpraError {}
