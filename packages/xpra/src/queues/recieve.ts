@@ -14,7 +14,7 @@
 
 import forge from 'node-forge'
 import { ord } from '../lib/bencode'
-import { rgb24Toagb32, rgb32Restride } from '../utils/image'
+import { rgb24ToRgb32, rgb32Restride } from '../utils/image'
 import { uint8fromStringOrString, uint8fromString } from '../utils/data'
 import { createXpraCipher, decryptXpraPacketData } from '../connection/crypto'
 import { decodeXpraPacketData } from '../connection/encoding'
@@ -338,7 +338,7 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
     const data = decompressXpraDrawData(packet)
 
     if (coding == 'rgb24') {
-      return rgb24Toagb32(data, width, height, rowStride)
+      return rgb24ToRgb32(data, width, height, rowStride)
     } else if (rowStride === width * 4) {
       return new Uint8Array(data)
     }

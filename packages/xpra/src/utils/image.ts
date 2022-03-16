@@ -74,7 +74,7 @@ export function rgb32Restride(
 /**
  * Converts RBG24 to RGB32
  */
-export function rgb24Toagb32(
+export function rgb24ToRgb32(
   data: number[],
   width: number,
   height: number,
