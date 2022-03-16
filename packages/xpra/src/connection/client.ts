@@ -20,7 +20,7 @@ import { XpraClipboard } from '../io/clipboard'
 import { XpraAudio } from '../io/audio'
 import { XpraKeyboard } from '../io/keyboard'
 import { XpraMouse } from '../io/mouse'
-import { XpraConnectionWorkerProxy } from './proxy'
+import { XpraWorkerProxy } from './proxy'
 import { XpraNullWorker, XpraWorker } from '../io/worker'
 import { XpraLogger, XpraLoggerArguments } from '../io/logger'
 import { defaultXpraConnectionOptions } from './options'
@@ -126,7 +126,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
   private pingInterval = 0
   private inited = false
   private started = false
-  private readonly proxy = new XpraConnectionWorkerProxy()
+  private readonly proxy = new XpraWorkerProxy()
   private readonly audio = new XpraAudio()
   private readonly ws = new XpraWebsocket()
   public readonly clipboard = new XpraClipboard()

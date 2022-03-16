@@ -24,13 +24,13 @@ import {
   XpraWorkerData,
 } from '../types'
 
-export type XpraConnectionWorkerProxyEventEmitters = {
+export type XpraWorkerProxyEventEmitters = {
   recieve: (packet: XpraRecievePacket) => void
   send: (data: ArrayBuffer) => void
   failure: (error: Error) => void
 }
 
-export class XpraConnectionWorkerProxy extends (EventEmitter as unknown as new () => TypedEmitter<XpraConnectionWorkerProxyEventEmitters>) {
+export class XpraWorkerProxy extends (EventEmitter as unknown as new () => TypedEmitter<XpraWorkerProxyEventEmitters>) {
   private webworker: Worker | XpraWorker | null = null
 
   private send(msg: XpraWorkerMessage, data: XpraWorkerData) {
