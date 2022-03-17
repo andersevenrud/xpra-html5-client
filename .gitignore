@@ -15,6 +15,7 @@ dist-ssr
 .rollup.cache
 tsconfig.tsbuildinfo
 .yarn
+stats.html
 
 # Editor directories and files
 .vscode/*
