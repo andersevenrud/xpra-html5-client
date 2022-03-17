@@ -1,6 +1,6 @@
 # xpra-html5-client
 
-This is the monorepo for the unofficial typescript Xpra HTML5 client.
+A monorepo for a Xpra HTML client written in TypeScript.
 
 Focuses on modularity, embedding, general improvements and is based off the
 [official](https://github.com/Xpra-org/xpra-html5) client.
@@ -24,44 +24,54 @@ is being reworked and some procedures does not work optimally.
 
 This project requires `node` and `yarn`.
 
-Run `yarn install` to install all required dependencies.
+To set up a complete development environment:
 
-### Library
+```bash
+# Install dependencies
+yarn install
+```
 
-Run `yarn workspace xpra-html5-client build` to build the Xpra client library.
+> The following commands runs in the foreground and have to be executed separately.
 
-### UI
+```bash
+# Automatically rebuild the xpra library if changed
+yarn workspace xpra-html5-client build --watch
 
-After building the Xpra client library you can set up the included user interface.
+# Start a development server for the UI
+yarn workspace xpra-html5-client-react dev
 
-#### Running
+# Start a nested X testing server
+Xephyr -br -ac -noreset -screen 800x600 :10
 
-First, run `uarn workspace xpra-html5-client-react build` to build the application.
+# Start an xpra session on the new X server
+xpra --no-daemon --bind-ws=127.0.0.1:10000 --start=xterm --html=off start :10
+```
 
-Run `yarn workspace xpra-html5-client-react preview` to start a production server.
+## Usage
+
+> If you want to use a production version of the client, run `preview` instead of `dev`.
+
+You can now use the client with the URL given in the `dev` (or `preview`) server command output.
 
 To automatically connect to a target, use `http://localhost:port/?host=ws://ip:port&connect=true`.
 
 You can also apply any option defined in [`XpraConnectionOptions`](https://andersevenrud.github.io/xpra-html5-client/ts/docs/interfaces/XpraConnectionOptions.html),
 like `username` and `password`.
 
-#### Deployment
-
-Run `yarn workspace xpra-html5-client-react build` and copy the artifacts in `packages/ui/dist/` to your destination.
-
-#### Development
-
-Run `yarn workspace xpra-html5-client-react dev` to start a development server.
-
-To set up a X11 environment for testing purposes:
+## Deployment
 
 ```bash
-# Start a nested X server
-Xephyr -br -ac -noreset -screen 800x600 :10
+# Install dependencies
+yarn install
 
-# Start an xpra session on the new X server
-xpra --no-daemon --bind-ws=127.0.0.1:10000 --start=xterm --html=off start :10
+# Build xpra library
+yarn workspace xpra-html5-client build
+
+# Build UI
+yarn workspace xpra-html5-client-react build
 ```
+
+Now copy the artifacts in `packages/ui/dist/` to your destination.
 
 ## Custom integration
 
@@ -75,7 +85,7 @@ Base application example:
 npm install xpra-html5-client@^2
 ```
 
-### `main.ts`
+### `main.js`
 
 ```javascript
 import XpraWorker from './worker?worker'
@@ -118,7 +128,7 @@ async function main() {
 document.addEventListener('DOMContentLoaded', () => main())
 ```
 
-### `worker.ts`
+### `worker.js`
 
 ```javascript
 import { XpraWebWorker } from 'xpra-html5-client'

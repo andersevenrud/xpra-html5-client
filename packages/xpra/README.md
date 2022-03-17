@@ -1,6 +1,6 @@
 # xpra-html5-client
 
-This is a release of the unofficial Xpra HTML5 client library.
+An Xpra HTML5 TypeScript implementation.
 
 See https://github.com/andersevenrud/xpra-html5-client for more information.
 
