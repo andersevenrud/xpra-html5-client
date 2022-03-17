@@ -274,7 +274,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
   private handshake() {
     this.connectionCheckTimeout = setTimeout(() => {
       this.disconnect(new XpraConnectionError('Not a valid xpra server?'))
-    }, this.options.connectionTimeout)
+    }, this.options.connectionTimeout) as unknown as number
 
     this.createCapabilities()
     this.sendHello()
@@ -744,7 +744,11 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
   private processStartupComplete() {
     this.emit('sessionStarted')
     this.sendPing()
-    this.pingInterval = setInterval(() => this.sendPing(), 5000)
+    this.pingInterval = setInterval(
+      () => this.sendPing(),
+      5000
+    ) as unknown as number
+
     this.logger.info('Connection from Xpra HTML client')
   }
 

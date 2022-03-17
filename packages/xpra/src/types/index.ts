@@ -93,15 +93,15 @@ export interface XpraBaseCapability {
 }
 
 export interface XpraCipherCapability {
-  cipher?: boolean
-  'cipher.mode'?: string
+  cipher?: 'AES' | string
+  'cipher.mode'?: 'CBC' | 'CFB' | 'CTR' | string
   'cipher.iv'?: string
   'cipher.key_salt'?: string
   'cipher.key_size'?: number
-  'cipher.key_hash'?: string
+  'cipher.key_hash'?: 'SHA1' | string
   'cipher.key_stretch_iterations'?: number
   'cipher.padding.options'?: string[]
-  'cipher.key_stretch'?: string
+  'cipher.key_stretch'?: 'PBKDF2' | string
 }
 
 export interface XpraSoundCapability {

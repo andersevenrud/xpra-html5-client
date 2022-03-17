@@ -133,7 +133,7 @@ export class XpraWebsocket extends (EventEmitter as unknown as new () => TypedEm
         this.reconnectTimeout = setTimeout(
           () => this.connect(this.host),
           this.reconnectIntervalTime
-        )
+        ) as unknown as number
       }
     }
 
