@@ -325,11 +325,15 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
     useDrag(() => {
       const [w, h] = dimension
       let [newX, newY] = position
+      let minY = 0
 
       return {
+        onDown() {
+          minY = bar.current?.offsetHeight || 0
+        },
         onMove(_, diffX, diffY) {
           newX = position[0] + diffX
-          newY = position[1] + diffY
+          newY = Math.max(minY, position[1] + diffY)
 
           dragMoveMove(newX, newY, w, h)
           setDragging(true)
@@ -345,6 +349,7 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
   const onResizeMouseDown = useCallback(
     useDrag(() => {
       let corner = ''
+      let minY = 0
       let [newX, newY] = position
       let [newW, newH] = dimension
 
@@ -358,13 +363,19 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
               [startX, startY],
               DRAG_CORNER_SIZE
             )
+
+            minY = bar.current?.offsetHeight || 0
           }
         },
 
         onMove(_, diffX, diffY) {
           if (corner.startsWith('n')) {
-            newH = dimension[1] - diffY
             newY = position[1] + diffY
+            if (newY > minY) {
+              newH = dimension[1] - diffY
+            } else {
+              newY = minY
+            }
           } else if (corner.startsWith('s')) {
             newH = dimension[1] + diffY
           }
@@ -395,14 +406,19 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
   }, [root])
 
   useEffect(() => {
+    if (winstance?.attributes?.overrideRedirect) {
+      return
+    }
+
     const [x, y] = position
     const [w, h] = dimension
 
     if (!xpra.isReadOnly()) {
+      const minY = bar.current?.offsetHeight || 0
       // TODO: Clamp position in all directions
-      if (x <= 0 || y <= 0) {
+      if (x <= 0 || y <= minY) {
         const newX = 100
-        const newY = 100
+        const newY = minY
 
         wm.moveResize(winstance, [newX, newY], [w, h])
         setSizeFromAction(newX, newY, w, h, true)
