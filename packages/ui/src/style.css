@@ -4,6 +4,10 @@
  * @author Anders Evenrud <andersevenrud@gmail.com>
  */
 
+body {
+  font-family: 'DM Sans', sans-serif;
+}
+
 #xpra-desktop::after {
   display: block;
   content: '';
