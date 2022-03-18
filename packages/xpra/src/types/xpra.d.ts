@@ -17,7 +17,6 @@ interface WheelEvent {
 }
 
 interface Window {
-  AV: any
   xpra: any
   mscrypto: any
 }

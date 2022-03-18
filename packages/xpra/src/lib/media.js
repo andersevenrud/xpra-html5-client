@@ -5,6 +5,7 @@
  */
 'use strict'
 
+import { AV } from '.'
 import Utilities from './utilities'
 
 export const CODEC_DESCRIPTION = {

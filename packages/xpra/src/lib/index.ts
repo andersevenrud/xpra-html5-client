@@ -15,16 +15,12 @@
 // TODO: Transition this into a separate package
 //       This will improve compile times and whatnot
 
-import './aurora/aurora'
-import './aurora/aac'
-import './aurora/mp3'
-import './aurora/flac'
-import './aurora/aurora-xpra'
 import lz4 from './lz4'
 import JSMpeg from './jsmpeg'
 import * as brotli from './brotli'
+import av from './av.esm'
 
-const AV = self.AV
+const AV = av as any
 
 export { lz4, JSMpeg, brotli, AV }
 

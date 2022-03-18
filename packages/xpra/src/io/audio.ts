@@ -44,14 +44,6 @@ export type XpraAudioEventEmitters = {
 
 const CONCAT = true
 
-const hasMS = !!getMediaSourceClass()
-
-const hasAV =
-  typeof AV !== 'undefined' &&
-  AV != null &&
-  AV.Decoder != null &&
-  AV.Player.fromXpraSource != null
-
 /**
  * Provides audio buffer queues to adapters
  */
@@ -297,12 +289,10 @@ export class XpraAudio extends (EventEmitter as unknown as new () => TypedEmitte
   private defaultCodec: XpraAudioCodecType | null = null
   private audioCodec: XpraAudioCodecType | null = null
   private audioFramework: XpraAudioFramework | null = null
+  private auroraCodecs: XpraAudioCodecMap =
+    getAuroraAudioCodecs() as XpraAudioCodecMap
 
-  private auroraCodecs: XpraAudioCodecMap = (hasAV
-    ? getAuroraAudioCodecs()
-    : {}) as XpraAudioCodecMap
-
-  private mediaCodecs: XpraAudioCodecMap = (hasMS
+  private mediaCodecs: XpraAudioCodecMap = (!!getMediaSourceClass()
     ? getMediaSourceAudioCodecs()
     : {}) as XpraAudioCodecMap
 
