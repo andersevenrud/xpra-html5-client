@@ -68,6 +68,7 @@ export function useDrag(
     let moved = false
 
     const onMouseMove = (ev: MouseEvent) => {
+      ev.stopPropagation()
       const diffX = ev.pageX - startX
       const diffY = ev.pageY - startY
       moved = true
@@ -75,13 +76,13 @@ export function useDrag(
     }
 
     const onMouseUp = (ev: MouseEvent) => {
-      window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('mouseup', onMouseUp)
+      window.removeEventListener('mousemove', onMouseMove, true)
+      window.removeEventListener('mouseup', onMouseUp, true)
       onRelease(ev, moved)
     }
 
-    window.addEventListener('mousemove', onMouseMove)
-    window.addEventListener('mouseup', onMouseUp)
+    window.addEventListener('mousemove', onMouseMove, true)
+    window.addEventListener('mouseup', onMouseUp, true)
 
     if (onDown) {
       onDown(ev.nativeEvent, startX, startY)

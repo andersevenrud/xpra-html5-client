@@ -15,7 +15,7 @@ import React, {
   RefObject,
   FC,
 } from 'react'
-import { debounce } from 'lodash-es'
+import { throttle } from 'lodash-es'
 import {
   createCursorCSS,
   createCursorBackgroundCSS,
@@ -27,8 +27,6 @@ import { XpraWindowManagerWindow, XpraVector } from 'xpra-html5-client'
 import { FadeInOutTransition } from './transitions'
 import { AppContext } from './context'
 import defaultCursor from './cursor.png'
-
-export const INPUT_DEBOUNCE_TIME = 10
 
 export const DRAG_CORNER_SIZE = 16
 
@@ -140,6 +138,7 @@ export const AppWindowCanvas: FC<{
   }
 
   const onMouseUp = (ev: React.MouseEvent<HTMLDivElement>) => {
+    ev.stopPropagation()
     wm.mouseButton(winstance, ev.nativeEvent, false)
   }
 
@@ -287,7 +286,7 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
   )
 
   const setDragging = (value: boolean) => {
-    if (!isDragging) {
+    if (!value || !isDragging) {
       dispatch({
         type: ActionTypes.SetDraggingWindow,
         payload: value ? id : -1,
@@ -302,7 +301,6 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
     ev.stopPropagation()
 
     wm.raise(winstance)
-    wm.mouseButton(null, ev.nativeEvent, true)
 
     dispatch({
       type: ActionTypes.RaiseWindow,
@@ -310,7 +308,7 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
     })
   }
 
-  const onRootMouseMove = debounce((ev: React.MouseEvent<HTMLDivElement>) => {
+  const onRootMouseMove = throttle((ev: React.MouseEvent<HTMLDivElement>) => {
     if (resizer.current) {
       const corner = detectCorner(
         resizer.current,
@@ -321,7 +319,7 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
     } else {
       setResizeCursor('default')
     }
-  }, INPUT_DEBOUNCE_TIME)
+  }, 100)
 
   const onDragMouseDown = useCallback(
     useDrag(() => {
@@ -351,7 +349,9 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
       let [newW, newH] = dimension
 
       return {
-        onDown(_, startX, startY) {
+        onDown(ev, startX, startY) {
+          ev.stopPropagation()
+
           if (resizer.current) {
             corner = detectCorner(
               resizer.current,
@@ -481,9 +481,9 @@ export const AppDesktop: FC = ({ children }) => {
   const cursor = createRef<HTMLDivElement>()
   const { wm, state, setRoot, setCursor } = useContext(AppContext)
 
-  const onMouseMove = (ev: React.MouseEvent<HTMLDivElement>) => {
+  const onMouseMove = throttle((ev: React.MouseEvent<HTMLDivElement>) => {
     wm.mouseMove(null, ev.nativeEvent)
-  }
+  }, 200)
 
   const onContextMenu = (ev: React.MouseEvent<HTMLDivElement>) => {
     ev.preventDefault()
