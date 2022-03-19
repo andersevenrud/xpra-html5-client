@@ -2,8 +2,7 @@
 
 A monorepo for a Xpra HTML client written in TypeScript.
 
-Focuses on modularity, embedding, general improvements and is based off the
-[official](https://github.com/Xpra-org/xpra-html5) client.
+Focuses on modularity and embedding. Based off the [official](https://github.com/Xpra-org/xpra-html5) client.
 
 **[Live demo](https://andersevenrud.github.io/xpra-html5-client/ts/client/)**
 
@@ -13,7 +12,8 @@ Focuses on modularity, embedding, general improvements and is based off the
 
 ## Notes
 
-This is a work in progress and some features are not fully implemented or not fully tested.
+This is a [work in progress](https://github.com/andersevenrud/xpra-html5-client/issues/3)
+and some features are not fully implemented or not fully tested.
 
 Please note that **rendering is a bit broken** at this moment because the rendering module
 is being reworked and some procedures does not work optimally.
@@ -135,55 +135,6 @@ import { XpraWebWorker } from 'xpra-html5-client'
 
 new XpraWebWorker()
 ```
-
-## TODO
-
-* Xpra library
-  * [x] Connectivity
-  * [x] Authentication
-  * [ ] Encryption (**WIP**)
-  * [x] Capability detection
-  * [x] Packet decoding and proxying
-  * [x] Error handling
-  * [x] Window handlers
-  * [x] Cursor handlers
-  * [x] Sound handlers
-  * [x] Keyboard handlers
-  * [x] Mouse handlers
-  * [x] Notifications
-  * [x] Clipboard
-  * [x] Download/Upload
-  * [x] Print
-  * [x] Remote logging
-  * [x] Bell
-  * [x] Tray
-  * [x] Webworker
-  * Rendering support
-    * [x] Direct rendering
-    * [ ] Offscreen canvas
-    * Formats
-      * [x] PNG/JPEG/WebP
-      * [x] RGB32/RGB24
-      * [x] AVIF
-      * [ ] MPEG1
-      * [ ] MPEG4
-      * [ ] h264
-      * [ ] VP8
-      * [x] Void
-      * [x] Scroll
-* UI
-  * [ ] On-screen keyboard
-  * [ ] Client-side scaling
-  * [ ] Suspend/resume windows
-  * [ ] Fullscreen windows
-  * [ ] Desktop class back layers
-  * [x] Connection options via URL query
-  * [x] Connection settings modal
-  * [x] Window management
-  * [x] Window interaction
-  * [x] Cursor support
-  * [x] XDG Menu
-  * [x] Tray
 
 ## License
 
