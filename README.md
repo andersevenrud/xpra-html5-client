@@ -189,7 +189,18 @@ new XpraWebWorker()
 
 Mozilla Public License Version 2.0
 
+---
+
 This repository is based on the official Xpra HTML5 client sources
+
 > Copyright Copyright (C) 2016-2022 Antoine Martin <antoine@devloop.org.uk>
 > Licensed under MPL 2.0, see: http://www.mozilla.org/MPL/2.0/
 > https://github.com/Xpra-org/xpra-html5/blob/master/LICENSE
+
+---
+
+X11 Logo
+
+> The X Window System is a trademark of The Open Group.
+> Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
+> https://creativecommons.org/licenses/by-sa/3.0/
