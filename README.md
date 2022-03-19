@@ -7,7 +7,7 @@ Focuses on modularity, embedding, general improvements and is based off the
 
 **[Live demo](https://andersevenrud.github.io/xpra-html5-client/ts/client/)**
 
-**[Documentation](https://andersevenrud.github.io/xpra-html5-client/ts/docs/)**
+**[Documentation](https://andersevenrud.github.io/xpra-html5-client/ts/docs/modules.html)**
 
 ![xpra-html5-client-react](https://user-images.githubusercontent.com/161548/157789860-dabe3617-52e3-4b8d-9fee-950f018f879b.png)
 
