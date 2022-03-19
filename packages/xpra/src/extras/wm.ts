@@ -122,15 +122,16 @@ export class XpraWindowManager {
       if (found) {
         const len = found.renderQueue.push(draw)
 
-        // FIXME: Find a saner limit for this
-        if (len > 20) {
+        // FIXME: This is temporarily just a solution for handling unfocused tab
+        if (len > 60) {
           console.debug(
             'XpraWindowManager <- draw',
             'truncated draw queue for',
             draw.wid
           )
 
-          found.renderQueue.splice(-20)
+          const removed = found.renderQueue.splice(-60)
+          removed.forEach((d) => d.callback())
         }
       }
     })
@@ -244,7 +245,6 @@ export class XpraWindowManager {
         draw.callback()
       } catch (e) {
         draw.callback(e as Error)
-        this.renderWindow(win)
       }
     }
   }
