@@ -1,5 +1,11 @@
 # xpra-html5-client
 
+**This is a [work in progress](https://github.com/andersevenrud/xpra-html5-client/issues/3)**
+
+![xpra-html5-client-react](https://user-images.githubusercontent.com/161548/157789860-dabe3617-52e3-4b8d-9fee-950f018f879b.png)
+
+## About
+
 A monorepo for a Xpra HTML client written in TypeScript.
 
 Focuses on modularity and embedding. Based off the [official](https://github.com/Xpra-org/xpra-html5) client.
@@ -7,18 +13,6 @@ Focuses on modularity and embedding. Based off the [official](https://github.com
 **[Live demo](https://andersevenrud.github.io/xpra-html5-client/ts/client/)**
 
 **[Documentation](https://andersevenrud.github.io/xpra-html5-client/ts/docs/modules.html)**
-
-![xpra-html5-client-react](https://user-images.githubusercontent.com/161548/157789860-dabe3617-52e3-4b8d-9fee-950f018f879b.png)
-
-## Notes
-
-This is a [work in progress](https://github.com/andersevenrud/xpra-html5-client/issues/3)
-and some features are not fully implemented or not fully tested.
-
-Please note that **rendering is a bit broken** at this moment because the rendering module
-is being reworked and some procedures does not work optimally.
-
-[Old version of this project](https://github.com/andersevenrud/xpra-html5-client/tree/legacy)
 
 ## Setup
 
