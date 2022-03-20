@@ -13,6 +13,7 @@ export default defineConfig({
   base: '',
   plugins: [dts(), ...plugins],
   build: {
+    emptyOutDir: false,
     sourcemap: true,
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
