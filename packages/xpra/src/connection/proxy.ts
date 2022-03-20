@@ -22,6 +22,8 @@ import {
   XpraRecievePacket,
   XpraWorkerMessage,
   XpraWorkerData,
+  XpraCipherCapability,
+  XpraCapabilities,
 } from '../types'
 
 export type XpraWorkerProxyEventEmitters = {
@@ -84,8 +86,20 @@ export class XpraWorkerProxy extends (EventEmitter as unknown as new () => Typed
     }
   }
 
-  configure(options: XpraConnectionOptions) {
+  setupCipher(type: string, caps: XpraCipherCapability, key: string) {
+    this.send('cipher', [type, caps, key])
+  }
+
+  configure(options: XpraConnectionOptions, capabilities: XpraCapabilities) {
     this.send('configure', options)
+
+    if (options.encryption) {
+      const caps = Object.fromEntries(
+        Object.entries(capabilities).filter(([k]) => k.startsWith('cipher'))
+      )
+
+      this.setupCipher('in', caps, options.encryptionKey)
+    }
   }
 
   setConnected(connected: boolean) {

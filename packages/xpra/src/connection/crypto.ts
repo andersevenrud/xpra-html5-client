@@ -13,9 +13,9 @@
  */
 
 import forge from 'node-forge'
-import { uintToString } from '../lib'
 import { XpraCipherCapability } from '../types'
 import { XpraCryptoError } from '../errors'
+import { uint8toString } from '../utils/data'
 import {
   XPRA_DEFAULT_KEYSIZE,
   XPRA_DEFAULT_KEY_HASH,
@@ -81,7 +81,7 @@ export function decryptXpraPacketData(
   padding: number,
   cipher: XpraCipherInstance
 ) {
-  cipher.update(forge.util.createBuffer(uintToString(packet)))
+  cipher.update(forge.util.createBuffer(uint8toString(packet)))
 
   const decrypted = cipher.output.getBytes()
   if (!decrypted || decrypted.length < size - padding) {
@@ -128,7 +128,7 @@ export function createXpraCipher(
     throw new XpraCryptoError(`Invalid key stretching function: ${keyStretch}`)
   } else if (!iv) {
     throw new XpraCryptoError('Missing IV')
-  } else if (['CFB', 'CTR'].indexOf(mode) < 0) {
+  } else if (['CBC', 'CFB', 'CTR'].indexOf(mode) < 0) {
     throw new XpraCryptoError(`Unsupported AES mode: ${mode}`)
   }
 

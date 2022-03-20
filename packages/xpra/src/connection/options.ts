@@ -49,7 +49,7 @@ export const defaultXpraConnectionOptions: XpraConnectionOptions = {
   notifications: true,
   ssl: false,
   encryption: null,
-  encryptionKey: null,
+  encryptionKey: '',
   encoder: 'auto',
   openUrl: true,
   swapKeys: false,

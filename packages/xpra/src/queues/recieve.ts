@@ -52,9 +52,9 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
   private raw: any[] = []
 
   setupCipher(caps: XpraCipherCapability, key: string) {
-    const { iv, cipher, secret, blockSize } = createXpraCipher(caps, key)
+    const { iv, mode, cipher, secret, blockSize } = createXpraCipher(caps, key)
     this.cipherBlockSize = blockSize
-    this.cipher = forge.cipher.createDecipher(cipher, secret)
+    this.cipher = forge.cipher.createDecipher(`${cipher}-${mode}`, secret)
     this.cipher.start({ iv })
   }
 
@@ -218,10 +218,9 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
       packetSize += this.header[4 + i]
     }
 
-    // work out padding if necessary
     let padding = 0
     if (protoCrypto && this.cipherBlockSize > 0) {
-      padding = this.cipherBlockSize - (packetSize % this.cipher.blockSize)
+      padding = this.cipherBlockSize - (packetSize % this.cipherBlockSize)
       packetSize += padding
     }
 

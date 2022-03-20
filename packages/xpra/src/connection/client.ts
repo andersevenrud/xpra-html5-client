@@ -74,6 +74,7 @@ import {
   XpraInfoResponse,
   XpraPointerPosition,
   XpraXDGReducedMenu,
+  XpraCipherCapability,
 } from '../types'
 
 export type XpraClientEventEmitters = {
@@ -239,8 +240,9 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     }
 
     try {
+      this.createCapabilities()
       this.clipboard.configure(this.options)
-      this.proxy.configure(this.options)
+      this.proxy.configure(this.options, this.capabilities)
       this.proxy.setConnected(true)
       this.ws.connect(host, this.options)
     } catch (e) {
@@ -276,7 +278,6 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
       this.disconnect(new XpraConnectionError('Not a valid xpra server?'))
     }, this.options.connectionTimeout) as unknown as number
 
-    this.createCapabilities()
     this.sendHello()
   }
 
@@ -690,6 +691,14 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
   }
 
   private processHello(capabilities: XpraServerCapabilities) {
+    if (this.options.encryption) {
+      const caps = Object.fromEntries(
+        Object.entries(capabilities).filter(([k]) => k.startsWith('cipher'))
+      )
+
+      this.proxy.setupCipher('out', caps, this.options.encryptionKey)
+    }
+
     clearTimeout(this.connectionCheckTimeout)
     this.started = true
     this.serverCapabilities = capabilities
@@ -1083,7 +1092,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
 
   private processChallenge(
     serverSalt: string,
-    _cipherOutCaps: string,
+    cipherOutCaps: XpraCipherCapability,
     digest: string,
     saltDigest: string,
     prompt: string
@@ -1092,6 +1101,10 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     saltDigest = saltDigest || 'xor'
 
     try {
+      if (this.options.encryption && cipherOutCaps) {
+        this.proxy.setupCipher('out', cipherOutCaps, this.options.encryptionKey)
+      }
+
       const challengeResponse = createXpraChallengeResponse(
         serverSalt,
         digest,

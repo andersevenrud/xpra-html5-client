@@ -474,7 +474,7 @@ export interface XpraConnectionOptions {
   notifications: boolean
   ssl: boolean
   encryption: string | null
-  encryptionKey: string | null
+  encryptionKey: string
   encoder: XpraPacketEncoder
   openUrl: boolean
   swapKeys: boolean
@@ -701,6 +701,7 @@ export type XpraWorkerMessage =
   | 'recieve'
   | 'failure'
   | 'configure'
+  | 'cipher'
 
 export type XpraAudioFramework = 'mediasource' | 'aurora'
 

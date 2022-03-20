@@ -31,9 +31,9 @@ export class XpraSendQueue extends XpraQueue<XpraSendPacket, ArrayBufferLike> {
   private packetEncoder: XpraPacketEncoder = 'bencode'
 
   setupCipher(caps: XpraCipherCapability, key: string) {
-    const { iv, cipher, secret, blockSize } = createXpraCipher(caps, key)
+    const { iv, mode, cipher, secret, blockSize } = createXpraCipher(caps, key)
     this.cipherBlockSize = blockSize
-    this.cipher = forge.cipher.createCipher(cipher, secret)
+    this.cipher = forge.cipher.createCipher(`${cipher}-${mode}`, secret)
     this.cipher.start({ iv })
   }
 
