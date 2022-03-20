@@ -9,6 +9,11 @@ declare module 'xpra-av' {
   export default m
 }
 
+declare module 'xpra-jsmpeg' {
+  const m: any
+  export default m
+}
+
 declare module 'lz4js' {
   const m: any
   export default m

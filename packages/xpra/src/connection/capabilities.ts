@@ -13,7 +13,8 @@
  */
 
 import forge from 'node-forge'
-import { JSMpeg, rencodeSelfTest, getKeyCodes } from '../lib'
+import JSMpeg from 'xpra-jsmpeg'
+import { rencodeSelfTest, getKeyCodes } from '../lib'
 import { XpraCapabilityError } from '../errors'
 import {
   XPRA_CLIPBOARD_TARGETS,
@@ -358,7 +359,9 @@ export function createXpraCapabilitiesFromOptions(
 
   if (options.video) {
     const encodings = [...XPRA_IMAGE_ENCODERS, 'h264']
-    if (JSMpeg && JSMpeg.Renderer && JSMpeg.Decoder) {
+
+    // FIXME: This is always true now...but this is just in place for tree shake etc.
+    if (JSMpeg.Renderer && JSMpeg.Decoder) {
       encodings.push('mpeg1')
     }
 

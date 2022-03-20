@@ -5,6 +5,7 @@
   "private": true,
   "workspaces": [
     "packages/av",
+    "packages/jsmpeg",
     "packages/xpra",
     "packages/ui"
   ]

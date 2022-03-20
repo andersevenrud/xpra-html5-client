@@ -11,3 +11,6 @@
 	path = packages/av/src/aurora.js
 	url = https://github.com/andersevenrud/aurora.js.git
 	branch = fix/es6-super
+[submodule "packages/jsmpeg/src"]
+	path = packages/jsmpeg/src
+	url = https://github.com/phoboslab/jsmpeg.git

@@ -1,0 +1,28 @@
+{
+  "name": "xpra-jsmpeg",
+  "version": "1.0.0",
+  "author": "Anders Evenrud <andersevenrud@gmail.com>",
+  "license": "Apache-2.0",
+  "main": "dist/jsmpeg.esm.js",
+  "module": "dist/jsmpeg.esm.js",
+  "scripts": {
+    "build": "rollup --config"
+  },
+  "devDependencies": {
+    "rollup": "^2.70.1",
+    "rollup-plugin-insert": "^1.3.2",
+    "rollup-plugin-terser": "^7.0.2"
+  },
+  "keywords": [
+    "xpra"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andersevenrud/xpra-html5-client.git"
+  },
+  "bugs": {
+    "url": "https://github.com/andersevenrud/xpra-html5-client/issues"
+  },
+  "homepage": "https://github.com/andersevenrud/xpra-html5-client",
+  "dependencies": {}
+}

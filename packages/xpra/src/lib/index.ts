@@ -12,10 +12,6 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import JSMpeg from './jsmpeg'
-
-export { JSMpeg }
-
 export {
   LANGUAGE_TO_LAYOUT,
   get_key as getKey,

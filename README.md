@@ -26,6 +26,7 @@ yarn install
 
 # Build included dependencies
 yarn workspace xpra-av build
+yarn workspace xpra-jsmpeg build
 ```
 
 > The following commands runs in the foreground and have to be executed separately.
@@ -63,6 +64,7 @@ yarn install
 
 # Build included dependencies
 yarn workspace xpra-av build
+yarn workspace xpra-jsmpeg build
 
 # Build xpra library
 yarn workspace xpra-html5-client build
