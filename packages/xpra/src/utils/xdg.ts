@@ -23,15 +23,25 @@ const createIcon = (type?: string, data?: string) =>
  * from the server. This makes it a lot easier to use in states, etc.
  */
 export const createXDGMenu = (value: XpraXDGMenu): XpraXDGReducedMenu =>
-  Object.values(value as XpraXDGMenu).map((sub) => ({
-    name: sub.Name,
-    icon: createIcon(sub.IconType, sub.IconData),
-    entries: Object.entries(sub.Entries).map(
+  Object.values(value as XpraXDGMenu).map((sub) => {
+    const keys = Object.keys(sub.Entries)
+    const collator = new Intl.Collator()
+    keys.sort((a, b) => collator.compare(a, b))
+
+    const mapped = Object.fromEntries(keys.map((k) => [k, sub.Entries[k]]))
+
+    const entries = Object.entries(mapped).map(
       ([name, { IconType, IconData, ...attributes }]) => ({
         name,
         exec: attributes.Exec.replace(/%[uUfF]/g, ''),
         icon: createIcon(IconType, IconData),
         attributes,
       })
-    ),
-  }))
+    )
+
+    return {
+      name: sub.Name,
+      icon: createIcon(sub.IconType, sub.IconData),
+      entries,
+    }
+  })
