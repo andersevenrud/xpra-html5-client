@@ -13,6 +13,7 @@
  */
 
 import BroadwayDecoder from 'xpra-broadway'
+import JSMpeg from 'xpra-jsmpeg'
 import { XpraDraw, XpraDrawScrollData } from '../types'
 import { imageSourceFromData, loadImage } from '../utils/image'
 
@@ -23,16 +24,15 @@ export async function encodeXpraDrawData(
   context: CanvasRenderingContext2D,
   draw: XpraDraw
 ): Promise<CanvasImageSource | ImageData | null> {
+  const [width, height] = draw.dimension
   switch (draw.encoding) {
     case 'rgb':
     case 'rgb32':
     case 'rgb24':
-      const [w, h] = draw.dimension
-
       return new ImageData(
         new Uint8ClampedArray((draw.image as Uint8Array).buffer),
-        w,
-        h
+        width,
+        height
       )
 
     case 'avif':
@@ -46,29 +46,56 @@ export async function encodeXpraDrawData(
       return loadImage(data)
 
     case 'h264':
-      console.log(draw)
-      const [width, height] = draw.dimension
-      const decoder = new BroadwayDecoder({
-        rgb: true,
-        size: {
-          width,
-          height,
-        },
-      })
+      return await new Promise((resolve, reject) => {
+        try {
+          const h264 = new BroadwayDecoder({
+            rgb: true,
+            size: {
+              width,
+              height,
+            },
+          })
 
-      return await new Promise((resolve) => {
-        decoder.onPictureDecoded = (
-          buffer: Uint8Array,
-          w: number,
-          h: number
-        ) => {
-          const img = context.createImageData(w, h)
-          img.data.set(buffer)
-          resolve(img)
+          h264.onPictureDecoded = (
+            buffer: Uint8Array,
+            w: number,
+            h: number
+          ) => {
+            const img = context.createImageData(w, h)
+            img.data.set(buffer)
+            resolve(img)
+          }
+
+          h264.decode(draw.image)
+        } catch (e) {
+          reject(e)
         }
-
-        decoder.decode(draw.image)
       })
+
+    case 'mpeg1':
+      return new Promise((resolve, reject) => {
+        try {
+          const surface = new JSMpeg.Renderer.Canvas2D({
+            width,
+            height,
+            canvas: document.createElement('canvas'),
+          })
+
+          const mpeg1 = new JSMpeg.Decoder.MPEG1Video({
+            onVideoDecode: () => {
+              const ctx = surface.canvas.getContext('2d')
+              const data = ctx.getImageData(0, 0, width, height)
+              resolve(data)
+            },
+          })
+
+          mpeg1.connect(surface)
+          mpeg1.write(performance.now(), [draw.image])
+        } catch (e) {
+          reject(e)
+        }
+      })
+
     default:
       console.warn('encodeXpraDrawData', 'Unhandled decode', draw)
   }
