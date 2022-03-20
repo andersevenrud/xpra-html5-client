@@ -12,10 +12,9 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import AV from 'xpra-av'
 import JSMpeg from './jsmpeg'
 
-export { JSMpeg, AV }
+export { JSMpeg }
 
 export {
   LANGUAGE_TO_LAYOUT,

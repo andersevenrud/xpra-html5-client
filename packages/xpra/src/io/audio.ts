@@ -14,6 +14,7 @@
 
 import TypedEmitter from 'typed-emitter'
 import EventEmitter from 'events'
+import AV from 'xpra-av'
 import { uint8fromString } from '../utils/data'
 import { XPRA_MAX_AUDIO_BUFFERS } from '../constants'
 import { XpraInvalidAudioCodecError, XpraAudioError } from '../errors'
@@ -25,7 +26,6 @@ import {
   XpraAudioMetadata,
 } from '../types'
 import {
-  AV,
   getMediaSourceAudioCodecs,
   getDefaultAudioCodec,
   getMediaSourceClass,

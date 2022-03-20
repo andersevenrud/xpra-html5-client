@@ -5,7 +5,7 @@
  */
 'use strict'
 
-import { AV } from '.'
+import AV from 'xpra-av'
 import Utilities from './utilities'
 
 export const CODEC_DESCRIPTION = {
