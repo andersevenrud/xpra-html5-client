@@ -11,12 +11,16 @@ jobs:
         with:
           node-version: '16'
           registry-url: 'https://registry.npmjs.org'
+          fetch-depth: 0
+          submodules: true
       - name: Install dependencies
         run: |
           npm install -g yarn
           yarn install --frozen-lockfile
       - name: Build
-        run: yarn workspace xpra-html5-client build
+        run: |
+          yarn workspace xpra-av build
+          yarn workspace xpra-html5-client build
       - name: Publish
         run: yarn workspace xpra-html5-client publish
         env:

@@ -1,0 +1,13 @@
+[submodule "packages/av/src/mp3.js"]
+	path = packages/av/src/mp3.js
+	url = https://github.com/audiocogs/mp3.js.git
+[submodule "packages/av/src/aac.js"]
+	path = packages/av/src/aac.js
+	url = https://github.com/audiocogs/aac.js.git
+[submodule "packages/av/src/flac.js"]
+	path = packages/av/src/flac.js
+	url = https://github.com/audiocogs/flac.js.git
+[submodule "packages/av/src/aurora.js"]
+	path = packages/av/src/aurora.js
+	url = https://github.com/andersevenrud/aurora.js.git
+	branch = fix/es6-super

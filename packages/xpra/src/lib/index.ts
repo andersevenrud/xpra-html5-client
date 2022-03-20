@@ -12,15 +12,10 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-// TODO: Transition this into a separate package
-//       This will improve compile times and whatnot
-
+import AV from 'xpra-av'
 import lz4 from './lz4'
 import JSMpeg from './jsmpeg'
 import * as brotli from './brotli'
-import av from './av.esm'
-
-const AV = av as any
 
 export { lz4, JSMpeg, brotli, AV }
 

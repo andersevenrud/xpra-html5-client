@@ -16,13 +16,16 @@ Focuses on modularity and embedding. Based off the [official](https://github.com
 
 ## Setup
 
-This project requires `node` and `yarn`.
+This project requires `node` and `yarn` and uses *git submodules*. Clone the repository with `--recursive` options.
 
 To set up a complete development environment:
 
 ```bash
 # Install dependencies
 yarn install
+
+# Build included dependencies
+yarn workspace xpra-av build
 ```
 
 > The following commands runs in the foreground and have to be executed separately.
@@ -57,6 +60,9 @@ like `username` and `password`.
 ```bash
 # Install dependencies
 yarn install
+
+# Build included dependencies
+yarn workspace xpra-av build
 
 # Build xpra library
 yarn workspace xpra-html5-client build

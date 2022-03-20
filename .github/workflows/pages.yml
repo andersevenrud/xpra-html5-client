@@ -12,6 +12,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          submodules: true
       - name: Install node
         uses: actions/setup-node@v2
         with:
@@ -22,6 +23,7 @@ jobs:
           yarn install --frozen-lockfile
       - name: Build
         run: |
+          yarn workspace xpra-av build
           yarn workspace xpra-html5-client build
           yarn workspace xpra-html5-client docs
           yarn workspace xpra-html5-client-react build
