@@ -19,7 +19,7 @@ export const AppSelect: FC<{
 }> = ({ disabled, label, value, required, options, onChange }) => {
   const htmlFor = `xpra_${++lastElementId}`
   const inputClassNames =
-    'rounded bg-white border border-black-100 w-full p-1 disabled:opacity-20 disabled:cursor-not-allowed'
+    'rounded bg-white border border-black-100 w-full p-1 px-2 disabled:opacity-40 disabled:cursor-not-allowed'
 
   return (
     <div>
@@ -55,7 +55,7 @@ export const AppButton: FC<{
   onClick?: (ev: React.MouseEvent<HTMLButtonElement>) => void
 }> = ({ children, disabled, label, type, transparent, onClick }) => {
   let inputClassNames =
-    'flex items-center justify-center relative rounded w-full p-1 disabled:opacity-20 disabled:cursor-not-allowed hover:outline hover:outline-1'
+    'flex items-center justify-center relative rounded w-full p-1 px-2 disabled:opacity-40 disabled:cursor-not-allowed hover:outline hover:outline-1'
 
   if (transparent) {
     inputClassNames += ' border border border-transparent'
@@ -89,7 +89,7 @@ export const AppTextField: FC<{
 }> = ({ disabled, label, value, type, placeholder, required, onChange }) => {
   const htmlFor = `xpra_${++lastElementId}`
   const inputClassNames =
-    'rounded bg-white border border-black-100 w-full p-1 disabled:opacity-20 disabled:cursor-not-allowed'
+    'rounded bg-white border border-black-100 w-full p-1 px-2 disabled:opacity-40 disabled:cursor-not-allowed'
 
   return (
     <div>
