@@ -487,6 +487,10 @@ export interface XpraConnectionOptions {
 }
 
 export interface XpraDrawOptions {
+  pts?: number
+  csc?: string
+  type?: string
+  frame?: number
   decode_time?: number
   flush?: number
   zlib?: number

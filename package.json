@@ -6,6 +6,7 @@
   "workspaces": [
     "packages/av",
     "packages/jsmpeg",
+    "packages/broadway",
     "packages/xpra",
     "packages/ui"
   ]

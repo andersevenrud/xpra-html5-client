@@ -12,6 +12,7 @@
  * Original source: https://github.com/Xpra-org/xpra-html5
  */
 
+import BroadwayDecoder from 'xpra-broadway'
 import { XpraDraw, XpraDrawScrollData } from '../types'
 import { imageSourceFromData, loadImage } from '../utils/image'
 
@@ -19,6 +20,7 @@ import { imageSourceFromData, loadImage } from '../utils/image'
  * Creates image data from draw data
  */
 export async function encodeXpraDrawData(
+  context: CanvasRenderingContext2D,
   draw: XpraDraw
 ): Promise<CanvasImageSource | ImageData | null> {
   switch (draw.encoding) {
@@ -43,6 +45,30 @@ export async function encodeXpraDrawData(
 
       return loadImage(data)
 
+    case 'h264':
+      console.log(draw)
+      const [width, height] = draw.dimension
+      const decoder = new BroadwayDecoder({
+        rgb: true,
+        size: {
+          width,
+          height,
+        },
+      })
+
+      return await new Promise((resolve) => {
+        decoder.onPictureDecoded = (
+          buffer: Uint8Array,
+          w: number,
+          h: number
+        ) => {
+          const img = context.createImageData(w, h)
+          img.data.set(buffer)
+          resolve(img)
+        }
+
+        decoder.decode(draw.image)
+      })
     default:
       console.warn('encodeXpraDrawData', 'Unhandled decode', draw)
   }
@@ -79,7 +105,7 @@ export async function renderXpraDrawData(
         }
       )
     } else {
-      const result = await encodeXpraDrawData(draw)
+      const result = await encodeXpraDrawData(context, draw)
 
       if (result) {
         if (result instanceof ImageData) {

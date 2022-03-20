@@ -50,6 +50,7 @@
     "pako": "^2.0.4",
     "typed-emitter": "^2.1.0",
     "xpra-av": "^1.0.0",
+    "xpra-broadway": "^1.0.0",
     "xpra-jsmpeg": "^1.0.0"
   },
   "eslintConfig": {

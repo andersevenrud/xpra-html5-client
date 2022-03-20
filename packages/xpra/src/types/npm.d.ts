@@ -14,6 +14,11 @@ declare module 'xpra-jsmpeg' {
   export default m
 }
 
+declare module 'xpra-broadway' {
+  const m: any
+  export default m
+}
+
 declare module 'lz4js' {
   const m: any
   export default m
