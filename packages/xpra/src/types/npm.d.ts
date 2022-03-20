@@ -8,3 +8,8 @@ declare module 'xpra-av' {
   const m: any
   export default m
 }
+
+declare module 'lz4js' {
+  const m: any
+  export default m
+}

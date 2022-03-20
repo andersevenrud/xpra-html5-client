@@ -44,6 +44,7 @@
   "dependencies": {
     "events": "^3.3.0",
     "lodash-es": "^4.17.21",
+    "lz4js": "^0.2.0",
     "node-forge": "^1.2.1",
     "pako": "^2.0.4",
     "typed-emitter": "^2.1.0",

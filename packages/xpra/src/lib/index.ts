@@ -13,7 +13,7 @@
  */
 
 import AV from 'xpra-av'
-import lz4 from './lz4'
+import lz4 from 'lz4js'
 import JSMpeg from './jsmpeg'
 import * as brotli from './brotli'
 

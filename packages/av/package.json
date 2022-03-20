@@ -31,5 +31,6 @@
   "bugs": {
     "url": "https://github.com/andersevenrud/xpra-html5-client/issues"
   },
-  "homepage": "https://github.com/andersevenrud/xpra-html5-client"
+  "homepage": "https://github.com/andersevenrud/xpra-html5-client",
+  "dependencies": {}
 }
