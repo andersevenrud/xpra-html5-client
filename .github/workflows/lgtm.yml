@@ -19,3 +19,4 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn workspace xpra-html5-client lint
       - run: yarn workspace xpra-html5-client-react lint
+      - run: yarn workspace xpra-html5-client typecheck

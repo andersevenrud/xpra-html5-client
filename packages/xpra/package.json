@@ -20,6 +20,7 @@
   "scripts": {
     "build": "tsc --noEmit && vite build",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "typecheck": "tsc --noEmit",
     "docs": "typedoc --tsconfig tsconfig.docs.json src/index.ts"
   },
   "devDependencies": {
