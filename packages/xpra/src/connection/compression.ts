@@ -14,7 +14,7 @@
 
 import * as zlib from 'pako'
 import lz4 from 'lz4js'
-import { brotli } from '../lib'
+import brotliDecompress from 'brotli/decompress'
 import { XpraInflateBit, XpraRecievePacket } from '../types'
 
 /**
@@ -44,8 +44,7 @@ export function decompressXpraPacketData(
     if (level & XpraInflateBit.LZ4) {
       return lz4decompress(packetData)
     } else if (level & XpraInflateBit.BROTLI) {
-      // FIXME: Override typing from module
-      return brotli.decompress(packetData as any) as unknown as Uint8Array
+      return brotliDecompress(packetData)
     } else {
       return zlib.inflate(packetData as zlib.Data)
     }

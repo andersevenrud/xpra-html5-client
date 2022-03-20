@@ -13,11 +13,9 @@
  */
 
 import AV from 'xpra-av'
-import lz4 from 'lz4js'
 import JSMpeg from './jsmpeg'
-import * as brotli from './brotli'
 
-export { lz4, JSMpeg, brotli, AV }
+export { JSMpeg, AV }
 
 export {
   LANGUAGE_TO_LAYOUT,
