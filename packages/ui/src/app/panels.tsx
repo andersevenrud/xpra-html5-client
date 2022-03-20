@@ -138,6 +138,10 @@ export const AppConnectionPanel: FC = () => {
       payload: [key, value],
     })
 
+  const enc = Object.fromEntries(
+    ['CBC', 'CFB', 'CTR'].map((k) => `AES-${k}`).map((k) => [k, k])
+  )
+
   const inputs = [
     {
       key: 'reconnect',
@@ -239,6 +243,12 @@ export const AppConnectionPanel: FC = () => {
   const onPasswordChange = (ev: React.ChangeEvent<HTMLInputElement>) =>
     updateOption('password', ev.target.value)
 
+  const onEncChange = (ev: React.ChangeEvent<HTMLSelectElement>) =>
+    updateOption('encryption', ev.target.value || null)
+
+  const onKeyChange = (ev: React.ChangeEvent<HTMLInputElement>) =>
+    updateOption('encryptionKey', ev.target.value)
+
   const onConnect = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault()
 
@@ -264,8 +274,8 @@ export const AppConnectionPanel: FC = () => {
         'left-1/2 transform',
         '-translate-x-1/2',
         '-translate-y-1/2',
-        'w-96',
-        'max-w-full',
+        'w-11/12',
+        'max-w-xl',
         'max-h-full',
         'overflow-auto',
       ]}
@@ -279,7 +289,7 @@ export const AppConnectionPanel: FC = () => {
             onChange={onHostChange}
           />
 
-          <div className="flex space-x-2">
+          <div className="grid gap-2 grid-cols-2">
             <AppTextField
               placeholder="Username"
               value={state.options.username}
@@ -291,6 +301,21 @@ export const AppConnectionPanel: FC = () => {
               placeholder="Password"
               value={state.options.password}
               onChange={onPasswordChange}
+            />
+
+            <AppSelect
+              disabled
+              value={state.options.encryption || ''}
+              options={{ '': 'No encryption', ...enc }}
+              onChange={onEncChange}
+            />
+
+            <AppTextField
+              disabled
+              type="password"
+              placeholder="Encryption key"
+              value={state.options.encryptionKey}
+              onChange={onKeyChange}
             />
           </div>
         </div>
