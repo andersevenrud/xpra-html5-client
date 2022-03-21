@@ -38,7 +38,7 @@ export function bencode(obj) {
   }
 }
 
-export function uintToString(uintArray) {
+function uintToString(uintArray) {
   // apply in chunks of 10400 to avoid call stack overflow
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply
   var s = ''

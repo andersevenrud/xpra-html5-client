@@ -14,14 +14,13 @@
 
 import { XpraInvalidEncoderError } from '../errors'
 import { XpraSendPacket, XpraPacketEncoder, XpraEncodeBit } from '../types'
+import { bdecode, bencode } from '../lib/bencode'
 import {
-  bdecode,
-  bencode,
   rdecodelegacy,
   rdecodeplus,
   rencodeplus,
   rencodelegacy,
-} from '../lib'
+} from '../lib/rencode'
 
 /**
  * Decodes packet data from spesified decoder

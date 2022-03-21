@@ -13,7 +13,8 @@
  */
 
 import forge from 'node-forge'
-import { rencodeSelfTest, getKeyCodes } from '../lib'
+import { get_key_codes } from '../lib/keycodes'
+import { rencode_selftest } from '../lib/rencode'
 import { XpraCapabilityError } from '../errors'
 import {
   XPRA_CLIPBOARD_TARGETS,
@@ -115,7 +116,7 @@ export function createXpraCapabilities(
     ? ['CLIPBOARD']
     : ['CLIPBOARD', 'PRIMARY']
 
-  const rencode = rencodeSelfTest()
+  const rencode = rencode_selftest()
   const supportedEncodings = XPRA_IMAGE_ENCODERS
 
   const result: XpraCapabilities = {
@@ -253,7 +254,7 @@ export function createXpraCapabilities(
     'window.pre-map': true,
     keyboard: true,
     xkbmap_layout: browser.layout,
-    xkbmap_keycodes: getKeyCodes() as XpraXkbpMapKeycode[],
+    xkbmap_keycodes: get_key_codes() as XpraXkbpMapKeycode[],
     xkbmap_print: '',
     xkbmap_query: '',
     desktop_size: size,

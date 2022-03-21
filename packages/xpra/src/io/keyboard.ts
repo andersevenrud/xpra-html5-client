@@ -14,7 +14,7 @@
 
 import TypedEmitter from 'typed-emitter'
 import EventEmitter from 'events'
-import { getKey, getModifiers } from '../lib'
+import { get_key, get_modifiers } from '../lib/keycodes'
 import { getBrowserLanguages } from '../utils/browser'
 import { XpraConnectionOptions, XpraServerCapabilities } from '../types'
 
@@ -84,11 +84,11 @@ export class XpraKeyboard extends (EventEmitter as unknown as new () => TypedEmi
   }
 
   getKey(ev: KeyboardEvent | MouseEvent) {
-    return getKey(ev)
+    return get_key(ev)
   }
 
   getModifiers(ev: KeyboardEvent | MouseEvent): string[] {
-    const original = getModifiers(ev)
+    const original = get_modifiers(ev)
     const newModifiers = original.slice()
 
     let index = original.indexOf('meta')

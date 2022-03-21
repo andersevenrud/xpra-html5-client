@@ -13,7 +13,7 @@
  */
 
 import forge from 'node-forge'
-import { ord } from '../lib'
+import { ord } from '../lib/bencode'
 import { createXpraCipher, encryptXpraPacketData } from '../connection/crypto'
 import { encodeXpraPacket } from '../connection/encoding'
 import { XpraQueue, logIgnorePacketType } from '../connection/queue'

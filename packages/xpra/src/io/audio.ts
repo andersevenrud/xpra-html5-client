@@ -31,11 +31,11 @@ import {
   getMediaSourceClass,
   getAuroraAudioCodecs,
   getMediaSource,
-  getSupportedCodecs,
-  getBestCodec,
+  get_supported_codecs as getSupportedCodecs,
+  get_best_codec as getBestCodec,
   CODEC_STRING,
   PREFERRED_CODEC_ORDER,
-} from '../lib'
+} from '../lib/media'
 
 export type XpraAudioEventEmitters = {
   start: () => void
