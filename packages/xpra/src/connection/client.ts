@@ -23,7 +23,7 @@ import { XpraMouse } from '../io/mouse'
 import { XpraWorkerProxy } from './proxy'
 import { XpraNullWorker, XpraWorker } from '../io/worker'
 import { XpraLogger, XpraLoggerArguments } from '../io/logger'
-import { defaultXpraConnectionOptions } from './options'
+import { createDefaultXpraConnectionOptions } from './options'
 import { createXpraChallengeResponse } from './auth'
 import { createXDGMenu } from '../utils/xdg'
 import { imageSourceFromData } from '../utils/image'
@@ -122,7 +122,7 @@ export const initialXpraConnectionStats: XpraConnectionStats = {
  */
 export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitter<XpraClientEventEmitters>) {
   private capabilities: XpraCapabilities = createXpraCapabilities({}, false)
-  private options: XpraConnectionOptions = { ...defaultXpraConnectionOptions }
+  private options: XpraConnectionOptions = createDefaultXpraConnectionOptions()
   private stats: XpraConnectionStats = { ...initialXpraConnectionStats }
   private serverCapabilities: XpraServerCapabilities | null = null
   private connectionCheckTimeout = 0
@@ -235,7 +235,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     }
 
     this.options = {
-      ...defaultXpraConnectionOptions,
+      ...createDefaultXpraConnectionOptions(),
       ...options,
     }
 

@@ -15,50 +15,52 @@
 import { getBrowserLanguages, parseUrlQuerySearch } from '../utils/browser'
 import { XpraConnectionOptions } from '../types'
 
-const [defaultKeyboardLayout] = getBrowserLanguages()
-
 /**
  * Complete set of default connection options
  */
-export const defaultXpraConnectionOptions: XpraConnectionOptions = {
-  reconnect: true,
-  connectionTimeout: 30000,
-  reconnectInterval: 5000,
-  reconnectAttempts: 3,
-  bandWidthLimit: 0,
-  startNewSession: null,
-  shareSession: false,
-  stealSession: false,
-  username: '',
-  display: '',
-  password: '',
-  showStartMenu: true,
-  fileTransfer: true,
-  clipboardImages: false,
-  clipboardDirection: 'both',
-  clipboard: true,
-  printing: false,
-  bell: true,
-  audio: true,
-  video: false,
-  nativeVideo: false,
-  cursor: true,
-  keyboard: true,
-  mouse: true,
-  tray: true,
-  notifications: true,
-  ssl: false,
-  encryption: null,
-  encryptionKey: '',
-  encoder: 'auto',
-  openUrl: true,
-  swapKeys: false,
-  keyboardLayout: defaultKeyboardLayout,
-  exitWithChildren: false,
-  exitWithClient: false,
-  startCommand: '',
-  reverseScrollX: false,
-  reverseScrollY: false,
+export const createDefaultXpraConnectionOptions = (): XpraConnectionOptions => {
+  const [defaultKeyboardLayout] = getBrowserLanguages()
+
+  return {
+    reconnect: true,
+    connectionTimeout: 30000,
+    reconnectInterval: 5000,
+    reconnectAttempts: 3,
+    bandWidthLimit: 0,
+    startNewSession: null,
+    shareSession: false,
+    stealSession: false,
+    username: '',
+    display: '',
+    password: '',
+    showStartMenu: true,
+    fileTransfer: true,
+    clipboardImages: false,
+    clipboardDirection: 'both',
+    clipboard: true,
+    printing: false,
+    bell: true,
+    audio: true,
+    video: false,
+    nativeVideo: false,
+    cursor: true,
+    keyboard: true,
+    mouse: true,
+    tray: true,
+    notifications: true,
+    ssl: false,
+    encryption: null,
+    encryptionKey: '',
+    encoder: 'auto',
+    openUrl: true,
+    swapKeys: false,
+    keyboardLayout: defaultKeyboardLayout,
+    exitWithChildren: false,
+    exitWithClient: false,
+    startCommand: '',
+    reverseScrollX: false,
+    reverseScrollY: false,
+  }
 }
 
 const booleanParams: string[] = [
@@ -102,5 +104,5 @@ export const createXpraConnectionOptionsFromUrl = () =>
   parseUrlQuerySearch<Partial<XpraConnectionOptions>>(
     booleanParams,
     numberParams,
-    Object.keys(defaultXpraConnectionOptions)
+    Object.keys(createDefaultXpraConnectionOptions)
   )

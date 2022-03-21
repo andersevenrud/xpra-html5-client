@@ -18,7 +18,7 @@ import {
   XpraVector,
   XpraConnectionOptions,
   XpraXDGReducedMenu,
-  defaultXpraConnectionOptions,
+  createDefaultXpraConnectionOptions,
   initialXpraConnectionStats,
   createXpraWindowBaseZindex,
 } from 'xpra-html5-client'
@@ -131,7 +131,7 @@ export const initialState: AppState = {
   draggingWindow: -1,
   actualDesktopSize: [0, 0],
   stats: { ...initialXpraConnectionStats },
-  options: { ...defaultXpraConnectionOptions },
+  options: { ...createDefaultXpraConnectionOptions() },
   menu: [],
   error: '',
   started: false,
