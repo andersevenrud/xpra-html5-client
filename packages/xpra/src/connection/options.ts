@@ -65,46 +65,43 @@ export const createDefaultXpraConnectionOptions = (): XpraConnectionOptions => {
   }
 }
 
-const booleanParams: string[] = [
-  'reconnect',
-  'showStartMenu',
-  'clipboardImages',
-  'clipboard',
-  'shareSession',
-  'stealSession',
-  'fileTransfer',
-  'printing',
-  'bell',
-  'audio',
-  'cursor',
-  'keyboard',
-  'mouse',
-  'tray',
-  'notifications',
-  'ssl',
-  'openUrl',
-  'video',
-  'nativeVideo',
-  'swapKeys',
-  'exitWithChildren',
-  'exitWithClient',
-  'reverseScrollX',
-  'reverseScrollY',
-]
-
-const numberParams: string[] = [
-  'bandWidthLimit',
-  'connectionTimeout',
-  'reconnectAttempts',
-  'reconnectInterval',
-]
-
 /**
  * Creates a partial connection option set from the current URL
  */
 export const createXpraConnectionOptionsFromUrl = () =>
   parseUrlQuerySearch<Partial<XpraConnectionOptions>>({
-    booleans: booleanParams,
-    numbers: numberParams,
     required: Object.keys(createDefaultXpraConnectionOptions()),
+    lists: ['debugPackets'],
+    booleans: [
+      'reconnect',
+      'showStartMenu',
+      'clipboardImages',
+      'clipboard',
+      'shareSession',
+      'stealSession',
+      'fileTransfer',
+      'printing',
+      'bell',
+      'audio',
+      'cursor',
+      'keyboard',
+      'mouse',
+      'tray',
+      'notifications',
+      'ssl',
+      'openUrl',
+      'video',
+      'nativeVideo',
+      'swapKeys',
+      'exitWithChildren',
+      'exitWithClient',
+      'reverseScrollX',
+      'reverseScrollY',
+    ],
+    numbers: [
+      'bandWidthLimit',
+      'connectionTimeout',
+      'reconnectAttempts',
+      'reconnectInterval',
+    ],
   })
