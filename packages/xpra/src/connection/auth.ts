@@ -15,6 +15,7 @@
 import forge from 'node-forge'
 import { xorString, createRandomSecureString } from '../utils/data'
 import { XpraChallengeError } from '../errors'
+import { XpraChallengeCallback, XpraChallengePrompt } from '../types'
 
 /**
  * Creates a digest from a challenge
@@ -87,4 +88,26 @@ export function createXpraChallengeResponse(
   }
 
   return [challengeResponse, clientSalt]
+}
+
+/**
+ * Processes and handles a keycloak challenge attempt
+ */
+export function handleXpraKeycloakChallenge(
+  challenge: XpraChallengePrompt,
+  cb: XpraChallengeCallback
+) {
+  const params = new URLSearchParams(window.location.search)
+  const code = params.get('code')
+  const error = params.get('error')
+  const error_description = params.get('error_description')
+
+  if (error) {
+    cb(JSON.stringify({ error, error_description }))
+  } else if (!code) {
+    window.location.href = challenge.serverSalt
+  } else {
+    history.replaceState({}, '', window.location.pathname)
+    cb(JSON.stringify({ code }))
+  }
 }

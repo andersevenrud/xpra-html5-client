@@ -27,8 +27,10 @@ import {
   XpraConnectionStatus,
   XpraPointerPosition,
   XpraXDGReducedMenu,
-  XpraClientChallengePrompt,
+  XpraChallengePrompt,
+  XpraChallengeCallback,
   createXpraConnectionOptionsFromUrl,
+  handleXpraKeycloakChallenge,
   parseUrlQuerySearch,
 } from 'xpra-html5-client'
 import {
@@ -216,23 +218,11 @@ export const AppContextProvider: FC<AppContextProps> = ({
     })
 
   const challengePrompt = (
-    challenge: XpraClientChallengePrompt,
-    cb: (password: string) => void
+    challenge: XpraChallengePrompt,
+    cb: XpraChallengeCallback
   ) => {
     if (challenge.digest.startsWith('keycloak')) {
-      const params = new URLSearchParams(window.location.search)
-      const code = params.get('code')
-      const error = params.get('error')
-      const error_description = params.get('error_description')
-
-      if (error) {
-        cb(JSON.stringify({ error, error_description }))
-      } else if (!code) {
-        window.location.href = challenge.serverSalt
-      } else {
-        history.replaceState({}, '', window.location.pathname)
-        cb(JSON.stringify({ code }))
-      }
+      handleXpraKeycloakChallenge(challenge, cb)
     } else {
       const password = prompt('Login password')
       cb(password || '')

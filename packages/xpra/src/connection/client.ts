@@ -75,17 +75,12 @@ import {
   XpraPointerPosition,
   XpraXDGReducedMenu,
   XpraCipherCapability,
+  XpraChallengePrompt,
+  XpraChallengeCallback,
 } from '../types'
 
 export interface XpraClientConfiguration {
   worker?: Worker | XpraWorker
-}
-
-export interface XpraClientChallengePrompt {
-  prompt: string
-  serverSalt: string
-  digest: string
-  saltDigest: string
 }
 
 export type XpraClientEventEmitters = {
@@ -113,8 +108,8 @@ export type XpraClientEventEmitters = {
   pointerPosition: (pointer: XpraPointerPosition) => void
   updateXDGMenu: (menu: XpraXDGReducedMenu) => void
   challengePrompt: (
-    args: XpraClientChallengePrompt,
-    cb: (password: string) => void
+    args: XpraChallengePrompt,
+    cb: XpraChallengeCallback
   ) => void
 }
 

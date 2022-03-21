@@ -734,6 +734,15 @@ export type XpraXkbpMapKeycode = [number, string, number, number, number]
 
 export type XpraModifierKeycodes = Record<string, [string, number][]>
 
+export type XpraChallengeCallback = (password: string) => void
+
+export interface XpraChallengePrompt {
+  prompt: string
+  serverSalt: string
+  digest: string
+  saltDigest: string
+}
+
 export enum XpraLogLevel {
   ERROR = 40,
   WARNING = 30,
