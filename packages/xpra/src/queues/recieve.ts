@@ -32,18 +32,6 @@ import {
   XpraInflateBit,
 } from '../types'
 
-// rencode does not distinguish bytes and strings
-// we converted to string in the network layer,
-// and now we're converting back to bytes...
-// (use 'rencodeplus' to avoid all this unnecessary churn)
-function rencodeConvert(data: string) {
-  const u8a = new Uint8Array(data.length)
-  for (let i = 0, j = data.length; i < j; ++i) {
-    u8a[i] = data.charCodeAt(i)
-  }
-  return u8a
-}
-
 /**
  * Processes packets that comes from an Xpra server
  */
@@ -294,7 +282,7 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
       // FIXME: This should be in the rendering implementation
       const img_data = packet[7]
       if (typeof img_data === 'string') {
-        packet[7] = rencodeConvert(img_data)
+        packet[7] = uint8fromString(img_data)
       }
 
       if (packet[6] === 'rgb32' || packet[6] === 'rgb24') {
@@ -312,7 +300,7 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
     } else if (packet[0] === 'sound-data') {
       const sound_data = packet[2]
       if (typeof sound_data === 'string') {
-        packet[2] = rencodeConvert(sound_data)
+        packet[2] = uint8fromString(sound_data)
       }
     } else if (packet[0] === 'notify_show') {
       packet[6] = uint8fromStringOrString(packet[6])
