@@ -13,10 +13,10 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           fetch-depth: 0
           submodules: true
+      - name: Install Yarn
+        run: npm install -g yarn
       - name: Install dependencies
-        run: |
-          npm install -g yarn
-          yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile
       - name: Build
         run: |
           yarn workspace xpra-av build

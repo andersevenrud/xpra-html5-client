@@ -17,18 +17,14 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16'
+      - name: Install Yarn
+        run: npm install -g yarn
       - name: Install dependencies
-        run: |
-          npm install -g yarn
-          yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile
       - name: Build
+        run: yarn workspaces run build
+      - name: Reduce
         run: |
-          yarn workspace xpra-av build
-          yarn workspace xpra-jsmpeg build
-          yarn workspace xpra-broadway build
-          yarn workspace xpra-html5-client build
-          yarn workspace xpra-html5-client docs
-          yarn workspace xpra-html5-client-react build
           mkdir -p public
           cp -r packages/ui/dist public/client
           cp -r packages/xpra/docs public/docs

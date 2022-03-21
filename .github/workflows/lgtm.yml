@@ -15,8 +15,12 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - run: npm install -g yarn
-      - run: yarn install --frozen-lockfile
-      - run: yarn workspace xpra-html5-client lint
-      - run: yarn workspace xpra-html5-client-react lint
-      - run: yarn workspace xpra-html5-client typecheck
+      - name: Install Yarn
+        run: npm install -g yarn
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Run tests
+        run: |
+          yarn workspace xpra-html5-client lint
+          yarn workspace xpra-html5-client-react lint
+          yarn workspace xpra-html5-client typecheck

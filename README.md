@@ -60,19 +60,8 @@ like `username` and `password`.
 ## Deployment
 
 ```bash
-# Install dependencies
 yarn install
-
-# Build included dependencies
-yarn workspace xpra-av build
-yarn workspace xpra-jsmpeg build
-yarn workspace xpra-broadway build
-
-# Build xpra library
-yarn workspace xpra-html5-client build
-
-# Build UI
-yarn workspace xpra-html5-client-react build
+yarn workspaces run build
 ```
 
 Now copy the artifacts in `packages/ui/dist/` to your destination.
