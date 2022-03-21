@@ -5,7 +5,7 @@ on:
       - master
   pull_request:
 jobs:
-  lgtm:
+  codebase:
     name: eslint
     runs-on: ubuntu-latest
     steps:
@@ -31,3 +31,12 @@ jobs:
           yarn workspace xpra-html5-client lint
           yarn workspace xpra-html5-client-react lint
           yarn workspace xpra-html5-client typecheck
+  commit:
+    name: commitlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: wagoid/commitlint-github-action@v4
+
