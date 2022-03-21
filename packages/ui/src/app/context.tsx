@@ -71,7 +71,10 @@ export const AppContext = createContext<{
 const otherOptions = parseUrlQuerySearch<{
   connect: boolean
   host: string
-}>(['connect'], [], ['connect', 'host'])
+}>({
+  booleans: ['connect'],
+  required: ['connect', 'host'],
+})
 
 const createdOptions = createXpraConnectionOptionsFromUrl()
 

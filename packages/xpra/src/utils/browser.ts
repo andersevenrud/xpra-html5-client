@@ -337,11 +337,17 @@ export function getBrowserDPI() {
 // FIXME: Find a modern replacement
 export const unescapeUri = (s: string) => unescape(encodeURIComponent(s))
 
-export function parseUrlQuerySearch<T>(
-  booleans: string[],
-  numbers: string[],
-  required: string[]
-): T {
+export function parseUrlQuerySearch<T>({
+  booleans = [],
+  numbers = [],
+  lists = [],
+  required = [],
+}: {
+  booleans?: string[]
+  numbers?: string[]
+  lists?: string[]
+  required?: string[]
+}): T {
   const { search } = window.location
   const params = new URLSearchParams(search)
 
@@ -351,6 +357,8 @@ export function parseUrlQuerySearch<T>(
         return [k, ['1', 'true', 'on'].includes(String(v).toLowerCase())]
       } else if (numbers.includes(k)) {
         return [k, parseInt(v)]
+      } else if (lists.includes(k)) {
+        return [k, v.split(',')]
       }
 
       return [k, v ? v : undefined]

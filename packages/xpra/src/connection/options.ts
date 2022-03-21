@@ -101,8 +101,8 @@ const numberParams: string[] = [
  * Creates a partial connection option set from the current URL
  */
 export const createXpraConnectionOptionsFromUrl = () =>
-  parseUrlQuerySearch<Partial<XpraConnectionOptions>>(
-    booleanParams,
-    numberParams,
-    Object.keys(createDefaultXpraConnectionOptions())
-  )
+  parseUrlQuerySearch<Partial<XpraConnectionOptions>>({
+    booleans: booleanParams,
+    numbers: numberParams,
+    required: Object.keys(createDefaultXpraConnectionOptions()),
+  })
