@@ -242,7 +242,15 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     try {
       this.createCapabilities()
       this.clipboard.configure(this.options)
-      this.proxy.configure(this.options, this.capabilities)
+      this.proxy.configure(this.options)
+
+      if (this.options.encryption) {
+        this.proxy.setupRecieveCipher(
+          this.capabilities,
+          this.options.encryptionKey
+        )
+      }
+
       this.proxy.setConnected(true)
       this.ws.connect(host, this.options)
     } catch (e) {
@@ -691,23 +699,22 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
   }
 
   private processHello(capabilities: XpraServerCapabilities) {
-    if (this.options.encryption) {
-      const caps = Object.fromEntries(
-        Object.entries(capabilities).filter(([k]) => k.startsWith('cipher'))
-      )
-
-      this.proxy.setupCipher('out', caps, this.options.encryptionKey)
-    }
-
     clearTimeout(this.connectionCheckTimeout)
+
     this.started = true
     this.serverCapabilities = capabilities
-    this.emit('hello', this.serverCapabilities)
+
     this.keyboard.configure(this.options, capabilities)
 
     if (this.options.audio) {
       this.audio.setup(this.serverCapabilities)
     }
+
+    if (this.options.encryption) {
+      this.proxy.setupSendCipher(capabilities, this.options.encryptionKey)
+    }
+
+    this.emit('hello', this.serverCapabilities)
   }
 
   private processNewWindow(
@@ -1102,7 +1109,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
 
     try {
       if (this.options.encryption && cipherOutCaps) {
-        this.proxy.setupCipher('out', cipherOutCaps, this.options.encryptionKey)
+        this.proxy.setupSendCipher(cipherOutCaps, this.options.encryptionKey)
       }
 
       const challengeResponse = createXpraChallengeResponse(
@@ -1116,13 +1123,20 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
 
       if (challengeResponse) {
         const [response, clientSalt] = challengeResponse
+
         this.createCapabilities({
           challenge_response: response,
           challenge_client_salt: clientSalt,
         })
 
+        if (this.options.encryption) {
+          this.proxy.setupRecieveCipher(
+            this.capabilities,
+            this.options.encryptionKey
+          )
+        }
+
         this.sendHello()
-        this.proxy.configure(this.options, this.capabilities)
       }
     } catch (e) {
       this.disconnect(e as Error)
