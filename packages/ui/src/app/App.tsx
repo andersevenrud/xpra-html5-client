@@ -18,7 +18,9 @@ import { FadeInOutTransition } from './transitions'
 import { XpraClient, XpraWindowManager } from 'xpra-html5-client'
 
 export function AppInner() {
-  const { state } = useContext(AppContext)
+  const { state, xpra } = useContext(AppContext)
+  const enableStats = xpra.getOptions().showStatistics
+
   return (
     <>
       <FadeInOutTransition toggled={!state.connected}>
@@ -29,7 +31,9 @@ export function AppInner() {
         <AppConnectingPanel />
       </FadeInOutTransition>
 
-      <AppDesktop>{state.connected && <AppDebugPanel />}</AppDesktop>
+      <AppDesktop>
+        {state.connected && enableStats && <AppDebugPanel />}
+      </AppDesktop>
 
       <FadeInOutTransition toggled={state.started}>
         <AppTrayPanel />

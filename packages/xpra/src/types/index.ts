@@ -485,6 +485,7 @@ export interface XpraConnectionOptions {
   reverseScrollX: boolean
   reverseScrollY: boolean
   debugPackets: string[]
+  showStatistics: boolean
 }
 
 export interface XpraDrawOptions {

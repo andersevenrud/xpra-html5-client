@@ -61,6 +61,7 @@ export const createDefaultXpraConnectionOptions = (): XpraConnectionOptions => {
     reverseScrollX: false,
     reverseScrollY: false,
     debugPackets: ['general', 'window', 'notification', 'clipboard'],
+    showStatistics: false,
   }
 }
 
