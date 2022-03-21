@@ -13,10 +13,15 @@ jobs:
         with:
           fetch-depth: 0
           submodules: true
-      - name: Install node
+      - name: Use nodejs
         uses: actions/setup-node@v2
         with:
           node-version: '16'
+      - name: Use cache
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - name: Install Yarn
         run: npm install -g yarn
       - name: Install dependencies
