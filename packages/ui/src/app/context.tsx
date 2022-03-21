@@ -216,11 +216,27 @@ export const AppContextProvider: FC<AppContextProps> = ({
     })
 
   const challengePrompt = (
-    _prompt: XpraClientChallengePrompt,
+    challenge: XpraClientChallengePrompt,
     cb: (password: string) => void
   ) => {
-    const password = prompt('Login password')
-    cb(password || '')
+    if (challenge.digest.startsWith('keycloak')) {
+      const params = new URLSearchParams(window.location.search)
+      const code = params.get('code')
+      const error = params.get('error')
+      const error_description = params.get('error_description')
+
+      if (error) {
+        cb(JSON.stringify({ error, error_description }))
+      } else if (!code) {
+        window.location.href = challenge.serverSalt
+      } else {
+        history.replaceState({}, '', window.location.pathname)
+        cb(JSON.stringify({ code }))
+      }
+    } else {
+      const password = prompt('Login password')
+      cb(password || '')
+    }
   }
 
   useEffect(() => {

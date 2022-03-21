@@ -51,7 +51,7 @@ import {
  */
 const getSupportedDigests = () => {
   const additions = Object.keys(forge.md.algorithms).map((s) => `hmac+${s}`)
-  return ['hmac', 'hmac+md5', 'xor', ...additions]
+  return ['hmac', 'hmac+md5', 'xor', 'keycloak', ...additions]
 }
 
 /**

@@ -339,9 +339,11 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     password: string
   ) {
     try {
+      const challengeDigest = digest.startsWith('keycloak') ? 'xor' : digest
+
       const challengeResponse = createXpraChallengeResponse(
         serverSalt,
-        digest,
+        challengeDigest,
         saltDigest,
         password,
         this.options.ssl,
