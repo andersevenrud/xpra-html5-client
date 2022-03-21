@@ -810,7 +810,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     this.sendPing()
     this.pingInterval = setInterval(
       () => this.sendPing(),
-      5000
+      this.options.pingInterval
     ) as unknown as number
 
     this.logger.info('Connection from Xpra HTML client')

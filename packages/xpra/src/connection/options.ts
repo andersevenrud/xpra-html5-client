@@ -26,6 +26,7 @@ export const createDefaultXpraConnectionOptions = (): XpraConnectionOptions => {
     connectionTimeout: 30000,
     reconnectInterval: 5000,
     reconnectAttempts: 3,
+    pingInterval: 5000,
     bandWidthLimit: 0,
     startNewSession: null,
     shareSession: false,

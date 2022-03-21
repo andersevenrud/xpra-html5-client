@@ -449,6 +449,7 @@ export interface XpraConnectionOptions {
   reconnect: boolean
   reconnectInterval: number
   reconnectAttempts: number
+  pingInterval: number
   startNewSession: XpraStartNewSessionMode | null
   showStartMenu: boolean
   bandWidthLimit: number
