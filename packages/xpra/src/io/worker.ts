@@ -94,11 +94,16 @@ export abstract class XpraWorker extends (EventEmitter as unknown as new () => T
         break
 
       case 'cipher':
-        const [type, caps, key] = data
-        if (type === 'out') {
-          this.sendQueue.setupCipher(caps, key)
-        } else if (type === 'in') {
-          this.recieveQueue.setupCipher(caps, key)
+        if (data.length) {
+          const [type, caps, key] = data
+          if (type === 'out') {
+            this.sendQueue.setupCipher(caps, key)
+          } else if (type === 'in') {
+            this.recieveQueue.setupCipher(caps, key)
+          }
+        } else {
+          this.sendQueue.clearCipher()
+          this.recieveQueue.clearCipher()
         }
         break
     }

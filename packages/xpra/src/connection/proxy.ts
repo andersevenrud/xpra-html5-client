@@ -108,6 +108,7 @@ export class XpraWorkerProxy extends (EventEmitter as unknown as new () => Typed
 
   configure(options: XpraConnectionOptions) {
     this.send('configure', options)
+    this.send('cipher', [])
   }
 
   setConnected(connected: boolean) {
