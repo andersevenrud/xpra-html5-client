@@ -306,10 +306,10 @@ export function getBrowserColorGamut() {
   return ''
 }
 
-export const getBrowserDPI = (() => {
+export function getBrowserDPI() {
   let dpi = 96
 
-  if (typeof window !== 'undefined') {
+  try {
     if ('deviceXDPI' in screen) {
       dpi = (screen.systemXDPI + screen.systemYDPI) / 2
     } else {
@@ -327,10 +327,12 @@ export const getBrowserDPI = (() => {
         dpi = Math.round((offsetWidth + offsetHeight) / 2.0)
       }
     }
+  } catch (e) {
+    console.warn('getBrowserDPI', e)
   }
 
-  return () => dpi as number
-})()
+  return dpi
+}
 
 // FIXME: Find a modern replacement
 export const unescapeUri = (s: string) => unescape(encodeURIComponent(s))
