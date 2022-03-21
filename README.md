@@ -14,9 +14,15 @@ Focuses on modularity and embedding. Based off the [official](https://github.com
 
 **[Documentation](https://andersevenrud.github.io/xpra-html5-client/ts/docs/modules.html)**
 
+## Requirements
+
+Client is built for modern browsers (no Internet Explorer).
+
+Building requires `node` (10 or newer) and `yarn`.
+
 ## Setup
 
-This project requires `node` and `yarn` and uses *git submodules*. Clone the repository with `--recursive` options.
+Clone the repository with `--recursive` git option.
 
 To set up a complete development environment:
 
