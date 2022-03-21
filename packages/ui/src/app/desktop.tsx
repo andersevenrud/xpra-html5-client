@@ -534,8 +534,24 @@ export const AppDesktop: FC = ({ children }) => {
   const windows = state.windows.filter((w) => !w.tray)
 
   useEffect(() => {
-    if (root.current) {
-      setRoot(root.current)
+    const r = root.current
+    const listener = (ev: MouseEvent) => {
+      if (r && (r.contains(ev.target as Element) || r === ev.target)) {
+        if (document.activeElement) {
+          ;(document.activeElement as HTMLElement).blur()
+        }
+      }
+    }
+
+    if (r) {
+      setRoot(r)
+      r.addEventListener('click', listener, true)
+    }
+
+    return () => {
+      if (r) {
+        r.removeEventListener('click', listener, true)
+      }
     }
   }, [root.current])
 
