@@ -60,6 +60,7 @@ export const createDefaultXpraConnectionOptions = (): XpraConnectionOptions => {
     startCommand: '',
     reverseScrollX: false,
     reverseScrollY: false,
+    debugPackets: ['general', 'window', 'notification', 'clipboard'],
   }
 }
 

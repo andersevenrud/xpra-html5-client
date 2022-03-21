@@ -18,7 +18,7 @@ import { rgb24ToRgb32, rgb32Restride } from '../utils/image'
 import { uint8fromStringOrString, uint8fromString } from '../utils/data'
 import { createXpraCipher, decryptXpraPacketData } from '../connection/crypto'
 import { decodeXpraPacketData } from '../connection/encoding'
-import { XpraQueue, logIgnorePacketType } from '../connection/queue'
+import { XpraQueue } from '../connection/queue'
 import { XpraInvalidHeaderError, XpraPacketError } from '../errors'
 import {
   decompressXpraPacketData,
@@ -116,7 +116,7 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
       try {
         packet = this.fixPacketData(packet)
 
-        if (!logIgnorePacketType(packet)) {
+        if (this.debugPackets.includes(packet[0])) {
           console.debug(
             'XpraRecieveQueue#processNextRecieveQueue',
             'packet',

@@ -103,7 +103,7 @@ export type XpraClientEventEmitters = {
   updateXDGMenu: (menu: XpraXDGReducedMenu) => void
 }
 
-export interface XpraClientOptions {
+export interface XpraClientConfiguration {
   worker?: Worker | XpraWorker
 }
 
@@ -176,10 +176,10 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     disconnect: this.processDisconnect,
   }
 
-  constructor(options: Partial<XpraClientOptions>) {
+  constructor(config: Partial<XpraClientConfiguration>) {
     super()
 
-    const { worker } = options
+    const { worker } = config
     if (worker) {
       this.proxy.setWorker(worker)
     } else {

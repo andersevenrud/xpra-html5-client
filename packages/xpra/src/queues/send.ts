@@ -16,7 +16,7 @@ import forge from 'node-forge'
 import { ord } from '../lib/bencode'
 import { createXpraCipher, encryptXpraPacketData } from '../connection/crypto'
 import { encodeXpraPacket } from '../connection/encoding'
-import { XpraQueue, logIgnorePacketType } from '../connection/queue'
+import { XpraQueue } from '../connection/queue'
 import {
   XpraSendPacket,
   XpraPacketEncoder,
@@ -48,7 +48,7 @@ export class XpraSendQueue extends XpraQueue<XpraSendPacket, ArrayBufferLike> {
   private processNext() {
     const packet = this.queue.shift()
     if (packet) {
-      if (!logIgnorePacketType(packet)) {
+      if (this.debugPackets.includes(packet[0])) {
         console.debug('XpraSendQueue#process', packet)
       }
 
@@ -104,6 +104,8 @@ export class XpraSendQueue extends XpraQueue<XpraSendPacket, ArrayBufferLike> {
   }
 
   configure(options: XpraConnectionOptions) {
+    super.configure(options)
+
     this.packetEncoder = options.encoder
   }
 }
