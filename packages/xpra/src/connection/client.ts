@@ -232,6 +232,8 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
   connect(host: string, options: Partial<XpraConnectionOptions> = {}) {
     if (!this.inited) {
       throw new XpraConnectionError('Xpra instance not initialized')
+    } else if (this.ws.connected) {
+      throw new XpraConnectionError('Xpra connection already open')
     }
 
     this.options = {
