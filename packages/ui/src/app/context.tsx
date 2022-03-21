@@ -27,6 +27,7 @@ import {
   XpraConnectionStatus,
   XpraPointerPosition,
   XpraXDGReducedMenu,
+  XpraClientChallengePrompt,
   createXpraConnectionOptionsFromUrl,
   parseUrlQuerySearch,
 } from 'xpra-html5-client'
@@ -214,6 +215,14 @@ export const AppContextProvider: FC<AppContextProps> = ({
       payload: true,
     })
 
+  const challengePrompt = (
+    _prompt: XpraClientChallengePrompt,
+    cb: (password: string) => void
+  ) => {
+    const password = prompt('Login password')
+    cb(password || '')
+  }
+
   useEffect(() => {
     xpra.on('connect', setConnected)
     xpra.on('disconnect', setDisconnected)
@@ -233,6 +242,7 @@ export const AppContextProvider: FC<AppContextProps> = ({
     xpra.on('updateXDGMenu', updateMenu)
     xpra.on('error', setError)
     xpra.on('sessionStarted', sessionStarted)
+    xpra.on('challengePrompt', challengePrompt)
 
     return () => {
       xpra.off('connect', setConnected)
@@ -253,6 +263,7 @@ export const AppContextProvider: FC<AppContextProps> = ({
       xpra.off('updateXDGMenu', updateMenu)
       xpra.off('error', setError)
       xpra.off('sessionStarted', sessionStarted)
+      xpra.off('challengePrompt', challengePrompt)
     }
   }, [])
 

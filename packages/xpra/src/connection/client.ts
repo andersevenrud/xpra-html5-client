@@ -77,6 +77,17 @@ import {
   XpraCipherCapability,
 } from '../types'
 
+export interface XpraClientConfiguration {
+  worker?: Worker | XpraWorker
+}
+
+export interface XpraClientChallengePrompt {
+  prompt: string
+  serverSalt: string
+  digest: string
+  saltDigest: string
+}
+
 export type XpraClientEventEmitters = {
   connect: (status: XpraConnectionStatus) => void
   disconnect: (status: XpraConnectionStatus) => void
@@ -101,10 +112,10 @@ export type XpraClientEventEmitters = {
   eos: (wid: number) => void
   pointerPosition: (pointer: XpraPointerPosition) => void
   updateXDGMenu: (menu: XpraXDGReducedMenu) => void
-}
-
-export interface XpraClientConfiguration {
-  worker?: Worker | XpraWorker
+  challengePrompt: (
+    args: XpraClientChallengePrompt,
+    cb: (password: string) => void
+  ) => void
 }
 
 export const initialXpraConnectionStats: XpraConnectionStats = {
@@ -318,6 +329,44 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
       }
 
       this.proxy.pushSend(packet)
+    }
+  }
+
+  private challenge(
+    serverSalt: string,
+    digest: string,
+    saltDigest: string,
+    password: string
+  ) {
+    try {
+      const challengeResponse = createXpraChallengeResponse(
+        serverSalt,
+        digest,
+        saltDigest,
+        password,
+        this.options.ssl,
+        this.options.encryption
+      )
+
+      if (challengeResponse) {
+        const [response, clientSalt] = challengeResponse
+
+        this.createCapabilities({
+          challenge_response: response,
+          challenge_client_salt: clientSalt,
+        })
+
+        if (this.options.encryption) {
+          this.proxy.setupRecieveCipher(
+            this.capabilities,
+            this.options.encryptionKey
+          )
+        }
+
+        this.sendHello()
+      }
+    } catch (e) {
+      this.disconnect(e as Error)
     }
   }
 
@@ -1109,39 +1158,31 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     prompt = (prompt || 'password').replace(/[^a-zA-Z0-9\.,:\+/]/gi, '')
     saltDigest = saltDigest || 'xor'
 
-    try {
-      if (this.options.encryption && cipherOutCaps) {
-        this.proxy.setupSendCipher(cipherOutCaps, this.options.encryptionKey)
-      }
+    if (this.options.encryption && cipherOutCaps) {
+      this.proxy.setupSendCipher(cipherOutCaps, this.options.encryptionKey)
+    }
 
-      const challengeResponse = createXpraChallengeResponse(
-        serverSalt,
-        digest,
-        saltDigest,
-        this.options.password,
-        this.options.ssl,
-        this.options.encryption
+    const callback = (password: string) => {
+      try {
+        this.challenge(serverSalt, digest, saltDigest, password)
+      } catch (e) {
+        this.disconnect(e as Error)
+      }
+    }
+
+    if (!this.options.password && this.listenerCount('challengePrompt') > 0) {
+      this.emit(
+        'challengePrompt',
+        {
+          prompt,
+          serverSalt,
+          digest,
+          saltDigest,
+        },
+        callback
       )
-
-      if (challengeResponse) {
-        const [response, clientSalt] = challengeResponse
-
-        this.createCapabilities({
-          challenge_response: response,
-          challenge_client_salt: clientSalt,
-        })
-
-        if (this.options.encryption) {
-          this.proxy.setupRecieveCipher(
-            this.capabilities,
-            this.options.encryptionKey
-          )
-        }
-
-        this.sendHello()
-      }
-    } catch (e) {
-      this.disconnect(e as Error)
+    } else {
+      callback(this.options.password)
     }
   }
 
