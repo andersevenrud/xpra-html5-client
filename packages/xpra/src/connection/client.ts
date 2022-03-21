@@ -1122,6 +1122,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
         })
 
         this.sendHello()
+        this.proxy.configure(this.options, this.capabilities)
       }
     } catch (e) {
       this.disconnect(e as Error)

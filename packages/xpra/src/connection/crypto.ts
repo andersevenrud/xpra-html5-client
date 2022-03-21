@@ -112,28 +112,32 @@ export function createXpraCipher(
   const iterations = caps['cipher.key_stretch_iterations'] || 0
   const keySize = caps['cipher.key_size'] || XPRA_DEFAULT_KEYSIZE
   const keyStretch = caps['cipher.key_stretch'] || 'PBKDF2'
-  const keyHash = (
-    caps['cipher.key_hash'] || XPRA_DEFAULT_KEY_HASH
-  ).toLowerCase()
+  const keyHash = caps['cipher.key_hash'] || XPRA_DEFAULT_KEY_HASH
   const mode = caps['cipher.mode'] || XPRA_DEFAULT_MODE
   const iv = caps['cipher.iv']
+  const blockSize = mode === 'CBC' ? 32 : 0
 
   if (cipher !== 'AES') {
     throw new XpraCryptoError(`Unsupported crypto cipher: ${cipher}`)
   } else if (iterations < 0) {
     throw new XpraCryptoError(`Invalid crypto iteration count: ${iterations}`)
-  } else if ([32, 24, 16].indexOf(keySize) < 0) {
+  } else if (![32, 24, 16].includes(keySize)) {
     throw new XpraCryptoError(`Invalid crypto key size: ${keySize}`)
   } else if (keyStretch.toUpperCase() != 'PBKDF2') {
     throw new XpraCryptoError(`Invalid key stretching function: ${keyStretch}`)
   } else if (!iv) {
     throw new XpraCryptoError('Missing IV')
-  } else if (['CBC', 'CFB', 'CTR'].indexOf(mode) < 0) {
+  } else if (!['CBC', 'CFB', 'CTR'].includes(mode)) {
     throw new XpraCryptoError(`Unsupported AES mode: ${mode}`)
   }
 
-  const blockSize = mode === 'CBC' ? 32 : 0
-  const secret = forge.pkcs5.pbkdf2(key, keySalt, iterations, keySize, keyHash)
+  const secret = forge.pkcs5.pbkdf2(
+    key,
+    keySalt,
+    iterations,
+    keySize,
+    keyHash.toLowerCase()
+  )
 
   return {
     cipher,

@@ -305,14 +305,12 @@ export const AppConnectionPanel: FC = () => {
             />
 
             <AppSelect
-              disabled
               value={state.options.encryption || ''}
               options={{ '': 'No encryption', ...enc }}
               onChange={onEncChange}
             />
 
             <AppTextField
-              disabled
               type="password"
               placeholder="Encryption key"
               value={state.options.encryptionKey}
