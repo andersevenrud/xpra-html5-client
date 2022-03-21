@@ -5,7 +5,7 @@ on:
       - master
 jobs:
   deploy:
-    name: eslint
+    name: pages
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
@@ -23,6 +23,8 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Build
         run: yarn workspaces run build
+      - name: Generate docs
+        run: yarn workspace xpra-html5-client docs
       - name: Reduce
         run: |
           mkdir -p public
