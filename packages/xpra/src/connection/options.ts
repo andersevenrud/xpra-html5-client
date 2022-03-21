@@ -104,5 +104,5 @@ export const createXpraConnectionOptionsFromUrl = () =>
   parseUrlQuerySearch<Partial<XpraConnectionOptions>>(
     booleanParams,
     numberParams,
-    Object.keys(createDefaultXpraConnectionOptions)
+    Object.keys(createDefaultXpraConnectionOptions())
   )
