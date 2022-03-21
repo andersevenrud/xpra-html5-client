@@ -101,7 +101,8 @@ export const AppMenu: FC<{
             onMouseOver={() => onMouseOver(i)}
           >
             {icon && <img src={icon} className="w-4 h-4" />}
-            <span>{title}</span>
+            <span className="flex-grow">{title}</span>
+            {items && items.length && <i className="fa fa-chevron-right" />}
           </div>
           {hovering === i && items && items.length > 0 && (
             <AppMenu root={false} items={items} />
@@ -410,9 +411,11 @@ export const AppTrayPanel: FC = () => {
         },
       ],
     },
+    {
+      title: 'Disconnect',
+      callback: () => xpra.disconnect(),
+    },
   ]
-
-  const onDisconnect = () => xpra.disconnect()
 
   const onClick =
     (w: AppWindowState) => (ev: React.MouseEvent<HTMLButtonElement>) => {
@@ -458,17 +461,11 @@ export const AppTrayPanel: FC = () => {
     >
       <div className="flex space-x-4 px-2">
         <div className="flex space-x-1">
-          {state.menu.length > 0 && (
-            <AppButton transparent={true} onClick={onMenuToggle}>
-              <i className="fa fa-bars pointer-events-none" />
-              <FadeInOutTransition toggled={menuVisible}>
-                <AppMenu items={menu} onCallback={onMenuCallback} />
-              </FadeInOutTransition>
-            </AppButton>
-          )}
-
-          <AppButton transparent={true} onClick={onDisconnect}>
-            <i className="fa fa-unlink" />
+          <AppButton transparent={true} onClick={onMenuToggle}>
+            <i className="fa fa-bars pointer-events-none" />
+            <FadeInOutTransition toggled={menuVisible}>
+              <AppMenu items={menu} onCallback={onMenuCallback} />
+            </FadeInOutTransition>
           </AppButton>
 
           {state.options.clipboard && (
