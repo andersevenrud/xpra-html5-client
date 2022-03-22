@@ -547,6 +547,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     pressed: boolean,
     modifiers: string[]
   ) {
+    const [x, y] = position
     const buttons: number[] = []
 
     if (this.options.mouse) {
@@ -555,7 +556,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
         wid,
         button,
         pressed,
-        position,
+        [Math.round(x), Math.round(y)],
         modifiers,
         buttons,
       ])
