@@ -54,7 +54,7 @@ export class XpraLogger extends (EventEmitter as unknown as new () => TypedEmitt
   private perform(level: XpraLoggerType, args: XpraLoggerArguments) {
     const cons = console[level]
     const actual = mapped[level]
-    cons.apply(cons, ['-->', ...args])
+    cons.apply(cons, ['XpraLogger', ...args])
     this.emit('log', actual, args)
   }
 }

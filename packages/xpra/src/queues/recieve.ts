@@ -148,25 +148,30 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
         }
       }
 
-      if (this.header[0] !== ord('P')) {
-        let msg = 'invalid packet header format: ' + this.header[0]
-        if (this.header.length > 1) {
-          let hex = ''
-          for (let p = 0; p < this.header.length; p++) {
-            const v = this.header[p].toString(16)
-            if (v.length < 2) {
-              hex += '0' + v
-            } else {
-              hex += v
-            }
-          }
-          msg += ': 0x' + hex
-        }
-        throw new XpraInvalidHeaderError(msg)
-      }
+      this.checkPacketHeader()
     }
 
     return this.header.length >= 8
+  }
+
+  private checkPacketHeader() {
+    if (this.header[0] !== ord('P')) {
+      let msg = 'invalid packet header format: ' + this.header[0]
+      if (this.header.length > 1) {
+        let hex = ''
+        for (let p = 0; p < this.header.length; p++) {
+          const v = this.header[p].toString(16)
+          if (v.length < 2) {
+            hex += '0' + v
+          } else {
+            hex += v
+          }
+        }
+        msg += ': 0x' + hex
+      }
+
+      throw new XpraInvalidHeaderError(msg)
+    }
   }
 
   private parsePacketHeader() {
