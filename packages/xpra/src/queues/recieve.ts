@@ -117,11 +117,7 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
         packet = this.fixPacketData(packet)
 
         if (this.debugPackets.includes(packet[0])) {
-          console.debug(
-            'XpraRecieveQueue#processNextRecieveQueue',
-            'packet',
-            packet
-          )
+          console.debug('XpraRecieveQueue#processNext', packet)
         }
 
         this.emit('message', packet)

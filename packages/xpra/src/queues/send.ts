@@ -49,7 +49,7 @@ export class XpraSendQueue extends XpraQueue<XpraSendPacket, ArrayBufferLike> {
     const packet = this.queue.shift()
     if (packet) {
       if (this.debugPackets.includes(packet[0])) {
-        console.debug('XpraSendQueue#process', packet)
+        console.debug('XpraSendQueue#processNext', packet)
       }
 
       try {
