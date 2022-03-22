@@ -122,7 +122,15 @@ export const AppPanel: FC<{ classNames: string[] }> = ({
 }) => {
   const className = cs('absolute', 'z-50', ...panelClassNames, ...classNames)
 
-  return <div className={className}>{children}</div>
+  const onContextMenu = (ev: React.MouseEvent<HTMLDivElement>) => {
+    ev.preventDefault()
+  }
+
+  return (
+    <div className={className} onContextMenu={onContextMenu}>
+      {children}
+    </div>
+  )
 }
 
 export const AppConnectionPanel: FC = () => {
