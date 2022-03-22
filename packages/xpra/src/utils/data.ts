@@ -66,6 +66,14 @@ export function uint8fromStringOrString(input: string | Uint8Array) {
   return input
 }
 
+export function uint8fromStringOrUint8(input: string | Uint8Array) {
+  if (typeof input === 'string') {
+    return uint8fromString(input)
+  }
+
+  return input
+}
+
 export function createHexUUID() {
   const s = []
   const hexDigits = '0123456789abcdef'

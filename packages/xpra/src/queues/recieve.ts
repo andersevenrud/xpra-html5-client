@@ -15,7 +15,7 @@
 import forge from 'node-forge'
 import { ord } from '../lib/bencode'
 import { rgb24ToRgb32, rgb32Restride } from '../utils/image'
-import { uint8fromStringOrString, uint8fromString } from '../utils/data'
+import { uint8fromStringOrString, uint8fromStringOrUint8 } from '../utils/data'
 import { createXpraCipher, decryptXpraPacketData } from '../connection/crypto'
 import { decodeXpraPacketData } from '../connection/encoding'
 import { XpraQueue } from '../connection/queue'
@@ -280,13 +280,9 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
 
     if (packet[0] === 'draw') {
       packet[6] = uint8fromStringOrString(packet[6])
+      packet[7] = uint8fromStringOrUint8(packet[7])
 
       // FIXME: This should be in the rendering implementation
-      const img_data = packet[7]
-      if (typeof img_data === 'string') {
-        packet[7] = uint8fromString(img_data)
-      }
-
       if (packet[6] === 'rgb32' || packet[6] === 'rgb24') {
         packet[7] = this.decodeRGB(packet)
 
@@ -294,16 +290,11 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
           packet[9] = packet[4] * 4
           packet[6] = 'rgb32'
         }
-      }
 
-      if (typeof packet[7] === 'string') {
-        packet[7] = uint8fromString(packet[7])
+        packet[7] = uint8fromStringOrUint8(packet[7])
       }
     } else if (packet[0] === 'sound-data') {
-      const sound_data = packet[2]
-      if (typeof sound_data === 'string') {
-        packet[2] = uint8fromString(sound_data)
-      }
+      packet[2] = uint8fromStringOrUint8(packet[2])
     } else if (packet[0] === 'notify_show') {
       packet[6] = uint8fromStringOrString(packet[6])
       packet[7] = uint8fromStringOrString(packet[7])
