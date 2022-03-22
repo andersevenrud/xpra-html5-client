@@ -56,6 +56,12 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
     }
   }
 
+  clear() {
+    super.clear()
+    this.header = []
+    this.raw = []
+  }
+
   private processNext() {
     if (!this.processPacketHeader()) {
       return false

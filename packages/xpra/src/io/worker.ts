@@ -63,13 +63,11 @@ export abstract class XpraWorker extends (EventEmitter as unknown as new () => T
   }
 
   protected setConnected(connected: boolean) {
-    if (connected) {
-      this.recieveQueue.clear()
-      this.sendQueue.clear()
-    }
-
     this.sendQueue.setConnected(connected)
+    this.sendQueue.clear()
+
     this.recieveQueue.setConnected(connected)
+    this.recieveQueue.clear()
   }
 
   protected processMessage(cmd: XpraWorkerMessage, data: XpraWorkerData) {
