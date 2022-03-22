@@ -27,6 +27,8 @@ import {
   XpraServerCapabilities,
 } from '../types'
 
+export type XpraWorkerMessagePacket = [XpraWorkerMessage, XpraWorkerData]
+
 export type XpraWorkerProxyEventEmitters = {
   recieve: (packet: XpraRecievePacket) => void
   send: (data: ArrayBuffer) => void
@@ -71,13 +73,13 @@ export class XpraWorkerProxy extends (EventEmitter as unknown as new () => Typed
     this.webworker = worker
 
     if (this.webworker instanceof XpraWorker) {
-      this.webworker.on('message', (message: any) => {
+      this.webworker.on('message', (message: XpraWorkerMessagePacket) => {
         const [msg, data] = message
         this.recieve(msg, data)
       })
     } else {
       this.webworker.addEventListener('message', (ev: MessageEvent) => {
-        const [msg, data] = ev.data
+        const [msg, data] = ev.data as XpraWorkerMessagePacket
         this.recieve(msg, data)
       })
 

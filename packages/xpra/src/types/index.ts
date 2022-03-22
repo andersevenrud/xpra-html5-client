@@ -351,7 +351,7 @@ export type XpraSendPacketType =
   | 'shutdown-server'
   | 'layout-changed'
 
-export type XpraPacketArguments = any[] // FIXME: Create an actual type for this
+export type XpraPacketArguments = any[] // FIXME: Maybe create a type and keyof/valueof dealio
 
 export type XpraSendPacket = [XpraSendPacketType, ...XpraPacketArguments]
 
@@ -359,7 +359,7 @@ export type XpraPacketEncoder = 'bencode' | 'rencode' | 'rencodeplus' | 'auto'
 
 export type XpraCompressor = 'zlib' | 'lz4' | 'none'
 
-export type XpraRecieveHeader = any[]
+export type XpraRecieveHeader = number[]
 
 export type XpraRecievePacket = [XpraRecievePacketType, ...XpraPacketArguments]
 
@@ -658,7 +658,7 @@ export type XpraXDGReducedMenu = {
   entries: XpraXDGReducedMenuEntry[]
 }[]
 
-export type XpraSettingChangeValue = XpraXDGMenu | any
+export type XpraSettingChangeValue = XpraXDGMenu | Record<string, string>
 
 export type XpraMonitor = [
   string,

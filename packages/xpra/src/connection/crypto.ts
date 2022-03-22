@@ -23,9 +23,8 @@ import {
   XPRA_CHUNK_SZ,
 } from '../constants'
 
-export type XpraCipherInstance = any
-
 export interface XpraCipher {
+  keyHash: string
   cipher: string
   mode: string
   blockSize: number
@@ -40,7 +39,7 @@ export function encryptXpraPacketData(
   data: Uint8Array | string,
   size: number,
   blockSize: number,
-  cipher: XpraCipherInstance
+  cipher: forge.cipher.BlockCipher
 ) {
   const paddingSize = blockSize - (size % blockSize)
 
@@ -68,7 +67,7 @@ export function encryptXpraPacketData(
     }
   }
 
-  cipher.update(forge.util.createBuffer(inputData), 'utf8')
+  cipher.update(forge.util.createBuffer(inputData))
   return cipher.output.getBytes()
 }
 
@@ -79,7 +78,7 @@ export function decryptXpraPacketData(
   packet: Uint8Array,
   size: number,
   padding: number,
-  cipher: XpraCipherInstance
+  cipher: forge.cipher.BlockCipher
 ) {
   cipher.update(forge.util.createBuffer(uint8toString(packet)))
 
@@ -108,7 +107,7 @@ export function createXpraCipher(
   }
 
   const cipher = caps['cipher'] || 'AES'
-  const keySalt = caps['cipher.key_salt']
+  const keySalt = caps['cipher.key_salt'] as string
   const iterations = caps['cipher.key_stretch_iterations'] || 0
   const keySize = caps['cipher.key_size'] || XPRA_DEFAULT_KEYSIZE
   const keyStretch = caps['cipher.key_stretch'] || 'PBKDF2'
@@ -135,11 +134,12 @@ export function createXpraCipher(
     key,
     keySalt,
     iterations,
-    keySize,
-    keyHash.toLowerCase()
+    keySize
+    //keyHash.toLowerCase()
   )
 
   return {
+    keyHash,
     cipher,
     mode,
     blockSize,

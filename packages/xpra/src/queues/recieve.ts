@@ -37,12 +37,15 @@ import {
  */
 export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
   private header: XpraRecieveHeader = []
-  private raw: any[] = []
+  private raw: Uint8Array[] = []
 
   setupCipher(caps: XpraCipherCapability, key: string) {
     const { iv, mode, cipher, secret, blockSize } = createXpraCipher(caps, key)
     this.cipherBlockSize = blockSize
-    this.cipher = forge.cipher.createDecipher(`${cipher}-${mode}`, secret)
+    this.cipher = forge.cipher.createDecipher(
+      `${cipher}-${mode}` as forge.cipher.Algorithm,
+      secret
+    )
     this.cipher.start({ iv })
   }
 

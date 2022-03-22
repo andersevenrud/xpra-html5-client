@@ -77,6 +77,7 @@ import {
   XpraCipherCapability,
   XpraChallengePrompt,
   XpraChallengeCallback,
+  XpraXDGMenu,
 } from '../types'
 
 export interface XpraClientConfiguration {
@@ -920,7 +921,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
   private processSettingChange(setting: string, value: XpraSettingChangeValue) {
     switch (setting) {
       case 'xdg-menu':
-        const menu = createXDGMenu(value)
+        const menu = createXDGMenu(value as XpraXDGMenu)
         this.emit('updateXDGMenu', menu)
         break
 

@@ -33,7 +33,10 @@ export class XpraSendQueue extends XpraQueue<XpraSendPacket, ArrayBufferLike> {
   setupCipher(caps: XpraCipherCapability, key: string) {
     const { iv, mode, cipher, secret, blockSize } = createXpraCipher(caps, key)
     this.cipherBlockSize = blockSize
-    this.cipher = forge.cipher.createCipher(`${cipher}-${mode}`, secret)
+    this.cipher = forge.cipher.createCipher(
+      `${cipher}-${mode}` as forge.cipher.Algorithm,
+      secret
+    )
     this.cipher.start({ iv })
   }
 

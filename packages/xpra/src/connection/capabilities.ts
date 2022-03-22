@@ -50,7 +50,10 @@ import {
  * Creates a set of gigest types to use in challenges
  */
 const getSupportedDigests = () => {
-  const additions = Object.keys(forge.md.algorithms).map((s) => `hmac+${s}`)
+  const additions = Object.keys(forge.md)
+    .filter((k) => k !== 'algorithms')
+    .map((s) => `hmac+${s}`)
+
   return ['hmac', 'hmac+md5', 'xor', 'keycloak', ...additions]
 }
 

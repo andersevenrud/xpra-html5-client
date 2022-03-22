@@ -31,7 +31,7 @@ export function createXpraChallengeDigest(
       hash = digest.split('+')[1]
     }
     const hmac = forge.hmac.create()
-    hmac.start(hash, password)
+    hmac.start(hash as forge.hmac.Algorithm, password)
     hmac.update(salt)
     return hmac.digest().toHex()
   } else if (digest == 'xor') {

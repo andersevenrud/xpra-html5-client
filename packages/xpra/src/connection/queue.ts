@@ -12,9 +12,9 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
+import forge from 'node-forge'
 import TypedEmitter from 'typed-emitter'
 import EventEmitter from 'events'
-import { XpraCipherInstance } from './crypto'
 import { XpraConnectionOptions, XpraCipherCapability } from '../types'
 
 /**
@@ -94,7 +94,7 @@ export abstract class XpraQueue<T, M> extends (EventEmitter as unknown as {
 })<T, M> {
   protected connected = true
   protected queue: T[] = []
-  protected cipher: XpraCipherInstance | null = null
+  protected cipher: forge.cipher.BlockCipher | null = null
   protected cipherBlockSize = 0
   protected debugPackets: string[] = []
 
