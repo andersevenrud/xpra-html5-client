@@ -86,15 +86,17 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
         level
       ) as Uint8Array
     } catch (e) {
-      console.error(e)
+      console.error('eror processing packet', e)
       this.raw = []
       return this.queue.length > 0
     }
 
     if (index > 0) {
       this.raw[index] = packetData
-      if (this.raw.length >= 4) {
-        throw new XpraPacketError('too many raw packets: ' + this.raw.length)
+
+      const len = this.raw.filter((r) => r !== undefined).length
+      if (len >= 4) {
+        throw new XpraPacketError('too many raw packets: ' + len)
       }
     } else {
       let packet
@@ -104,10 +106,9 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
           packet[index] = this.raw[index]
         }
 
-        // FIXME: what the hell is going on here ?
-        this.raw = {} as any
+        this.raw = []
       } catch (e) {
-        //FIXME: maybe we should error out and disconnect here?
+        // FIXME: maybe we should error out and disconnect here?
         console.error('error decoding packet', e, packet)
         this.raw = []
         return this.queue.length > 0
@@ -123,7 +124,7 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
         this.emit('message', packet)
       } catch (e) {
         // FIXME: maybe we should error out and disconnect here?
-        console.error('error processing packet', e, packet)
+        console.error('error fixing packet', e, packet)
       }
     }
 
