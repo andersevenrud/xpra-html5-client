@@ -118,7 +118,7 @@ export abstract class XpraQueue<T, M> extends (EventEmitter as unknown as {
 
   configure(options: XpraConnectionOptions) {
     this.debugPackets = options.debugPackets.flatMap(
-      (k) => packetTypes[k] || []
+      (k) => packetTypes[k] || [k]
     )
   }
 
