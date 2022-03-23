@@ -38,6 +38,17 @@ export function AppInner() {
       <FadeInOutTransition toggled={state.started}>
         <AppTrayPanel />
       </FadeInOutTransition>
+
+      <div className="fixed z-50 bottom-0 right-0 text-xs text-right opacity-50 p-2">
+        <a
+          className="underline"
+          rel="noreferrer"
+          target="_blank"
+          href="https://github.com/andersevenrud/xpra-html5-client"
+        >
+          xpra-html5-client on Github
+        </a>
+      </div>
     </>
   )
 }
