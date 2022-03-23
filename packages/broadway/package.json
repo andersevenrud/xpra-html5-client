@@ -5,6 +5,7 @@
   "license": "Apache-2.0",
   "main": "dist/broadway.esm.js",
   "module": "dist/broadway.esm.js",
+  "types": "index.d.ts",
   "scripts": {
     "build": "rollup --config"
   },

@@ -66,7 +66,7 @@ export async function encodeXpraDrawData(
             resolve(img)
           }
 
-          h264.decode(draw.image)
+          h264.decode(draw.image as Uint8Array)
         } catch (e) {
           reject(e)
         }
@@ -84,13 +84,15 @@ export async function encodeXpraDrawData(
           const mpeg1 = new JSMpeg.Decoder.MPEG1Video({
             onVideoDecode: () => {
               const ctx = surface.canvas.getContext('2d')
-              const data = ctx.getImageData(0, 0, width, height)
-              resolve(data)
+              if (ctx) {
+                const data = ctx.getImageData(0, 0, width, height)
+                resolve(data)
+              }
             },
           })
 
           mpeg1.connect(surface)
-          mpeg1.write(performance.now(), [draw.image])
+          mpeg1.write(performance.now(), [draw.image as Uint8Array])
         } catch (e) {
           reject(e)
         }

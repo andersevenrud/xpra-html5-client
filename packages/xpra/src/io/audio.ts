@@ -241,7 +241,7 @@ export class XpraMediaSourceAdapter extends XpraAudioAdapter {
  * Aurora Audio Adapter
  */
 export class XpraAuroraAdapter extends XpraAudioAdapter {
-  private auroraSource: AuroraSource | null = null
+  private auroraSource: AV.XpraSource | null = null
 
   async setup() {
     this.auroraSource = AV.Player.fromXpraSource()

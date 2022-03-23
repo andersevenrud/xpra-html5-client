@@ -5,6 +5,7 @@
   "license": "Apache-2.0",
   "main": "dist/jsmpeg.esm.js",
   "module": "dist/jsmpeg.esm.js",
+  "types": "index.d.ts",
   "scripts": {
     "build": "rollup --config"
   },

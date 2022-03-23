@@ -44,9 +44,9 @@ export function decompressXpraPacketData(
     if (level & XpraInflateBit.LZ4) {
       return lz4decompress(packetData)
     } else if (level & XpraInflateBit.BROTLI) {
-      return brotliDecompress(packetData)
+      return brotliDecompress(packetData.buffer as Buffer)
     } else {
-      return zlib.inflate(packetData as zlib.Data)
+      return zlib.inflate(packetData)
     }
   }
 

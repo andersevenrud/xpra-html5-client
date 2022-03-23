@@ -1,26 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-declare module 'xpra-av' {
-  const m: any
-  export default m
-}
-
-declare module 'xpra-jsmpeg' {
-  const m: any
-  export default m
-}
-
-declare module 'xpra-broadway' {
-  const m: any
-  export default m
-}
-
 declare module 'lz4js' {
-  const m: any
-  export default m
-}
-
-declare module 'brotli/decompress' {
-  const m: any
-  export default m
+  export function decompressBlock(
+    src: Uint8Array,
+    dest: Uint8Array,
+    sindex: number,
+    slength: number,
+    dindex: number
+  ): void
 }

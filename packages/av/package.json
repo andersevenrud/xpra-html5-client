@@ -5,6 +5,7 @@
   "license": "Apache-2.0",
   "main": "dist/av.esm.js",
   "module": "dist/av.esm.js",
+  "types": "index.d.ts",
   "scripts": {
     "build": "rollup --config"
   },

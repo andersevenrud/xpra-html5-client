@@ -20,15 +20,3 @@ interface Window {
   xpra: any
   mscrypto: any
 }
-
-interface AuroraSource {
-  play: () => void
-  context?: {
-    close: () => void
-  }
-  asset: {
-    source: {
-      _on_data: (buffer: Uint8Array) => void
-    }
-  }
-}
