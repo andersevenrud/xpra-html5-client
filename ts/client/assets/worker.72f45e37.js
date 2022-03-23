@@ -91,7 +91,7 @@ Private-MAC: `+x.digest().toHex()+`\r
  * @copyright Copyright (C) 2016-2022 Antoine Martin <antoine@devloop.org.uk>
  * @license Licensed under MPL 2.0, see: http://www.mozilla.org/MPL/2.0/
  * @link https://github.com/Xpra-org/xpra-html5
- */function vh(e){const r=e[0]|e[1]<<8|e[2]<<16|e[3]<<24;if(r<=0)throw new Error("invalid length: "+r);if(r>1024*1024*1024)throw new Error("length too long: "+r);const i=new Uint8Array(r);return K3.decompressBlock(e,i,4,r,0),i}function jp(e,r){return r!=0?r&js.LZ4?vh(e):r&js.BROTLI?Zp(e):H3(e):e}function $p(e){const r=e[7],i=e[10]||{};return i.zlib>0?H3(r):i.lz4>0?vh(r):r}/**
+ */function vh(e){const r=e[0]|e[1]<<8|e[2]<<16|e[3]<<24;if(r<=0)throw new Error("invalid length: "+r);if(r>1024*1024*1024)throw new Error("length too long: "+r);const i=new Uint8Array(r);return K3.decompressBlock(e,i,4,r,0),i}function jp(e,r){return r!=0?r&js.LZ4?vh(e):r&js.BROTLI?Zp(e.buffer):H3(e):e}function $p(e){const r=e[7],i=e[10]||{};return i.zlib>0?H3(r):i.lz4>0?vh(r):r}/**
  * Xpra Typescript Client
  * @link https://github.com/andersevenrud/xpra-html5-client
  * @author Anders Evenrud <andersevenrud@gmail.com>
