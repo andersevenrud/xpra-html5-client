@@ -6,6 +6,7 @@
  */
 
 import React, { useContext, useState, useRef, useEffect, FC } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ValueOf } from './types'
 import { AppContext } from './context'
 import { FadeInOutTransition } from './transitions'
@@ -102,7 +103,7 @@ export const AppMenu: FC<{
           >
             {icon && <img src={icon} className="w-4 h-4" />}
             <span className="flex-grow">{title}</span>
-            {items && items.length && <i className="fa fa-chevron-right" />}
+            {items && items.length && <FontAwesomeIcon icon="chevron-right" />}
           </div>
           {hovering === i && items && items.length > 0 && (
             <AppMenu root={false} items={items} />
@@ -468,7 +469,7 @@ export const AppTrayPanel: FC = () => {
       <div className="flex space-x-4 px-2">
         <div className="flex space-x-1">
           <AppButton transparent={true} onClick={onMenuToggle}>
-            <i className="fa fa-bars pointer-events-none" />
+            <FontAwesomeIcon icon="bars" className="pointer-events-none" />
             <FadeInOutTransition toggled={menuVisible}>
               <AppMenu items={menu} onCallback={onMenuCallback} />
             </FadeInOutTransition>
@@ -476,12 +477,12 @@ export const AppTrayPanel: FC = () => {
 
           {state.options.clipboard && (
             <AppButton transparent={true} onClick={onPollClipboard}>
-              <i className="fa fa-clipboard" />
+              <FontAwesomeIcon icon="clipboard" />
             </AppButton>
           )}
           {state.options.fileTransfer && (
             <AppButton transparent={true} onClick={onFileUpload}>
-              <i className="fa fa-upload" />
+              <FontAwesomeIcon icon="upload" />
             </AppButton>
           )}
         </div>

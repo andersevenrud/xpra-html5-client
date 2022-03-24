@@ -5,7 +5,9 @@
  * @license Mozilla Public License Version 2.0
  */
 
+import '@fontsource/inter'
 import './style.css'
+import './app/icons'
 import ReactDOM from 'react-dom'
 import { createElement } from 'react'
 import { XpraClient, XpraWindowManager } from 'xpra-html5-client'

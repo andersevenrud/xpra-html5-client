@@ -4,8 +4,12 @@
  * @author Anders Evenrud <andersevenrud@gmail.com>
  */
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 #xpra-desktop::after {
