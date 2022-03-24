@@ -104,12 +104,12 @@ export const AppMenu: FC<{
       {items.map(({ icon, title, items, callback }, i) => (
         <div key={i} className="relative text-left">
           <div
-            className="p-2 hover:bg-white truncate flex space-x-2 items-center"
+            className="flex items-center space-x-2 truncate p-2 hover:bg-white"
             onClick={() => onClose(callback)}
             onMouseOver={() => onMouseOver(i)}
           >
-            {icon && <img src={icon} className="w-4 h-4" />}
-            <span className="flex-grow">{title}</span>
+            {icon && <img src={icon} className="h-4 w-4" />}
+            <span className="grow">{title}</span>
             {items && items.length && <FontAwesomeIcon icon="chevron-right" />}
           </div>
           {hovering === i && items && items.length > 0 && (
@@ -306,7 +306,7 @@ export const AppConnectionPanel: FC = () => {
             onChange={onHostChange}
           />
 
-          <div className="grid gap-2 grid-cols-2">
+          <div className="grid grid-cols-2 gap-2">
             <AppTextField
               placeholder="Username"
               value={state.options.username}
@@ -336,7 +336,7 @@ export const AppConnectionPanel: FC = () => {
         </div>
 
         {state.error && (
-          <div className="bg-red-300 border border-red-500 text-red-500 p-2 rounded">
+          <div className="rounded border border-red-500 bg-red-300 p-2 text-red-500">
             {state.error}
           </div>
         )}
@@ -375,7 +375,7 @@ export const AppDebugPanel: FC = () => {
   ]
 
   return (
-    <div className="absolute bottom-1 left-1 p-1 z-0 opacity-50 bg-emerald-100 rounded">
+    <div className="absolute bottom-1 left-1 z-0 rounded bg-emerald-100 p-1 opacity-50">
       <table className="text-xs">
         <tbody>
           {rows.map(([label, value]) => (
@@ -499,10 +499,10 @@ export const AppTrayPanel: FC = () => {
             {minimized.map((win) => (
               <AppButton key={win.id} transparent={true} onClick={onClick(win)}>
                 <div
-                  className="flex space-x-1 items-center"
+                  className="flex items-center space-x-1"
                   style={{ maxWidth: '128px' }}
                 >
-                  <div className="w-4 h-4">
+                  <div className="h-4 w-4">
                     <AppWindowIcon win={win} />
                   </div>
                   <div className="truncate text-center text-sm">
@@ -517,9 +517,9 @@ export const AppTrayPanel: FC = () => {
         {trays.length > 0 && (
           <div className="flex space-x-1">
             {trays.map((win) => (
-              <div key={win.id} className="flex space-x-1 items-center">
+              <div key={win.id} className="flex items-center space-x-1">
                 <div
-                  className="flex items-center justify-center w-4 h-4 overflow-hidden"
+                  className="flex h-4 w-4 items-center justify-center overflow-hidden"
                   title={win.title}
                 >
                   <AppWindowCanvas id={win.id} />

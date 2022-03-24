@@ -115,7 +115,7 @@ export const AppWindowIcon: FC<{ win: AppWindowState }> = ({
   return (
     <>
       {icon && <img alt={title} src={icon.image} className="max-h-full" />}
-      {!icon && <div className="w-full h-full bg-gray-500 rounded" />}
+      {!icon && <div className="h-full w-full rounded bg-gray-500" />}
     </>
   )
 }
@@ -430,7 +430,7 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
     return (
       <FadeInOutTransition {...transitionParams}>
         <div
-          className="absolute bg-black cursor-default shadow"
+          className="absolute cursor-default bg-black shadow"
           ref={root}
           style={style}
           onMouseDown={onRootMouseDown}
@@ -452,14 +452,14 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
       >
         <div
           ref={resizer}
-          className="absolute z-10 -left-2 -top-10 -bottom-2 -right-2"
+          className="absolute -inset-x-2 -top-10 -bottom-2 z-10"
           style={resizerStyle}
           onMouseDown={onResizeMouseDown}
         />
 
-        <div className="relative w-full h-full z-20 outline outline-1 outline-gray-200 shadow-xl dark:outline-gray-900">
+        <div className="relative z-20 h-full w-full shadow-xl outline outline-1 outline-gray-200 dark:outline-gray-900">
           <div
-            className="absolute -top-8 w-full flex items-center p-1 px-2 h-8 space-x-2 outline outline-1 outline-gray-200 bg-gray-100 dark:bg-gray-900 dark:text-white dark:outline-gray-900 cursor-default"
+            className="absolute -top-8 flex h-8 w-full cursor-default items-center space-x-2 bg-gray-100 p-1 px-2 outline outline-1 outline-gray-200 dark:bg-gray-900 dark:text-white dark:outline-gray-900"
             ref={bar}
             onMouseDown={onDragMouseDown}
           >
@@ -469,7 +469,7 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
             >
               <AppWindowIcon win={win} />
             </div>
-            <div className="flex-grow truncate text-sm">
+            <div className="grow truncate text-sm">
               <span>{title || id}</span>
             </div>
             <AppWindowButtons
@@ -480,7 +480,7 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
             />
           </div>
 
-          <div className="xpra-window-canvas w-full h-full bg-black">
+          <div className="xpra-window-canvas h-full w-full bg-black">
             <AppWindowCanvas id={id} />
           </div>
         </div>

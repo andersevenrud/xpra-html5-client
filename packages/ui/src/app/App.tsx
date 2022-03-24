@@ -42,8 +42,8 @@ export function AppInner() {
         <AppTrayPanel />
       </FadeInOutTransition>
 
-      <div className="fixed z-50 bottom-0 right-0 text-xs text-right opacity-50 p-2 space-y-2">
-        <div className="underline cursor-pointer">
+      <div className="fixed right-0 bottom-0 z-50 space-y-2 p-2 text-right text-xs opacity-50">
+        <div className="cursor-pointer underline">
           <span onClick={onToggleDarkMode}>Toggle dark mode</span>
         </div>
         <div>

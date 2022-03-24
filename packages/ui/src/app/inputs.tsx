@@ -121,7 +121,7 @@ export const AppCheckbox: FC<{
 }> = ({ label, value, onChange }) => {
   return (
     <div className="select-none">
-      <label className="inline-flex items-center space-x-2 cursor-pointer">
+      <label className="inline-flex cursor-pointer items-center space-x-2">
         <input type="checkbox" defaultChecked={value} onChange={onChange} />
         <span>{label}</span>
       </label>
