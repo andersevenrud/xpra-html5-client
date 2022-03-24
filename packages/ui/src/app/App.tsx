@@ -6,6 +6,7 @@
  */
 
 import React, { useContext } from 'react'
+import { toggleDarkMode } from './utils'
 import { AppContext, AppContextProvider } from './context'
 import { AppDesktop } from './desktop'
 import {
@@ -20,6 +21,8 @@ import { XpraClient, XpraWindowManager } from 'xpra-html5-client'
 export function AppInner() {
   const { state, xpra } = useContext(AppContext)
   const enableStats = xpra.getOptions().showStatistics
+
+  const onToggleDarkMode = () => toggleDarkMode()
 
   return (
     <>
@@ -39,15 +42,20 @@ export function AppInner() {
         <AppTrayPanel />
       </FadeInOutTransition>
 
-      <div className="fixed z-50 bottom-0 right-0 text-xs text-right opacity-50 p-2">
-        <a
-          className="underline"
-          rel="noreferrer"
-          target="_blank"
-          href="https://github.com/andersevenrud/xpra-html5-client"
-        >
-          xpra-html5-client on Github
-        </a>
+      <div className="fixed z-50 bottom-0 right-0 text-xs text-right opacity-50 p-2 space-y-2">
+        <div className="underline cursor-pointer">
+          <span onClick={onToggleDarkMode}>Toggle dark mode</span>
+        </div>
+        <div>
+          <a
+            className="underline"
+            rel="noreferrer"
+            target="_blank"
+            href="https://github.com/andersevenrud/xpra-html5-client"
+          >
+            xpra-html5-client on Github
+          </a>
+        </div>
       </div>
     </>
   )

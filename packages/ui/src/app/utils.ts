@@ -10,6 +10,38 @@ import { XpraCursor, XpraWindowMetadata } from 'xpra-html5-client'
 
 export const cs = (...args: string[]) => args.join(' ')
 
+export function detectDarkMode() {
+  const theme = localStorage.getItem('theme')
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
+}
+
+export function toggleDarkMode() {
+  const theme = localStorage.getItem('theme')
+  localStorage.setItem('theme', theme === 'dark' ? 'light' : 'dark')
+  detectDarkMode()
+}
+
+export function initDarkMode() {
+  const media = window.matchMedia('(prefers-color-scheme: dark)')
+
+  const onChange = (e: MediaQueryList | MediaQueryListEvent) => {
+    if (e.matches) {
+      localStorage.setItem('theme', 'dark')
+    } else {
+      localStorage.setItem('theme', 'light')
+    }
+
+    detectDarkMode()
+  }
+
+  media.addEventListener('change', onChange)
+  onChange(media)
+}
+
 export function createCursorBackgroundCSS(cursor: XpraCursor | null) {
   if (cursor) {
     const { image, xhot, yhot } = cursor
