@@ -69,8 +69,10 @@ export const createDefaultXpraConnectionOptions = (): XpraConnectionOptions => {
 /**
  * Creates a partial connection option set from the current URL
  */
-export const createXpraConnectionOptionsFromUrl = () =>
-  parseUrlQuerySearch<Partial<XpraConnectionOptions>>(window.location.search, {
+export const createXpraConnectionOptionsFromUrl = (
+  search = window.location.search
+) =>
+  parseUrlQuerySearch<Partial<XpraConnectionOptions>>(search, {
     required: Object.keys(createDefaultXpraConnectionOptions()),
     lists: ['debugPackets'],
     booleans: [

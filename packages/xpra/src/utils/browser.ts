@@ -369,7 +369,8 @@ export function parseUrlQuerySearch<T>(
 
   return Object.fromEntries(
     entries.filter(
-      ([k, v]) => required.includes(k as string) && v !== undefined
+      ([k, v]) =>
+        !required.length || (required.includes(k as string) && v !== undefined)
     )
   )
 }
