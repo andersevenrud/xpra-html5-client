@@ -6,7 +6,7 @@ on:
   pull_request:
 jobs:
   codebase:
-    name: eslint
+    name: tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
