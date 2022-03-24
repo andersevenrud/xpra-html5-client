@@ -92,6 +92,12 @@
     "semi": false,
     "singleQuote": true
   },
+  "jest": {
+    "testMatch": ["**/tests/**/*.ts"],
+    "coveragePathIgnorePatterns": ["node_modules", "src/lib"],
+    "preset": "ts-jest/presets/js-with-ts-esm",
+    "testEnvironment": "jsdom"
+  },
   "keywords": [
     "xpra"
   ],
