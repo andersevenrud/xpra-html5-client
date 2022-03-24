@@ -8,6 +8,8 @@
 import React from 'react'
 import { XpraCursor, XpraWindowMetadata } from 'xpra-html5-client'
 
+export const cs = (...args: string[]) => args.join(' ')
+
 export function createCursorBackgroundCSS(cursor: XpraCursor | null) {
   if (cursor) {
     const { image, xhot, yhot } = cursor

@@ -14,6 +14,18 @@ import { XpraClient, XpraWindowManager } from 'xpra-html5-client'
 import { App } from './app/App'
 import XpraWorker from './worker?worker'
 
+function initializeDarkMode() {
+  if (
+    localStorage.theme === 'dark' ||
+    (!('theme' in localStorage) &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches)
+  ) {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
+}
+
 async function main() {
   const app = document.querySelector<HTMLDivElement>('#app')
   const worker = new XpraWorker()
@@ -29,5 +41,6 @@ async function main() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  initializeDarkMode()
   main()
 })

@@ -7,6 +7,7 @@
 
 import React, { useContext, useState, useRef, useEffect, FC } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { cs } from './utils'
 import { ValueOf } from './types'
 import { AppContext } from './context'
 import { FadeInOutTransition } from './transitions'
@@ -29,11 +30,10 @@ interface AppMenuItem {
 const panelClassNames = [
   'shadow-lg',
   'bg-emerald-100/50',
+  'dark:bg-emerald-900/50',
   'opacity-90',
   'rounded',
 ]
-
-const cs = (...args: string[]) => args.join(' ')
 
 export const AppMenu: FC<{
   items: AppMenuItem[]
@@ -91,7 +91,14 @@ export const AppMenu: FC<{
   return (
     <div
       ref={ref}
-      className={cs('absolute', 'shadow', 'bg-emerald-100/80', ...classNames)}
+      className={cs(
+        'absolute',
+        'shadow',
+        'bg-emerald-100/80',
+        'dark:bg-emerald-900/80',
+        'dark:text-white',
+        ...classNames
+      )}
       onMouseLeave={onMouseLeave}
     >
       {items.map(({ icon, title, items, callback }, i) => (

@@ -6,8 +6,14 @@
  */
 
 import React, { FC } from 'react'
+import { cs } from './utils'
 
 let lastElementId = 1
+
+const themeStyles = 'bg-white/80 dark:bg-black/80 dark:text-white'
+
+const baseStyles =
+  'rounded border-none p-1 px-2 disabled:opacity-40 disabled:cursor-not-allowed hover:outline hover:outline-1 w-full'
 
 export const AppSelect: FC<{
   disabled?: boolean
@@ -18,8 +24,7 @@ export const AppSelect: FC<{
   onChange: (ev: React.ChangeEvent<HTMLSelectElement>) => void
 }> = ({ disabled, label, value, required, options, onChange }) => {
   const htmlFor = `xpra_${++lastElementId}`
-  const inputClassNames =
-    'rounded bg-white border border-black-100 w-full p-1 px-2 disabled:opacity-40 disabled:cursor-not-allowed'
+  const inputClassNames = cs(baseStyles, themeStyles)
 
   return (
     <div>
@@ -54,18 +59,15 @@ export const AppButton: FC<{
   transparent?: boolean
   onClick?: (ev: React.MouseEvent<HTMLButtonElement>) => void
 }> = ({ children, disabled, label, type, transparent, onClick }) => {
-  let inputClassNames =
-    'flex items-center justify-center relative rounded w-full p-1 px-2 disabled:opacity-40 disabled:cursor-not-allowed hover:outline hover:outline-1'
+  const inputClassNames = []
 
-  if (transparent) {
-    inputClassNames += ' border border border-transparent'
-  } else {
-    inputClassNames += ' bg-white border border-black-100'
+  if (!transparent) {
+    inputClassNames.push(themeStyles)
   }
 
   return (
     <button
-      className={inputClassNames}
+      className={cs(baseStyles, ...inputClassNames)}
       disabled={disabled}
       type={type || 'button'}
       onClick={onClick}
@@ -88,8 +90,7 @@ export const AppTextField: FC<{
   onChange: (ev: React.ChangeEvent<HTMLInputElement>) => void
 }> = ({ disabled, label, value, type, placeholder, required, onChange }) => {
   const htmlFor = `xpra_${++lastElementId}`
-  const inputClassNames =
-    'rounded bg-white border border-black-100 w-full p-1 px-2 disabled:opacity-40 disabled:cursor-not-allowed'
+  const inputClassNames = cs(baseStyles, themeStyles)
 
   return (
     <div>

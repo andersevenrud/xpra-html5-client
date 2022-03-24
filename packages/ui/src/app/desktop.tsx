@@ -457,9 +457,9 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
           onMouseDown={onResizeMouseDown}
         />
 
-        <div className="relative w-full h-full z-20 outline outline-1 outline-gray-200 shadow-xl">
+        <div className="relative w-full h-full z-20 outline outline-1 outline-gray-200 shadow-xl dark:outline-gray-900">
           <div
-            className="absolute -top-8 w-full flex items-center p-1 px-2 h-8 space-x-2 outline outline-1 outline-gray-200 bg-gray-100 cursor-default"
+            className="absolute -top-8 w-full flex items-center p-1 px-2 h-8 space-x-2 outline outline-1 outline-gray-200 bg-gray-100 dark:bg-gray-900 dark:text-white dark:outline-gray-900 cursor-default"
             ref={bar}
             onMouseDown={onDragMouseDown}
           >
@@ -565,7 +565,7 @@ export const AppDesktop: FC = ({ children }) => {
     <>
       <div
         id="xpra-desktop"
-        className="absolute inset-0 z-30 overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-300 to-emerald-500"
+        className="absolute inset-0 z-30 overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-300 to-emerald-500 dark:from-emerald-900 dark:via-emerald-700 dark:to-emerald-900"
         ref={root}
         onMouseMove={onMouseMove}
         onContextMenu={onContextMenu}
