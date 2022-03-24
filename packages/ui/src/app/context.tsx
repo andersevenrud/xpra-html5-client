@@ -74,7 +74,7 @@ export const AppContext = createContext<{
 const otherOptions = parseUrlQuerySearch<{
   connect: boolean
   host: string
-}>({
+}>(window.location.search, {
   booleans: ['connect'],
   required: ['connect', 'host'],
 })
