@@ -272,6 +272,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
       console.error('XpraConnection#disconnect', error)
     }
 
+    // FIXME: This should probably be controlled by the websocket abstraction
     const skipReconnect =
       error instanceof XpraChallengeError ||
       error instanceof XpraDisconnectionError

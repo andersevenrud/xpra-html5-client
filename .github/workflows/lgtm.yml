@@ -31,6 +31,7 @@ jobs:
           yarn workspace xpra-html5-client lint
           yarn workspace xpra-html5-client-react lint
           yarn workspace xpra-html5-client typecheck
+          yarn workspace xpra-html5-client test
   commit:
     name: commitlint
     runs-on: ubuntu-latest
