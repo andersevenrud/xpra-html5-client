@@ -28,7 +28,7 @@ import { createXpraChallengeResponse } from './auth'
 import { createXDGMenu } from '../utils/xdg'
 import { imageSourceFromData } from '../utils/image'
 import { uint8toString } from '../utils/data'
-import { unescapeUri, getBrowserConnectionInfo } from '../utils/browser'
+import { unescapeUri } from '../utils/browser'
 import {
   XpraConnectionError,
   XpraChallengeError,
@@ -228,14 +228,6 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     this.logger.on('log', (level: XpraLogLevel, args: XpraLoggerArguments) => {
       this.sendLog(level, args)
     })
-
-    if ('connection' in navigator) {
-      navigator.connection.addEventListener('change', () => {
-        if (this.ws.connected) {
-          this.sendConnectionData()
-        }
-      })
-    }
   }
 
   connect(host: string, options: Partial<XpraConnectionOptions> = {}) {
@@ -646,8 +638,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     ])
   }
 
-  sendConnectionData() {
-    const info = getBrowserConnectionInfo()
+  sendConnectionData(info: Record<string, string | number>) {
     this.send(['connection-data', info])
   }
 

@@ -19,6 +19,7 @@ import {
   browserSaveFile,
   browserPrintFile,
   createNativeNotification,
+  getBrowserConnectionInfo,
 } from '../utils/browser'
 import {
   XpraWindow,
@@ -148,6 +149,15 @@ export class XpraWindowManager {
     window.addEventListener('wheel', this.onScrollAction.bind(this))
     window.addEventListener('mousewheel', this.onScrollAction.bind(this))
     window.addEventListener('DOMMouseScroll', this.onScrollAction.bind(this))
+
+    if ('connection' in navigator) {
+      navigator.connection.addEventListener('change', () => {
+        if (this.xpra.isReady()) {
+          const info = getBrowserConnectionInfo()
+          this.xpra.sendConnectionData(info)
+        }
+      })
+    }
   }
 
   private openUrl(url: string) {
