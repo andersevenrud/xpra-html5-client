@@ -108,6 +108,7 @@ export type XpraClientEventEmitters = {
   eos: (wid: number) => void
   pointerPosition: (pointer: XpraPointerPosition) => void
   updateXDGMenu: (menu: XpraXDGReducedMenu) => void
+  bell: () => void
   challengePrompt: (
     args: XpraChallengePrompt,
     cb: XpraChallengeCallback
@@ -1040,7 +1041,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
 
   private processBell() {
     if (this.options.bell) {
-      this.audio.playBell()
+      this.emit('bell')
     }
   }
 
