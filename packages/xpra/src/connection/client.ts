@@ -109,6 +109,7 @@ export type XpraClientEventEmitters = {
   pointerPosition: (pointer: XpraPointerPosition) => void
   updateXDGMenu: (menu: XpraXDGReducedMenu) => void
   bell: () => void
+  openUrl: (url: string) => void
   challengePrompt: (
     args: XpraChallengePrompt,
     cb: XpraChallengeCallback
@@ -1234,7 +1235,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
 
   private processOpenUrl(url: string) {
     if (this.options.openUrl) {
-      window.open(url, '_blank')
+      this.emit('openUrl', url)
     }
   }
 }

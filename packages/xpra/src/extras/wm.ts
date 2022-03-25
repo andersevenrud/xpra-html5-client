@@ -103,6 +103,7 @@ export class XpraWindowManager {
     this.xpra.on('newWindow', this.createWindow.bind(this))
     this.xpra.on('newTray', this.createWindow.bind(this))
     this.xpra.on('bell', () => this.playBell())
+    this.xpra.on('openUrl', (url: string) => this.openUrl(url))
 
     this.xpra.on('eos', () => {
       /* TODO */
@@ -147,6 +148,10 @@ export class XpraWindowManager {
     window.addEventListener('wheel', this.onScrollAction.bind(this))
     window.addEventListener('mousewheel', this.onScrollAction.bind(this))
     window.addEventListener('DOMMouseScroll', this.onScrollAction.bind(this))
+  }
+
+  private openUrl(url: string) {
+    window.open(url, '_blank')
   }
 
   private playBell() {
