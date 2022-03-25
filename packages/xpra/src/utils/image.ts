@@ -42,7 +42,7 @@ export function imageSourceFromData(
 ) {
   const imageData = uint8fromStringOrUint8(data)
   const src = arrayBufferToBase64(imageData)
-  const enc = encoding === 'svg' ? 'image/svg+xml' : encoding
+  const enc = encoding === 'svg' ? 'svg+xml' : encoding
 
   return `data:image/${enc};base64,${src}`
 }
