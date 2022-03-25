@@ -78,12 +78,12 @@ export abstract class XpraWorker extends (EventEmitter as unknown as new () => T
 
       case 'send':
         this.sendQueue.push(data)
-        setTimeout(() => this.sendQueue.process(), 0)
+        this.sendQueue.process()
         break
 
       case 'recieve':
         this.recieveQueue.push(data)
-        setTimeout(() => this.recieveQueue.process(), 0)
+        this.recieveQueue.process()
         break
 
       case 'configure':
