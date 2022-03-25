@@ -5,6 +5,8 @@
  * @license Mozilla Public License Version 2.0
  */
 
+export * from './adapters/aurora'
+export * from './adapters/mediasource'
 export * from './connection/auth'
 export * from './connection/capabilities'
 export * from './connection/client'
@@ -18,6 +20,7 @@ export * from './constants'
 export * from './errors'
 export * from './extras/wm'
 export * from './io/audio'
+export * from './io/audioAdapter'
 export * from './io/clipboard'
 export * from './io/keyboard'
 export * from './io/logger'
