@@ -15,6 +15,7 @@
 import TypedEmitter from 'typed-emitter'
 import EventEmitter from 'events'
 import AV from 'xpra-av'
+import { getBrowser, getBrowserPlatform } from '../utils/browser'
 import { uint8fromString } from '../utils/data'
 import { XPRA_MAX_AUDIO_BUFFERS } from '../constants'
 import { XpraInvalidAudioCodecError, XpraAudioError } from '../errors'
@@ -26,16 +27,11 @@ import {
   XpraAudioMetadata,
 } from '../types'
 import {
-  getMediaSourceAudioCodecs,
-  getDefaultAudioCodec,
-  getMediaSourceClass,
-  getAuroraAudioCodecs,
-  getMediaSource,
-  get_supported_codecs as getSupportedCodecs,
-  get_best_codec as getBestCodec,
-  CODEC_STRING,
-  PREFERRED_CODEC_ORDER,
-} from '../lib/media'
+  XPRA_AUDIO_CODEC_STRING,
+  XPRA_AUDIO_CODEC_DESCRIPTION,
+  XPRA_AUDIO_PREFERRED_CODEC_ORDER,
+  XPRA_AUDIO_AURORA_CODECS,
+} from '../constants'
 
 export type XpraAudioEventEmitters = {
   start: () => void
@@ -154,7 +150,7 @@ export class XpraMediaSourceAdapter extends XpraAudioAdapter {
   private mediaSourceBuffer: SourceBuffer | null = null
 
   async setup() {
-    const mediaSource = getMediaSource() as MediaSource
+    const mediaSource = new MediaSource()
 
     const attach = () =>
       new Promise<SourceBuffer>((resolve, reject) => {
@@ -163,7 +159,7 @@ export class XpraMediaSourceAdapter extends XpraAudioAdapter {
           if (this.mediaSourceReady) {
             reject(new XpraAudioError('MediaSource already open'))
           } else {
-            const codec = (CODEC_STRING as Record<string, string>)[
+            const codec = (XPRA_AUDIO_CODEC_STRING as Record<string, string>)[
               this.audioCodec
             ]
 
@@ -235,6 +231,55 @@ export class XpraMediaSourceAdapter extends XpraAudioAdapter {
   protected isReady() {
     return !!this.mediaSourceBuffer && !this.mediaSourceBuffer.updating
   }
+
+  static getBlacklistedCodecs(ignoreBlacklist: boolean) {
+    const browser = getBrowser()
+    const platform = getBrowserPlatform()
+    const isFirefox = browser.name === 'Firefox'
+    const isSafari = browser.name === 'Safari'
+    const isChrome = browser.name === 'Chrome'
+    const isMac = platform.type === 'darwin'
+    const blacklist: string[] = []
+
+    if (!ignoreBlacklist) {
+      if (isFirefox || isSafari) {
+        blacklist.push('opus+mka', 'vorbis+mka')
+        if (isSafari) {
+          //this crashes Safari!
+          blacklist.push('wav')
+        }
+      } else if (isChrome) {
+        blacklist.push('aac+mpeg4')
+        if (isMac) {
+          blacklist.push('opus+mka')
+        }
+      }
+    }
+
+    return blacklist
+  }
+
+  static getCodecs(ignoreBlacklist = false): XpraAudioCodecMap {
+    if (self.MediaSource) {
+      const blacklist = this.getBlacklistedCodecs(ignoreBlacklist)
+
+      const found = Object.entries(XPRA_AUDIO_CODEC_STRING)
+        .filter(([, v]) => MediaSource.isTypeSupported(v))
+        .filter(([k]) => !blacklist.includes(k))
+
+      return Object.fromEntries(found)
+    }
+
+    return {}
+  }
+
+  static getSupportedCodecs(ignoreBlacklist = false) {
+    const entries = Object.keys(
+      XpraMediaSourceAdapter.getCodecs(ignoreBlacklist)
+    ).map((k) => [`mediasource:${k}`, XPRA_AUDIO_CODEC_DESCRIPTION[k]])
+
+    return Object.fromEntries(entries)
+  }
 }
 
 /**
@@ -276,6 +321,23 @@ export class XpraAuroraAdapter extends XpraAudioAdapter {
   protected isReady() {
     return !!this.auroraSource
   }
+
+  static getCodecs(): XpraAudioCodecMap {
+    const supported = Object.entries(XPRA_AUDIO_AURORA_CODECS).filter(([, v]) =>
+      AV.Decoder.find(v)
+    )
+
+    return Object.fromEntries(supported)
+  }
+
+  static getSupportedCodecs() {
+    const entries = Object.keys(XpraAuroraAdapter.getCodecs()).map((k) => [
+      `aurora:${k}`,
+      `legacy:${XPRA_AUDIO_CODEC_DESCRIPTION[k]}`,
+    ])
+
+    return Object.fromEntries(entries)
+  }
 }
 
 /**
@@ -286,29 +348,14 @@ export class XpraAudio extends (EventEmitter as unknown as new () => TypedEmitte
   private readonly audio: HTMLAudioElement = document.createElement('audio')
   private enabled = false
   private adapter: XpraAudioAdapter | null = null
-  private defaultCodec: XpraAudioCodecType | null = null
   private audioCodec: XpraAudioCodecType | null = null
   private audioFramework: XpraAudioFramework | null = null
-  private auroraCodecs: XpraAudioCodecMap =
-    getAuroraAudioCodecs() as XpraAudioCodecMap
-
-  private mediaCodecs: XpraAudioCodecMap = (!!getMediaSourceClass()
-    ? getMediaSourceAudioCodecs()
-    : {}) as XpraAudioCodecMap
+  private auroraCodecs: XpraAudioCodecMap = XpraAuroraAdapter.getCodecs()
+  private mediaCodecs: XpraAudioCodecMap = XpraMediaSourceAdapter.getCodecs()
 
   private detectedCodecs: XpraAudioCodecMap = {
     ...this.mediaCodecs,
     ...this.auroraCodecs,
-  }
-
-  constructor() {
-    super()
-
-    if (Object.values(this.detectedCodecs).length > 0) {
-      this.defaultCodec = getDefaultAudioCodec(this.detectedCodecs)
-    }
-
-    console.debug('XpraAudio#constructor', this)
   }
 
   async init() {
@@ -347,16 +394,10 @@ export class XpraAudio extends (EventEmitter as unknown as new () => TypedEmitte
   async setup(serverCapabilities: XpraServerCapabilities) {
     if (serverCapabilities['sound.send']) {
       const encoders = serverCapabilities['sound.encoders']
+      const defaultCodec = this.getDefaultAudioCodec()
 
-      if (this.defaultCodec) {
-        const detected =
-          PREFERRED_CODEC_ORDER.find((codec) => {
-            if (codec in this.detectedCodecs && encoders.includes(codec)) {
-              return true
-            }
-
-            return false
-          }) || this.defaultCodec
+      if (defaultCodec) {
+        const detected = this.getPreferedServerCodec(encoders) || defaultCodec
 
         if (detected) {
           this.enabled = true
@@ -369,13 +410,14 @@ export class XpraAudio extends (EventEmitter as unknown as new () => TypedEmitte
     }
 
     if (this.enabled) {
-      const supported = getSupportedCodecs(
-        this.audioFramework === 'mediasource',
-        this.audioFramework === 'aurora',
-        false
-      )
+      let supported = {}
+      if (this.audioFramework === 'mediasource') {
+        supported = XpraMediaSourceAdapter.getSupportedCodecs()
+      } else if (this.audioFramework === 'aurora') {
+        supported = XpraAuroraAdapter.getSupportedCodecs()
+      }
 
-      const best = getBestCodec(supported)
+      const best = this.getBestCodec(supported)
 
       if (best) {
         const [framework, codec] = best.split(':')
@@ -419,5 +461,43 @@ export class XpraAudio extends (EventEmitter as unknown as new () => TypedEmitte
 
   getDecoders() {
     return Object.keys(this.detectedCodecs)
+  }
+
+  getPreferedServerCodec(encoders: string[]) {
+    return XPRA_AUDIO_PREFERRED_CODEC_ORDER.find((codec) => {
+      if (codec in this.detectedCodecs && encoders.includes(codec)) {
+        return true
+      }
+
+      return false
+    })
+  }
+
+  getBestCodec(supported: Record<string, string>) {
+    let best = null
+    let bestDistance = XPRA_AUDIO_PREFERRED_CODEC_ORDER.length
+
+    for (const k in supported) {
+      const [, cs] = k.split(':')
+      const distance = XPRA_AUDIO_PREFERRED_CODEC_ORDER.indexOf(cs)
+      if (distance >= 0 && distance < bestDistance) {
+        best = k
+        bestDistance = distance
+      }
+    }
+
+    return best
+  }
+
+  getDefaultAudioCodec() {
+    const keys = Object.keys(this.detectedCodecs)
+    if (keys.length > 0) {
+      const found = XPRA_AUDIO_PREFERRED_CODEC_ORDER.find((c) =>
+        keys.includes(c)
+      )
+      return found || keys[0]
+    }
+
+    return null
   }
 }

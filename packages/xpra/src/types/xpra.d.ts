@@ -19,4 +19,5 @@ interface WheelEvent {
 interface Window {
   xpra: any
   mscrypto: any
+  WebKitMediaSource: MediaSource
 }

@@ -178,3 +178,67 @@ export const XPRA_CLOSE_CODES: Record<number, string> = {
   1014: 'Bad Gateway',
   1015: 'TLS Handshake',
 }
+
+export const XPRA_AUDIO_CODEC_DESCRIPTION: Record<string, string> = {
+  mp4a: 'mpeg4: aac',
+  'aac+mpeg4': 'mpeg4: aac',
+  mp3: 'mp3',
+  'mp3+id3v2': 'mp3',
+  'mp3+mpeg4': 'mpeg4: mp3',
+  wav: 'wav',
+  wave: 'wave',
+  flac: 'flac',
+  opus: 'opus',
+  vorbis: 'vorbis',
+  'opus+mka': 'webm: opus',
+  'opus+ogg': 'ogg: opus',
+  'vorbis+mka': 'webm: vorbis',
+  'vorbis+ogg': 'ogg: vorbis',
+  'speex+ogg': 'ogg: speex',
+  'flac+ogg': 'ogg: flac',
+}
+
+export const XPRA_AUDIO_CODEC_STRING: Record<string, string> = {
+  'aac+mpeg4': 'audio/mp4; codecs="mp4a.40.2"',
+  //"aac+mpeg4"		: 'audio/mp4; codecs="aac51"',
+  //"aac+mpeg4"		: 'audio/aac',
+  mp3: 'audio/mpeg',
+  'mp3+mpeg4': 'audio/mp4; codecs="mp3"',
+  //"mp3"			: "audio/mp3",
+  ogg: 'audio/ogg',
+  //"wave"		: 'audio/wave',
+  //"wav"			: 'audio/wav; codec="1"',
+  wav: 'audio/wav',
+  flac: 'audio/flac',
+  'opus+mka': 'audio/webm; codecs="opus"',
+  'vorbis+mka': 'audio/webm; codecs="vorbis"',
+  'vorbis+ogg': 'audio/ogg; codecs="vorbis"',
+  'speex+ogg': 'audio/ogg; codecs="speex"',
+  'flac+ogg': 'audio/ogg; codecs="flac"',
+  'opus+ogg': 'audio/ogg; codecs="opus"',
+}
+
+export const XPRA_AUDIO_PREFERRED_CODEC_ORDER: string[] = [
+  'opus+mka',
+  'vorbis+mka',
+  'opus+ogg',
+  'vorbis+ogg',
+  'opus',
+  'vorbis',
+  'speex+ogg',
+  'flac+ogg',
+  'aac+mpeg4',
+  'mp3+mpeg4',
+  'mp3',
+  'mp3+id3v2',
+  'flac',
+  'wav',
+  'wave',
+]
+
+export const XPRA_AUDIO_AURORA_CODECS: Record<string, string> = {
+  wav: 'lpcm',
+  'mp3+id3v2': 'mp3',
+  flac: 'flac',
+  'aac+mpeg4': 'mp4a',
+}
