@@ -14,9 +14,17 @@
 
 import TypedEmitter from 'typed-emitter'
 import EventEmitter from 'events'
-import { get_key, get_modifiers } from '../lib/keycodes'
-import { getBrowserLanguages } from '../utils/browser'
+import { getBrowserPlatform, getBrowserLanguages } from '../utils/browser'
 import { XpraConnectionOptions, XpraServerCapabilities } from '../types'
+import {
+  KEY_TO_NAME,
+  NUMPAD_TO_NAME,
+  CHAR_TO_NAME,
+  CHARCODE_TO_NAME,
+  CHARCODE_TO_NAME_SHIFTED,
+} from '../keycodes'
+
+const DOM_KEY_LOCATION_RIGHT = 2
 
 export type XpraKeyboardEventEmitters = {
   layoutChanged: (layout: string) => void
@@ -28,6 +36,7 @@ export type XpraKeyboardEventEmitters = {
  * @noInheritDoc
  */
 export class XpraKeyboard extends (EventEmitter as unknown as new () => TypedEmitter<XpraKeyboardEventEmitters>) {
+  private platform = getBrowserPlatform()
   private altgrState = false
   private keyboardKayout = 'us'
   private swapKeys = false
@@ -83,12 +92,65 @@ export class XpraKeyboard extends (EventEmitter as unknown as new () => TypedEmi
     })
   }
 
-  getKey(ev: KeyboardEvent | MouseEvent) {
-    return get_key(ev)
+  getKey(event: KeyboardEvent) {
+    const shifting = event.getModifierState('Shift')
+    const keycode = event.which || event.keyCode
+    const keyval = keycode
+    const group = 0
+    const isMac = this.platform.type === 'darwin'
+    const isWin = this.platform.type === 'win32'
+
+    let keyname = event.code || ''
+    let str = event.key || String.fromCharCode(keycode)
+
+    if (keyname in KEY_TO_NAME) {
+      // some special keys are better mapped by name:
+      keyname = KEY_TO_NAME[keyname]
+    } else if (keyname == '' && str in KEY_TO_NAME) {
+      keyname = KEY_TO_NAME[str]
+    } else if (keyname != str && str in NUMPAD_TO_NAME) {
+      // special case for numpad, try to distinguish arrowpad and numpad:
+      keyname = NUMPAD_TO_NAME[str]
+    } else if (str in CHAR_TO_NAME) {
+      // next try mapping the actual character
+      keyname = CHAR_TO_NAME[str]
+    } else {
+      // fallback to keycode map:
+      if (keycode in CHARCODE_TO_NAME) {
+        keyname = CHARCODE_TO_NAME[keycode]
+      }
+
+      //may override with shifted table:
+      if (shifting && keycode in CHARCODE_TO_NAME_SHIFTED) {
+        keyname = CHARCODE_TO_NAME_SHIFTED[keycode]
+      }
+    }
+
+    if (keyname.match('_L$') && event.location == DOM_KEY_LOCATION_RIGHT) {
+      keyname = keyname.replace('_L', '_R')
+    }
+
+    // AltGr: keep track of pressed state
+    if (
+      str == 'AltGraph' ||
+      (keyname == 'Alt_R' && (isWin || isMac)) ||
+      (keyname == 'Alt_L' && isMac)
+    ) {
+      keyname = 'ISO_Level3_Shift'
+      str = 'AltGraph'
+    }
+
+    return {
+      keyname,
+      keycode,
+      keyval,
+      group,
+      str,
+    }
   }
 
   getModifiers(ev: KeyboardEvent | MouseEvent): string[] {
-    const original = get_modifiers(ev)
+    const original = this.getBaseModifiers(ev)
     const newModifiers = original.slice()
 
     let index = original.indexOf('meta')
@@ -127,11 +189,19 @@ export class XpraKeyboard extends (EventEmitter as unknown as new () => TypedEmi
       index = newModifiers.indexOf(this.modifiers.altgr)
       if (index >= 0) newModifiers.splice(index, 1)
 
-      index = newModifiers.indexOf(this.modifiers.ctrl)
+      index = newModifiers.indexOf(this.modifiers.ctrl!)
       if (index >= 0) newModifiers.splice(index, 1)
     }
 
     return newModifiers
+  }
+
+  private getBaseModifiers(event: KeyboardEvent | MouseEvent) {
+    const modifiers = ['Control', 'Alt', 'Meta', 'Shift', 'CapsLock', 'NumLock']
+
+    return modifiers
+      .filter((str) => event.getModifierState(str))
+      .map((str) => str.toLowerCase())
   }
 
   onKeyPress(str: string, pressed: boolean) {

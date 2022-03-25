@@ -13,9 +13,9 @@
  */
 
 import forge from 'node-forge'
-import { get_key_codes } from '../lib/keycodes'
 import { rencode_selftest } from '../lib/rencode'
 import { XpraCapabilityError } from '../errors'
+import { CHARCODE_TO_NAME } from '../keycodes'
 import {
   XPRA_CLIPBOARD_TARGETS,
   XPRA_RGB_FORMATS,
@@ -45,6 +45,14 @@ import {
   getBrowserSupportsClipboard,
   getBrowserColorGamut,
 } from '../utils/browser'
+
+/**
+ * Creates a supported keyboard keys as tuples
+ */
+const getSupportedKeyCodes = (): XpraXkbpMapKeycode[] =>
+  Object.entries(CHARCODE_TO_NAME)
+    .map(([kc, name]) => [parseInt(kc), name])
+    .map(([kc, name]) => [kc, name, kc, 0, 0] as XpraXkbpMapKeycode)
 
 /**
  * Creates a set of gigest types to use in challenges
@@ -257,7 +265,7 @@ export function createXpraCapabilities(
     'window.pre-map': true,
     keyboard: true,
     xkbmap_layout: browser.layout,
-    xkbmap_keycodes: get_key_codes() as XpraXkbpMapKeycode[],
+    xkbmap_keycodes: getSupportedKeyCodes(),
     xkbmap_print: '',
     xkbmap_query: '',
     desktop_size: size,

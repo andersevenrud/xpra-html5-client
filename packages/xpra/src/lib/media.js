@@ -6,7 +6,45 @@
 'use strict'
 
 import AV from 'xpra-av'
-import Utilities from './utilities'
+
+const Utilities = {
+  isFirefox: function () {
+    const ua = navigator.userAgent.toLowerCase()
+    return ua.includes('firefox')
+  },
+  isOpera: function () {
+    const ua = navigator.userAgent.toLowerCase()
+    return ua.includes('opera')
+  },
+  isSafari: function () {
+    const ua = navigator.userAgent.toLowerCase()
+    return ua.includes('safari') && !ua.includes('chrome')
+  },
+  isChrome: function () {
+    const isChromium = window.hasOwnProperty('chrome'),
+      winNav = window.navigator,
+      vendorName = winNav.vendor,
+      isOpera = winNav.userAgent.includes('OPR'),
+      isIEedge = winNav.userAgent.includes('Edge'),
+      isIOSChrome = winNav.userAgent.match('CriOS')
+    if (isIOSChrome) {
+      return true
+    } else if (
+      isChromium !== null &&
+      isChromium !== undefined &&
+      vendorName === 'Google Inc.' &&
+      isOpera === false &&
+      isIEedge === false
+    ) {
+      return true
+    } else {
+      return false
+    }
+  },
+  isMacOS: function () {
+    return navigator.platform.includes('Mac')
+  },
+}
 
 export const CODEC_DESCRIPTION = {
   mp4a: 'mpeg4: aac',
@@ -122,10 +160,6 @@ export function getMediaSource() {
 }
 
 export function getAuroraAudioCodecs() {
-  //IE is totally useless:
-  if (Utilities.isIE()) {
-    return {}
-  }
   const codecs_supported = {}
   if (AV && AV.Decoder && AV.Decoder.find) {
     for (const codec_option in AURORA_CODECS) {
@@ -142,10 +176,6 @@ export function getAuroraAudioCodecs() {
 export function getMediaSourceAudioCodecs(ignore_blacklist) {
   const media_source_class = getMediaSourceClass()
   if (!media_source_class) {
-    return []
-  }
-  //IE is totally useless:
-  if (Utilities.isIE()) {
     return []
   }
   const codecs_supported = {}
