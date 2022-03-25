@@ -54,11 +54,12 @@ export abstract class XpraWorker extends (EventEmitter as unknown as new () => T
 
   /** @virtual */
   protected init() {
-    /* noop */
+    /* istanbul ignore next */
   }
 
   /** @virtual */
   protected send(_cmd: string, _data: XpraWorkerData) {
+    /* istanbul ignore next */
     console.debug('XpraWorker#send', 'no handler defined')
   }
 
@@ -105,35 +106,5 @@ export abstract class XpraWorker extends (EventEmitter as unknown as new () => T
         }
         break
     }
-  }
-}
-
-/**
- * Local worker instance.
- * Runs in main thread so this has performance impacts.
- */
-export class XpraNullWorker extends XpraWorker {
-  protected init() {
-    this.on('post', ([cmd, data]) => this.processMessage(cmd, data))
-  }
-
-  protected send(cmd: string, data: XpraWorkerData) {
-    this.emit('message', [cmd, data])
-  }
-}
-
-/**
- * Web worker instance.
- */
-export class XpraWebWorker extends XpraWorker {
-  init() {
-    self.addEventListener('message', (ev: MessageEvent) => {
-      const [cmd, data] = ev.data
-      this.processMessage(cmd, data)
-    })
-  }
-
-  protected send(cmd: string, data: XpraWorkerData) {
-    self.postMessage([cmd, data])
   }
 }

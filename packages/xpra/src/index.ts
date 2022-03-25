@@ -7,6 +7,8 @@
 
 export * from './adapters/aurora'
 export * from './adapters/mediasource'
+export * from './adapters/nullWorker'
+export * from './adapters/webWorker'
 export * from './connection/auth'
 export * from './connection/capabilities'
 export * from './connection/client'
