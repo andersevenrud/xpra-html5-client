@@ -447,7 +447,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     ])
   }
 
-  private sendConfigureWindow(
+  sendConfigureWindow(
     wid: number,
     position: XpraVector,
     dimension: XpraVector,
@@ -472,7 +472,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     ])
   }
 
-  private sendDamageSequence(
+  sendDamageSequence(
     packetSequence: number,
     wid: number,
     dimension: XpraVector,
@@ -642,7 +642,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
         'refresh-now': true,
         batch: { reset: true },
       },
-      {}, //no client_properties
+      {},
     ])
   }
 

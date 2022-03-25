@@ -26,7 +26,7 @@ import {
  * Decodes packet data from spesified decoder
  */
 export function decodeXpraPacketData(
-  packetData: Uint8Array,
+  packetData: Uint8Array | string,
   protoFlags: number
 ) {
   if (protoFlags == XpraEncodeBit.RENCODELEGACY) {

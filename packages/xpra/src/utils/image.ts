@@ -12,7 +12,7 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import { uint8fromString, arrayBufferToBase64 } from './data'
+import { uint8fromStringOrUint8, arrayBufferToBase64 } from './data'
 
 /**
  * A promise wrapper for loading images in DOM
@@ -40,8 +40,7 @@ export function imageSourceFromData(
   encoding: string,
   data: Uint8Array | string
 ) {
-  const imageData = typeof data === 'string' ? uint8fromString(data) : data
-
+  const imageData = uint8fromStringOrUint8(data)
   const src = arrayBufferToBase64(imageData)
   const enc = encoding === 'svg' ? 'image/svg+xml' : encoding
 

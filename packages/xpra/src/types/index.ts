@@ -110,6 +110,7 @@ export interface XpraSoundCapability {
   'sound.decoders': string[]
   'sound.bundle-metadata': boolean
 }
+
 export interface XpraEncodingCapability {
   encodings: XpraDrawEncoding[]
   'encoding.scrolling': boolean
