@@ -1,8 +1,9 @@
 import WS from 'jest-websocket-mock'
 import { XpraClient } from '../../src/connection/client'
 import { XpraNullWorker } from '../../src/io/worker'
-import { XpraEncodeBit } from '../../src/types'
+import { XpraEncodeBit, XpraWindow } from '../../src/types'
 import { createDefaultXpraConnectionOptions } from '../../src/connection/options'
+import { uint8fromString } from '../../src/utils/data'
 import { ord, bencode } from '../../src/lib/bencode'
 
 const options = createDefaultXpraConnectionOptions()
@@ -45,6 +46,19 @@ jest.spyOn(global.console, 'error').mockImplementation(() => jest.fn())
 jest.mock('xpra-av')
 
 describe('Client', () => {
+  const testWindow: XpraWindow = {
+    position: [1, 2],
+    dimension: [3, 4],
+    id: 123,
+    overrideRedirect: false,
+    metadata: {
+      title: 'Jest',
+      'window-type': ['NORMAL'],
+      'class-instance': [],
+    },
+    clientProperties: {},
+  }
+
   describe('Connection', () => {
     const server = new WS('ws://localhost:9999')
     const worker = new JestWorker()
@@ -58,6 +72,15 @@ describe('Client', () => {
       if (output) {
         expect(fn).toBeCalledWith(output)
       }
+    }
+
+    function checkRequest(cb: any, packet: any, n = 1) {
+      const fn = jest.fn()
+      worker.on('post', fn)
+      cb()
+      expect(fn).toBeCalledTimes(n)
+      expect(fn).toBeCalledWith(['send', packet])
+      worker.off('post', fn)
     }
 
     afterAll(() => {
@@ -125,7 +148,7 @@ describe('Client', () => {
       client.on('hello', helloFn)
       client.on('pong', pongFn)
 
-      server.send(createPacket(['hello', { pid: 666 }]))
+      server.send(createPacket(['hello', { pid: 666, 'wheel.precise': true }]))
       server.send(createPacket(['ping', {}]))
       server.send(createPacket(['ping_echo', {}]))
 
@@ -337,6 +360,232 @@ describe('Client', () => {
           'http://localhost'
         )
       })
+    })
+
+    describe('Senders', () => {
+      it('desktop_size', () => {
+        checkRequest(
+          () => client.sendResize(800, 600),
+          [
+            'desktop_size',
+            800,
+            600,
+            [
+              [
+                'HTML',
+                800,
+                600,
+                212,
+                159,
+                [['Canvas', 0, 0, 800, 600, 212, 159]],
+                0,
+                0,
+                800,
+                600,
+              ],
+            ],
+          ]
+        )
+      })
+
+      it('close-window', () => {
+        checkRequest(() => client.sendCloseWindow(123), ['close-window', 123])
+      })
+
+      it('map-window', () => {
+        checkRequest(
+          () => client.sendMapWindow(testWindow),
+          ['map-window', 123, 1, 2, 3, 4, {}]
+        )
+      })
+
+      it('unmap-window', () => {
+        checkRequest(
+          () => client.sendUnmapWindow(testWindow),
+          ['unmap-window', 123, true]
+        )
+      })
+
+      it('configure-window', () => {
+        checkRequest(
+          () => client.sendConfigureWindow(123, [1, 2], [3, 4], {}, {}, true),
+          ['configure-window', 123, 1, 2, 3, 4, {}, 0, {}, true]
+        )
+      })
+
+      it('damage-sequence', () => {
+        checkRequest(
+          () => client.sendDamageSequence(1, 123, [1, 2], 666, ''),
+          ['damage-sequence', 1, 123, 1, 2, 666, '']
+        )
+      })
+
+      it('pointer-position', () => {
+        checkRequest(
+          () => client.sendMouseMove(123, [1, 2], ['a', 'b', 'c']),
+          ['pointer-position', 123, [1, 2], ['a', 'b', 'c'], []]
+        )
+      })
+
+      it('wheel-motion', () => {
+        checkRequest(
+          () => client.sendMouseWheel(123, [1, 2], [3, 4], ['a', 'b', 'c']),
+          ['wheel-motion', 123, 6, 100, [3, 4], ['a', 'b', 'c'], []]
+        )
+      })
+
+      it('button-action x2', () => {
+        checkRequest(
+          () => client.sendMouseButton(123, [1, 2], 3, true, ['a', 'b', 'c']),
+          ['button-action', 123, 3, true, [1, 2], ['a', 'b', 'c'], []]
+        )
+        checkRequest(
+          () => client.sendMouseButton(123, [1, 2], 3, false, ['a', 'b', 'c']),
+          ['button-action', 123, 3, false, [1, 2], ['a', 'b', 'c'], []]
+        )
+      })
+
+      it('key-action x2', () => {
+        checkRequest(
+          () =>
+            client.sendKeyAction(
+              123,
+              'name',
+              true,
+              ['a', 'b', 'c'],
+              666,
+              'str',
+              555,
+              10
+            ),
+          [
+            'key-action',
+            123,
+            'name',
+            true,
+            ['a', 'b', 'c'],
+            666,
+            'str',
+            555,
+            10,
+          ]
+        )
+        checkRequest(
+          () =>
+            client.sendKeyAction(
+              123,
+              'name',
+              false,
+              ['a', 'b', 'c'],
+              666,
+              'str',
+              555,
+              10
+            ),
+          [
+            'key-action',
+            123,
+            'name',
+            false,
+            ['a', 'b', 'c'],
+            666,
+            'str',
+            555,
+            10,
+          ]
+        )
+      })
+
+      it('layout-changed', () => {
+        checkRequest(
+          () => client.sendLayoutChanged('layout'),
+          ['layout-changed', 'layout', '']
+        )
+      })
+
+      it('focus', () => {
+        // TODO: Check window requests as well
+        checkRequest(() => client.sendWindowRaise(123, []), ['focus', 123, []])
+      })
+
+      it('close-window', () => {
+        checkRequest(() => client.sendWindowClose(123), ['close-window', 123])
+      })
+
+      it('notification-close', () => {
+        checkRequest(
+          () => client.sendNotificationClose(123),
+          ['notification-close', 123, 2, '']
+        )
+      })
+
+      it('suspend', () => {
+        checkRequest(
+          () => client.sendSuspend([1, 2, 3]),
+          ['suspend', true, [1, 2, 3]]
+        )
+      })
+
+      it('resume', () => {
+        checkRequest(
+          () => client.sendResume([1, 2, 3]),
+          ['resume', true, [1, 2, 3]],
+          2
+        )
+      })
+
+      it('buffer-refresh', () => {
+        checkRequest(
+          () => client.sendBufferRefresh(123),
+          [
+            'buffer-refresh',
+            123,
+            0,
+            100,
+            { 'refresh-now': true, batch: { reset: true } },
+            {},
+          ]
+        )
+      })
+
+      it('connection-data', () => {
+        checkRequest(
+          () => client.sendConnectionData({ foo: 'bar' }),
+          ['connection-data', { foo: 'bar' }]
+        )
+      })
+
+      it('sound-control x2', () => {
+        checkRequest(() => client.sendSoundStart(), ['sound-control', 'start'])
+        checkRequest(() => client.sendSoundStop(), ['sound-control', 'stop'])
+      })
+
+      it('start-command', () => {
+        checkRequest(
+          () => client.sendStartCommand('name', 'command', true),
+          ['start-command', 'name', 'command', 'True']
+        )
+      })
+
+      it('send-file', () => {
+        const p = uint8fromString('Hello world')
+        checkRequest(
+          () => client.sendFile('filename', 'text/plain', p.length, p),
+          ['send-file', 'filename', 'text/plain', false, false, p.length, p, {}]
+        )
+      })
+
+      it('shutdown-server', () => {
+        checkRequest(() => client.sendShutdown(), ['shutdown-server'])
+      })
+
+      it.todo('clipboard-token')
+
+      it.todo('logging')
+
+      it.todo('clipboard-contents-none')
+
+      it.todo('clipboard-contents')
     })
   })
 })
