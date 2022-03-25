@@ -1066,7 +1066,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
   private processSendFile(
     filename: string,
     mime: string,
-    print: boolean,
+    print: number,
     size: number,
     data: Uint8Array
   ) {
@@ -1086,7 +1086,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
       mime,
       size,
       blob,
-      print,
+      print: !!print,
     })
   }
 
