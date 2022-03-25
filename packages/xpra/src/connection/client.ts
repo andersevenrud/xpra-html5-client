@@ -1079,7 +1079,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
       return
     }
 
-    const blob = new Blob([data], mime as BlobPropertyBag)
+    const blob = new Blob([data], { type: mime })
 
     this.emit('sendFile', {
       filename,
