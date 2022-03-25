@@ -13,12 +13,12 @@
  */
 
 import AV from 'xpra-av'
-import { XpraAudioAdapter } from '../io/audioAdapter'
-import { XpraAudioCodecMap } from '../types'
+import { XpraAudioAdapter } from './adapter'
+import { XpraAudioCodecMap } from '../../types'
 import {
   XPRA_AUDIO_CODEC_DESCRIPTION,
   XPRA_AUDIO_AURORA_CODECS,
-} from '../constants'
+} from '../../constants'
 
 /**
  * Aurora Audio Adapter

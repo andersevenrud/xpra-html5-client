@@ -12,10 +12,10 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import { uint8fromString } from '../utils/data'
-import { XpraAudioError } from '../errors'
-import { XpraAudioCodecType, XpraAudioMetadata } from '../types'
-import { XPRA_MAX_AUDIO_BUFFERS } from '../constants'
+import { uint8fromString } from '../../utils/data'
+import { XpraAudioError } from '../../errors'
+import { XpraAudioCodecType, XpraAudioMetadata } from '../../types'
+import { XPRA_MAX_AUDIO_BUFFERS } from '../../constants'
 
 const CONCAT = true
 

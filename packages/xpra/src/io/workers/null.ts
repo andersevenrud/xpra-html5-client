@@ -12,8 +12,8 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import { XpraWorker } from '../io/worker'
-import { XpraWorkerData } from '../types'
+import { XpraWorker } from '../worker'
+import { XpraWorkerData } from '../../types'
 
 /**
  * Local worker instance.

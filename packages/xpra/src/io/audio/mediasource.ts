@@ -12,14 +12,14 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import { getBrowser, getBrowserPlatform } from '../utils/browser'
-import { XpraAudioAdapter } from '../io/audioAdapter'
-import { XpraInvalidAudioCodecError, XpraAudioError } from '../errors'
-import { XpraAudioCodecMap } from '../types'
+import { getBrowser, getBrowserPlatform } from '../../utils/browser'
+import { XpraAudioAdapter } from './adapter'
+import { XpraInvalidAudioCodecError, XpraAudioError } from '../../errors'
+import { XpraAudioCodecMap } from '../../types'
 import {
   XPRA_AUDIO_CODEC_STRING,
   XPRA_AUDIO_CODEC_DESCRIPTION,
-} from '../constants'
+} from '../../constants'
 
 /**
  * MediaSource Audio Adapter

@@ -1,6 +1,6 @@
 import WS from 'jest-websocket-mock'
 import { XpraClient } from '../../src/connection/client'
-import { XpraNullWorker } from '../../src/adapters/nullWorker'
+import { XpraNullWorker } from '../../src/io/workers/null'
 import { XpraEncodeBit, XpraWindow } from '../../src/types'
 import { createDefaultXpraConnectionOptions } from '../../src/connection/options'
 import { uint8fromString } from '../../src/utils/data'
