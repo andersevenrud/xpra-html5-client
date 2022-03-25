@@ -14,7 +14,7 @@
 
 import forge from 'node-forge'
 import { ord } from '../lib/bencode'
-import { rgb24ToRgb32, rgb32Restride } from '../utils/image'
+import { rgb24ToRgb32, rgb32Restride } from '../utils/rgb'
 import { uint8fromStringOrString, uint8fromStringOrUint8 } from '../utils/data'
 import { createXpraCipher, decryptXpraPacketData } from '../connection/crypto'
 import { decodeXpraPacketData } from '../connection/encoding'
