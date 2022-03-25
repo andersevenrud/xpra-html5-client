@@ -49,10 +49,6 @@ describe('Data utilities', () => {
     it('should return uint8 from uint8', () => {
       expect(uint8fromStringOrUint8(hello)).toEqual(hello)
     })
-
-    it('should throw error', () => {
-      expect(() => uint8fromStringOrUint8(null!)).toThrowError()
-    })
   })
 
   describe('createHexUUID', () => {

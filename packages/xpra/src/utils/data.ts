@@ -69,8 +69,6 @@ export function uint8fromStringOrString(input: string | Uint8Array) {
 export function uint8fromStringOrUint8(input: string | Uint8Array) {
   if (typeof input === 'string') {
     return uint8fromString(input)
-  } else if (!(input instanceof Uint8Array)) {
-    throw new TypeError('Uint8Array required')
   }
 
   return input
