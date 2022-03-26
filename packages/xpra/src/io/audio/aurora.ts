@@ -18,7 +18,7 @@ import { XpraAudioCodecMap } from '../../types'
 import {
   XPRA_AUDIO_CODEC_DESCRIPTION,
   XPRA_AUDIO_AURORA_CODECS,
-} from '../../constants'
+} from '../../constants/xpra'
 
 /**
  * Aurora Audio Adapter

@@ -21,7 +21,7 @@ import {
   XPRA_DEFAULT_KEY_HASH,
   XPRA_DEFAULT_MODE,
   XPRA_CHUNK_SZ,
-} from '../constants'
+} from '../constants/xpra'
 
 export interface XpraCipher {
   keyHash: string

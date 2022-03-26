@@ -17,7 +17,7 @@ import EventEmitter from 'events'
 import { XpraAudioAdapter } from './audio/adapter'
 import { XpraAuroraAdapter } from './audio/aurora'
 import { XpraMediaSourceAdapter } from './audio/mediasource'
-import { XPRA_AUDIO_PREFERRED_CODEC_ORDER } from '../constants'
+import { XPRA_AUDIO_PREFERRED_CODEC_ORDER } from '../constants/xpra'
 import {
   XpraServerCapabilities,
   XpraAudioFramework,

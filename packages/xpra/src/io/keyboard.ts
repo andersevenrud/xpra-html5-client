@@ -22,7 +22,7 @@ import {
   CHAR_TO_NAME,
   CHARCODE_TO_NAME,
   CHARCODE_TO_NAME_SHIFTED,
-} from '../keycodes'
+} from '../constants/keycodes'
 
 const DOM_KEY_LOCATION_RIGHT = 2
 

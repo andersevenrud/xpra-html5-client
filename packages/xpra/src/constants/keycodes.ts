@@ -12,7 +12,7 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import { KEYSYM_TO_UNICODE } from './lib/keysym'
+import { KEYSYM_TO_UNICODE } from './keysym'
 
 /**
  * Map javascript key names to the X11 naming convention the server expects:

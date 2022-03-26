@@ -12,7 +12,7 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import { XPRA_CHUNK_SZ } from '../constants'
+import { XPRA_CHUNK_SZ } from '../constants/xpra'
 
 export function arrayBufferToBase64(uintArray: Uint8Array) {
   // apply in chunks of 10400 to avoid call stack overflow

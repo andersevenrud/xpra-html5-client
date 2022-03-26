@@ -12,8 +12,8 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import { LANGUAGE_TO_LAYOUT } from '../keycodes'
-import { XPRA_COLOR_GAMUT, XPRA_PLATFORM } from '../constants'
+import { LANGUAGE_TO_LAYOUT } from '../constants/keycodes'
+import { XPRA_COLOR_GAMUT, XPRA_PLATFORM } from '../constants/xpra'
 
 const defaultPlatform = ['unknown', ['unknown', 'unknown']]
 

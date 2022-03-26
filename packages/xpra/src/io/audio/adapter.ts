@@ -15,7 +15,7 @@
 import { uint8fromString } from '../../utils/data'
 import { XpraAudioError } from '../../errors'
 import { XpraAudioCodecType, XpraAudioMetadata } from '../../types'
-import { XPRA_MAX_AUDIO_BUFFERS } from '../../constants'
+import { XPRA_MAX_AUDIO_BUFFERS } from '../../constants/xpra'
 
 const CONCAT = true
 

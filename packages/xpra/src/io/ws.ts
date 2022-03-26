@@ -9,7 +9,7 @@ import TypedEmitter from 'typed-emitter'
 import EventEmitter from 'events'
 import { XpraConnectionError } from '../errors'
 import { XpraConnectionOptions } from '../types'
-import { XPRA_CLOSE_CODES } from '../constants'
+import { XPRA_CLOSE_CODES } from '../constants/xpra'
 
 export type XpraConnectionStatus =
   | 'disconnected'

@@ -14,7 +14,7 @@
 
 import TypedEmitter from 'typed-emitter'
 import EventEmitter from 'events'
-import { XPRA_READ_ONLY_PACKETS } from '../constants'
+import { XPRA_READ_ONLY_PACKETS } from '../constants/xpra'
 import { XpraWebsocket, XpraConnectionStatus } from '../io/ws'
 import { XpraClipboard } from '../io/clipboard'
 import { XpraAudio } from '../io/audio'

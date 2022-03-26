@@ -15,7 +15,7 @@
 import forge from 'node-forge'
 import { rencode_selftest } from '../lib/rencode'
 import { XpraCapabilityError } from '../errors'
-import { CHARCODE_TO_NAME } from '../keycodes'
+import { CHARCODE_TO_NAME } from '../constants/keycodes'
 import {
   XPRA_CLIPBOARD_TARGETS,
   XPRA_RGB_FORMATS,
@@ -24,7 +24,7 @@ import {
   XPRA_HTML5_REVISION,
   XPRA_HTML5_LOCAL_MODIFICATIONS,
   XPRA_HTML5_BRANCH,
-} from '../constants'
+} from '../constants/xpra'
 import {
   XpraVector,
   XpraCapabilities,

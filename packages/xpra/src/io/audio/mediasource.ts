@@ -19,7 +19,7 @@ import { XpraAudioCodecMap } from '../../types'
 import {
   XPRA_AUDIO_CODEC_STRING,
   XPRA_AUDIO_CODEC_DESCRIPTION,
-} from '../../constants'
+} from '../../constants/xpra'
 
 /**
  * MediaSource Audio Adapter

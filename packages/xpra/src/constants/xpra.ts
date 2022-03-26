@@ -12,7 +12,7 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import { XpraClipboardTarget, XpraRGBFormats, XpraDrawEncoding } from './types'
+import { XpraClipboardTarget, XpraRGBFormats, XpraDrawEncoding } from '../types'
 
 // FIXME: Insert from environmental variables
 export const XPRA_HTML5_VERSION = '5.0'
