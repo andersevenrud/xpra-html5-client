@@ -12,7 +12,7 @@
  * 		sed 's/#define XKB_KEY_//g; s/ *0x.*U+/ 0x/g' | \
  * 		awk '{print "\""$1"\" : "$2","}'
  */
-export const KEYSYM_TO_UNICODE = {
+export const KEYSYM_TO_UNICODE: Record<string, number> = {
   space: 0x0020,
   exclam: 0x0021,
   quotedbl: 0x0022,
