@@ -15,8 +15,8 @@
 import TypedEmitter from 'typed-emitter'
 import EventEmitter from 'events'
 import { uint8toString } from '../utils/data'
-import { unescapeUri } from '../utils/browser'
-import { browserReadClipboard, browserWriteClipboard } from '../utils/browser'
+import { unescapeUri } from '../utils/data'
+import { browserReadClipboard, browserWriteClipboard } from '../utils/clipboard'
 import {
   XpraPacketArguments,
   XpraClipboardSelection,

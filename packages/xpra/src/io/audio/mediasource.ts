@@ -12,7 +12,7 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import { getBrowser, getBrowserPlatform } from '../../utils/browser'
+import { getBrowser, getBrowserPlatform } from '../../utils/platform'
 import { XpraAudioAdapter } from './adapter'
 import { XpraInvalidAudioCodecError, XpraAudioError } from '../../errors'
 import { XpraAudioCodecMap } from '../../types'

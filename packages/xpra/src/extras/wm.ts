@@ -15,12 +15,9 @@
 import { debounce } from 'lodash-es'
 import { XpraClient } from '../connection/client'
 import { renderXpraDrawData } from '../io/render'
-import {
-  browserSaveFile,
-  browserPrintFile,
-  createNativeNotification,
-  getBrowserConnectionInfo,
-} from '../utils/browser'
+import { browserSaveFile, browserPrintFile } from '../utils/file'
+import { createNativeNotification } from '../utils/notification'
+import { getBrowserConnectionInfo } from '../utils/platform'
 import {
   XpraWindow,
   XpraDraw,

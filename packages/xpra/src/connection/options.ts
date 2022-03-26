@@ -12,7 +12,8 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import { getBrowserLanguages, parseUrlQuerySearch } from '../utils/browser'
+import { getBrowserLanguages } from '../utils/platform'
+import { parseUrlQuerySearch } from '../utils/url'
 import { XpraConnectionOptions } from '../types'
 
 /**

@@ -28,8 +28,7 @@ import { createDefaultXpraConnectionOptions } from './options'
 import { createXpraChallengeResponse } from './auth'
 import { createXDGMenu } from '../utils/xdg'
 import { imageSourceFromData } from '../utils/image'
-import { uint8toString } from '../utils/data'
-import { unescapeUri } from '../utils/browser'
+import { uint8toString, unescapeUri } from '../utils/data'
 import {
   XpraConnectionError,
   XpraChallengeError,

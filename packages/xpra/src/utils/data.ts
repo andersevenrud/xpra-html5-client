@@ -114,3 +114,6 @@ export function xorString(str1: string, str2: string) {
   }
   return result
 }
+
+// FIXME: Find a modern replacement
+export const unescapeUri = (s: string) => unescape(encodeURIComponent(s))

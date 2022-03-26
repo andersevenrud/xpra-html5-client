@@ -14,7 +14,7 @@
 
 import TypedEmitter from 'typed-emitter'
 import EventEmitter from 'events'
-import { getBrowserPlatform, getBrowserLanguages } from '../utils/browser'
+import { getBrowserPlatform, getBrowserLanguages } from '../utils/platform'
 import { XpraConnectionOptions, XpraServerCapabilities } from '../types'
 import {
   KEY_TO_NAME,

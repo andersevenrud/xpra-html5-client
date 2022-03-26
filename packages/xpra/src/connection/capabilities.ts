@@ -37,14 +37,14 @@ import {
   XpraXkbpMapKeycode,
 } from '../types'
 import { createRandomSecureString, createHexUUID } from '../utils/data'
+import { getBrowserSupportsClipboard } from '../utils/clipboard'
 import {
   getBrowserDPI,
   getBrowser,
   getBrowserPlatform,
   getBrowserConnectionInfo,
-  getBrowserSupportsClipboard,
   getBrowserColorGamut,
-} from '../utils/browser'
+} from '../utils/platform'
 
 /**
  * Creates a supported keyboard keys as tuples

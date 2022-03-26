@@ -1,6 +1,6 @@
-import { parseUrlQuerySearch } from '../../src/utils/browser'
+import { parseUrlQuerySearch } from '../../src/utils/url'
 
-describe('Browser utilities', () => {
+describe('Url utilities', () => {
   describe('parseUrlQuerySearch', () => {
     const search =
       '?number=1&booleanString=on&booleanNumber=1&booleanBoolean=true&list=a,b,c'
