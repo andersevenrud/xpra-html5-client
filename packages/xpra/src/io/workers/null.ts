@@ -12,14 +12,44 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import { XpraWorker } from '../worker'
+import { XpraPacketWorker, XpraDecodeWorker } from '../worker'
 import { XpraWorkerData } from '../../types'
 
 /**
- * Local worker instance.
+ * Local decode worker instance.
  * Runs in main thread so this has performance impacts.
  */
-export class XpraNullWorker extends XpraWorker {
+export class XpraDecodeNullWorker extends XpraDecodeWorker {
+  constructor() {
+    super()
+    console.warn(
+      'XpraNullDecodeWorker',
+      'using null worker impacts performance'
+    )
+  }
+
+  protected init() {
+    this.on('post', ([cmd, data]) => this.processMessage(cmd, data))
+  }
+
+  protected send(cmd: string, data: XpraWorkerData) {
+    this.emit('message', [cmd, data])
+  }
+}
+
+/**
+ * Local packet worker instance.
+ * Runs in main thread so this has performance impacts.
+ */
+export class XpraPacketNullWorker extends XpraPacketWorker {
+  constructor() {
+    super()
+    console.warn(
+      'XpraNullPacketWorker',
+      'using null worker impacts performance'
+    )
+  }
+
   protected init() {
     this.on('post', ([cmd, data]) => this.processMessage(cmd, data))
   }

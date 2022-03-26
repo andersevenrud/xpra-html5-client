@@ -12,15 +12,31 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
-import { XpraWorker } from '../worker'
+import { XpraPacketWorker, XpraDecodeWorker } from '../worker'
 import { XpraWorkerData } from '../../types'
 
 /* istanbul ignore file */
 
 /**
+ * Decoder Web worker instance.
+ */
+export class XpraDecodeWebWorker extends XpraDecodeWorker {
+  init() {
+    self.addEventListener('message', (ev: MessageEvent) => {
+      const [cmd, data] = ev.data
+      this.processMessage(cmd, data)
+    })
+  }
+
+  protected send(cmd: string, data: XpraWorkerData) {
+    self.postMessage([cmd, data])
+  }
+}
+
+/**
  * Web worker instance.
  */
-export class XpraWebWorker extends XpraWorker {
+export class XpraPacketWebWorker extends XpraPacketWorker {
   init() {
     self.addEventListener('message', (ev: MessageEvent) => {
       const [cmd, data] = ev.data

@@ -14,11 +14,13 @@ import { XpraClient, XpraWindowManager } from 'xpra-html5-client'
 import { initDarkMode } from './app/utils'
 import { App } from './app/App'
 import XpraWorker from './worker?worker'
+import XpraDecoder from './decoder?worker'
 
 async function main() {
   const app = document.querySelector<HTMLDivElement>('#app')
   const worker = new XpraWorker()
-  const xpra = new XpraClient({ worker })
+  const decoder = new XpraDecoder()
+  const xpra = new XpraClient({ worker, decoder })
   const wm = new XpraWindowManager(xpra)
 
   await xpra.init()

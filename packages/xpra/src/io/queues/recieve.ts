@@ -14,10 +14,10 @@
 
 import forge from 'node-forge'
 import { ord } from '../../lib/bencode'
-import { rgb24ToRgb32, rgb32Restride } from '../../utils/rgb'
 import { XpraQueue } from '../queue'
 import { decodeXpraPacketData } from '../../connection/encoding'
 import { XpraInvalidHeaderError, XpraPacketError } from '../../errors'
+import { decompressXpraPacketData } from '../../connection/compression'
 import {
   uint8fromStringOrString,
   uint8fromStringOrUint8,
@@ -26,10 +26,6 @@ import {
   createXpraCipher,
   decryptXpraPacketData,
 } from '../../connection/crypto'
-import {
-  decompressXpraPacketData,
-  decompressXpraDrawData,
-} from '../../connection/compression'
 import {
   XpraRecieveHeader,
   XpraRecievePacket,
@@ -296,18 +292,6 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
     if (packet[0] === 'draw') {
       packet[6] = uint8fromStringOrString(packet[6])
       packet[7] = uint8fromStringOrUint8(packet[7])
-
-      // FIXME: This should be in the rendering implementation
-      if (packet[6] === 'rgb32' || packet[6] === 'rgb24') {
-        packet[7] = this.decodeRGB(packet)
-
-        if (packet[6] == 'rgb24') {
-          packet[9] = packet[4] * 4
-          packet[6] = 'rgb32'
-        }
-
-        packet[7] = uint8fromStringOrUint8(packet[7])
-      }
     } else if (packet[0] === 'sound-data') {
       packet[2] = uint8fromStringOrUint8(packet[2])
     } else if (packet[0] === 'notify_show') {
@@ -321,23 +305,5 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
     }
 
     return packet
-  }
-
-  /**
-   * deals with zlib or lz4 pixel compression as well as converting rgb24 to rgb32
-   * and re-striding the pixel data if needed so that lines are not padded,
-   * that is: the rowstride must be width*4
-   */
-  private decodeRGB(packet: XpraRecievePacket) {
-    const [, , , , width, height, coding, , , rowStride] = packet
-    const data = decompressXpraDrawData(packet)
-
-    if (coding == 'rgb24') {
-      return rgb24ToRgb32(data, width, height, rowStride)
-    } else if (rowStride === width * 4) {
-      return new Uint8Array(data)
-    }
-
-    return rgb32Restride(data, width, height, rowStride)
   }
 }

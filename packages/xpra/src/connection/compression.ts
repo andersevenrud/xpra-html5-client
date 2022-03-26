@@ -15,7 +15,7 @@
 import * as zlib from 'pako'
 import lz4 from 'lz4js'
 import brotliDecompress from 'brotli/decompress'
-import { XpraInflateBit, XpraRecievePacket } from '../types'
+import { XpraInflateBit, XpraDraw } from '../types'
 
 /**
  * Xpra wrapper for lz4 decompression
@@ -56,15 +56,12 @@ export function decompressXpraPacketData(
 /**
  * Decompresses draw data from compression bit set in draw packet
  */
-export function decompressXpraDrawData(packet: XpraRecievePacket) {
-  const data = packet[7]
-  const options = packet[10] || {}
-
-  if (options.zlib > 0) {
-    return zlib.inflate(data)
-  } else if (options.lz4 > 0) {
-    return lz4decompress(data)
+export function decompressXpraDrawData(draw: XpraDraw) {
+  if (draw.options.zlib) {
+    return zlib.inflate(draw.image as Uint8Array)
+  } else if (draw.options.lz4) {
+    return lz4decompress(draw.image as Uint8Array)
   }
 
-  return data
+  return draw.image
 }

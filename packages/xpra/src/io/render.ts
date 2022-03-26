@@ -14,16 +14,14 @@
 
 import BroadwayDecoder from 'xpra-broadway'
 import JSMpeg from 'xpra-jsmpeg'
-import { XpraDraw, XpraDrawScrollData } from '../types'
-import { imageSourceFromData, loadImage } from '../utils/image'
+import { XpraDraw } from '../types'
 
 /**
  * Creates image data from draw data
  */
 export async function encodeXpraDrawData(
-  context: CanvasRenderingContext2D,
   draw: XpraDraw
-): Promise<CanvasImageSource | ImageData | null> {
+): Promise<ImageData | ImageBitmap | null> {
   const [width, height] = draw.dimension
   switch (draw.encoding) {
     case 'rgb':
@@ -41,9 +39,11 @@ export async function encodeXpraDrawData(
     case 'png/L':
     case 'png':
     case 'webp':
-      const data = imageSourceFromData(draw.encoding, draw.image as Uint8Array)
+      const blob = new Blob([draw.image as Uint8Array], {
+        type: 'image/' + draw.encoding.split('/')[0],
+      })
 
-      return loadImage(data)
+      return createImageBitmap(blob, 0, 0, width, height)
 
     case 'h264':
       return await new Promise((resolve, reject) => {
@@ -61,9 +61,8 @@ export async function encodeXpraDrawData(
             w: number,
             h: number
           ) => {
-            const img = context.createImageData(w, h)
-            img.data.set(buffer)
-            resolve(img)
+            const img = new ImageData(new Uint8ClampedArray(buffer), w, h)
+            createImageBitmap(img, 0, 0, w, h).then(resolve).catch(reject)
           }
 
           h264.decode(draw.image as Uint8Array)
@@ -103,47 +102,4 @@ export async function encodeXpraDrawData(
   }
 
   return null
-}
-
-/**
- * Draws image data onto a canvas surface
- */
-export async function renderXpraDrawData(
-  canvas: HTMLCanvasElement,
-  draw: XpraDraw
-) {
-  const context = canvas.getContext('2d')
-  const [x, y] = draw.position
-  const [w, h] = draw.dimension
-
-  if (context && draw.encoding !== 'void') {
-    if (draw.encoding === 'scroll') {
-      ;(draw.image as XpraDrawScrollData).forEach(
-        ([sx, sy, sw, sh, xdelta, ydelta]) => {
-          context.drawImage(
-            canvas,
-            sx,
-            sy,
-            sw,
-            sh,
-            sx + xdelta,
-            sy + ydelta,
-            sw,
-            sh
-          )
-        }
-      )
-    } else {
-      const result = await encodeXpraDrawData(context, draw)
-
-      if (result) {
-        if (result instanceof ImageData) {
-          context.putImageData(result, x, y, 0, 0, w, h)
-        } else {
-          context.clearRect(x, y, w, h)
-          context.drawImage(result, x, y)
-        }
-      }
-    }
-  }
 }

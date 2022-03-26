@@ -15,7 +15,7 @@
 import TypedEmitter from 'typed-emitter'
 import EventEmitter from 'events'
 import { XpraWorkerError } from '../errors'
-import { XpraWorker } from '../io/worker'
+import { XpraPacketWorker, XpraDecodeWorker } from '../io/worker'
 import {
   XpraConnectionOptions,
   XpraSendPacket,
@@ -25,6 +25,7 @@ import {
   XpraCipherCapability,
   XpraCapabilities,
   XpraServerCapabilities,
+  XpraDraw,
 } from '../types'
 
 export type XpraWorkerMessagePacket = [XpraWorkerMessage, XpraWorkerData]
@@ -32,6 +33,7 @@ export type XpraWorkerMessagePacket = [XpraWorkerMessage, XpraWorkerData]
 export type XpraWorkerProxyEventEmitters = {
   recieve: (packet: XpraRecievePacket) => void
   send: (data: ArrayBuffer) => void
+  draw: (draw: XpraDraw, buffer: ImageData | null) => void
   failure: (error: Error) => void
 }
 
@@ -40,19 +42,22 @@ export type XpraWorkerProxyEventEmitters = {
  * @noInheritDoc
  */
 export class XpraWorkerProxy extends (EventEmitter as unknown as new () => TypedEmitter<XpraWorkerProxyEventEmitters>) {
-  private webworker: Worker | XpraWorker | null = null
+  private packetWorker: Worker | XpraPacketWorker | null = null
+  private decodeWorker: Worker | XpraDecodeWorker | null = null
 
-  private send(msg: XpraWorkerMessage, data: XpraWorkerData) {
-    if (this.webworker) {
-      if (this.webworker instanceof XpraWorker) {
-        this.webworker.emit('post', [msg, data])
-      } else {
-        this.webworker.postMessage([msg, data])
-      }
+  private postPacketMessage(msg: XpraWorkerMessage, data: XpraWorkerData) {
+    if (this.packetWorker) {
+      this.packetWorker.postMessage([msg, data])
     }
   }
 
-  private recieve(msg: XpraWorkerMessage, data: XpraWorkerData) {
+  private postDecoderMessage(data: XpraDraw) {
+    if (this.decodeWorker) {
+      this.decodeWorker.postMessage(['decode', data])
+    }
+  }
+
+  private onMessage(msg: XpraWorkerMessage, data: XpraWorkerData) {
     switch (msg) {
       case 'send':
         this.emit('send', data as ArrayBuffer)
@@ -62,6 +67,11 @@ export class XpraWorkerProxy extends (EventEmitter as unknown as new () => Typed
         this.emit('recieve', data as XpraRecievePacket)
         break
 
+      case 'imagedata':
+        const [draw, buffer] = data
+        this.emit('draw', draw, buffer)
+        break
+
       case 'failure':
         const [msg, stack] = data as [string, string]
         const err = new XpraWorkerError(`${msg} | ${stack}`)
@@ -69,24 +79,30 @@ export class XpraWorkerProxy extends (EventEmitter as unknown as new () => Typed
     }
   }
 
-  setWorker(worker: Worker | XpraWorker) {
-    this.webworker = worker
+  setDecodeWorker(worker: Worker | XpraDecodeWorker) {
+    this.decodeWorker = worker
 
-    if (this.webworker instanceof XpraWorker) {
-      this.webworker.on('message', (message: XpraWorkerMessagePacket) => {
-        const [msg, data] = message
-        this.recieve(msg, data)
-      })
-    } else {
-      this.webworker.addEventListener('message', (ev: MessageEvent) => {
-        const [msg, data] = ev.data as XpraWorkerMessagePacket
-        this.recieve(msg, data)
-      })
+    this.decodeWorker.addEventListener('message', (ev: MessageEvent) => {
+      const [msg, data] = ev.data as XpraWorkerMessagePacket
+      this.onMessage(msg, data)
+    })
 
-      this.webworker.addEventListener('error', (ev: ErrorEvent) => {
-        this.emit('failure', ev as unknown as Error)
-      })
-    }
+    this.decodeWorker.addEventListener('error', (ev: ErrorEvent) => {
+      this.emit('failure', ev as unknown as Error)
+    })
+  }
+
+  setWorker(worker: Worker | XpraPacketWorker) {
+    this.packetWorker = worker
+
+    this.packetWorker.addEventListener('message', (ev: MessageEvent) => {
+      const [msg, data] = ev.data as XpraWorkerMessagePacket
+      this.onMessage(msg, data)
+    })
+
+    this.packetWorker.addEventListener('error', (ev: ErrorEvent) => {
+      this.emit('failure', ev as unknown as Error)
+    })
   }
 
   setupRecieveCipher(capabilities: XpraCapabilities, key: string) {
@@ -94,7 +110,7 @@ export class XpraWorkerProxy extends (EventEmitter as unknown as new () => Typed
       Object.entries(capabilities).filter(([k]) => k.startsWith('cipher'))
     )
 
-    this.send('cipher', ['in', caps, key])
+    this.postPacketMessage('cipher', ['in', caps, key])
   }
 
   setupSendCipher(
@@ -105,23 +121,27 @@ export class XpraWorkerProxy extends (EventEmitter as unknown as new () => Typed
       Object.entries(capabilities).filter(([k]) => k.startsWith('cipher'))
     )
 
-    this.send('cipher', ['out', caps, key])
+    this.postPacketMessage('cipher', ['out', caps, key])
   }
 
   configure(options: XpraConnectionOptions) {
-    this.send('configure', options)
-    this.send('cipher', [])
+    this.postPacketMessage('configure', options)
+    this.postPacketMessage('cipher', [])
   }
 
   setConnected(connected: boolean) {
-    this.send('connected', connected)
+    this.postPacketMessage('connected', connected)
   }
 
   pushSend(packet: XpraSendPacket) {
-    this.send('send', packet)
+    this.postPacketMessage('send', packet)
   }
 
   pushRecieve(data: Uint8Array) {
-    this.send('recieve', data)
+    this.postPacketMessage('recieve', data)
+  }
+
+  pushDecode(data: XpraDraw) {
+    this.postDecoderMessage(data)
   }
 }

@@ -5,6 +5,6 @@
  * @license Mozilla Public License Version 2.0
  */
 
-import { XpraPacketWebWorker } from 'xpra-html5-client'
+import { XpraDecodeWebWorker } from 'xpra-html5-client'
 
-new XpraPacketWebWorker()
+new XpraDecodeWebWorker()

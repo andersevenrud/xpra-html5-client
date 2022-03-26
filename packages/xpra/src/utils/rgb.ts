@@ -39,7 +39,7 @@ export function rgb32Restride(
  * Converts RBG24 to RGB32
  */
 export function rgb24ToRgb32(
-  data: number[],
+  data: Uint8Array,
   width: number,
   height: number,
   rowStride: number

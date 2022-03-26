@@ -510,7 +510,7 @@ export interface XpraDraw {
   packetSequence: number
   rowStride: number
   options: XpraDrawOptions
-  callback: (error?: Error) => void
+  startTime: number
 }
 
 export interface XpraNotification {
@@ -706,6 +706,8 @@ export type XpraWorkerMessage =
   | 'failure'
   | 'configure'
   | 'cipher'
+  | 'imagedata'
+  | 'decode'
 
 export type XpraAudioFramework = 'mediasource' | 'aurora'
 

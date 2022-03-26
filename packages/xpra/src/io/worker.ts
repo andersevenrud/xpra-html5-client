@@ -16,7 +16,13 @@ import TypedEmitter from 'typed-emitter'
 import EventEmitter from 'events'
 import { XpraSendQueue } from './queues/send'
 import { XpraRecieveQueue } from './queues/recieve'
-import { XpraRecievePacket, XpraWorkerMessage, XpraWorkerData } from '../types'
+import { XpraDecodeQueue } from './queues/decode'
+import {
+  XpraRecievePacket,
+  XpraWorkerMessage,
+  XpraWorkerData,
+  XpraDraw,
+} from '../types'
 
 /**
  * Events emitted from the null worker to simulate a web worker
@@ -24,13 +30,93 @@ import { XpraRecievePacket, XpraWorkerMessage, XpraWorkerData } from '../types'
 export type XpraWorkerEventEmitters = {
   post: (data: XpraWorkerData) => void
   message: (data: XpraWorkerData) => void
+  error: (error: string) => void
 }
 
 /**
- * Base class for handling worker messages and queues
+ * Base abstraction for Xpra Workers
  * @noInheritDoc
  */
 export abstract class XpraWorker extends (EventEmitter as unknown as new () => TypedEmitter<XpraWorkerEventEmitters>) {
+  /* istanbul ignore next */
+
+  /** @virtual */
+  protected init() {
+    /* */
+  }
+
+  /** @virtual */
+  protected send(_cmd: string, _data: XpraWorkerData) {
+    /* */
+  }
+
+  /** @virtual */
+  protected setConnected(_connected: boolean) {
+    /* */
+  }
+
+  protected processMessage(cmd: XpraWorkerMessage, data: XpraWorkerData) {
+    switch (cmd) {
+      case 'connected':
+        this.setConnected(data)
+        break
+    }
+  }
+
+  /** behave like a WebWorker instance */
+  addEventListener(
+    name: keyof XpraWorkerEventEmitters,
+    cb: (...args: any) => void
+  ) {
+    this.on(name, (data: any) => cb({ data }))
+  }
+
+  /** behave like a WebWorker instance */
+  postMessage(message: any) {
+    this.emit('post', message)
+  }
+}
+
+/**
+ * Base class for handling decoding queues
+ */
+export abstract class XpraDecodeWorker extends XpraWorker {
+  private queue = new XpraDecodeQueue()
+
+  constructor() {
+    super()
+
+    this.queue.on(
+      'message',
+      (message: [XpraDraw, ImageData | ImageBitmap | null]) => {
+        this.send('imagedata', message)
+      }
+    )
+
+    this.init()
+  }
+
+  protected setConnected(connected: boolean) {
+    this.queue.setConnected(connected)
+    this.queue.clear()
+  }
+
+  protected processMessage(cmd: XpraWorkerMessage, data: XpraWorkerData) {
+    super.processMessage(cmd, data)
+
+    switch (cmd) {
+      case 'decode':
+        this.queue.push(data)
+        this.queue.process()
+        break
+    }
+  }
+}
+
+/**
+ * Base class for handling websocket message queues
+ */
+export abstract class XpraPacketWorker extends XpraWorker {
   private sendQueue = new XpraSendQueue()
   private recieveQueue = new XpraRecieveQueue()
 
@@ -52,17 +138,6 @@ export abstract class XpraWorker extends (EventEmitter as unknown as new () => T
     this.init()
   }
 
-  /** @virtual */
-  protected init() {
-    /* istanbul ignore next */
-  }
-
-  /** @virtual */
-  protected send(_cmd: string, _data: XpraWorkerData) {
-    /* istanbul ignore next */
-    console.debug('XpraWorker#send', 'no handler defined')
-  }
-
   protected setConnected(connected: boolean) {
     this.sendQueue.setConnected(connected)
     this.sendQueue.clear()
@@ -72,11 +147,9 @@ export abstract class XpraWorker extends (EventEmitter as unknown as new () => T
   }
 
   protected processMessage(cmd: XpraWorkerMessage, data: XpraWorkerData) {
-    switch (cmd) {
-      case 'connected':
-        this.setConnected(data)
-        break
+    super.processMessage(cmd, data)
 
+    switch (cmd) {
       case 'send':
         this.sendQueue.push(data)
         this.sendQueue.process()

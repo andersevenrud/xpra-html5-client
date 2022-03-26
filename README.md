@@ -87,14 +87,17 @@ npm install xpra-html5-client@^2
 ### `main.js`
 
 ```javascript
-import XpraWorker from './worker?worker'
+import XpraPacketWorker from './worker?worker'
+import XpraDecodeWorker from './decoder?worker'
 import { XpraClient, XpraWindowManager } from 'xpra-html5-client'
 
 async function createXpraClient() {
   // Off-load data handling to a separate worker to increase performance.
   // This is not a requirement, but is highly recommended.
-  const worker = new XpraWorker()
-  const xpra = new XpraClient({ worker })
+  const worker = new XpraPacketWorker()
+  const decoder = new XpraDecodeWorker()
+
+  const xpra = new XpraClient({ worker, decoder })
 
   // Set up internals
   await xpra.init()
@@ -130,9 +133,17 @@ document.addEventListener('DOMContentLoaded', () => main())
 ### `worker.js`
 
 ```javascript
-import { XpraWebWorker } from 'xpra-html5-client'
+import { XpraPacketWebWorker } from 'xpra-html5-client'
 
-new XpraWebWorker()
+new XpraPacketWebWorker()
+```
+
+### `decoder.js`
+
+```javascript
+import { XpraDecoderWebWorker } from 'xpra-html5-client'
+
+new XpraDecoderWebWorker()
 ```
 
 ## License

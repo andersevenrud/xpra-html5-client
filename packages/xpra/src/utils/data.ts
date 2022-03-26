@@ -34,7 +34,7 @@ export function arrayBufferToBase64(uintArray: Uint8Array) {
       )
     }
   }
-  return window.btoa(s)
+  return self.btoa(s)
 }
 
 export function uint8toString(u8a: Uint8Array) {
@@ -88,7 +88,7 @@ export function createHexUUID() {
 }
 
 export function createRandomSecureString(len: number) {
-  const crypto = window.crypto || window.mscrypto
+  const crypto = self.crypto || self.mscrypto
 
   if (!crypto) {
     let s = ''

@@ -14,7 +14,6 @@
 
 import { debounce } from 'lodash-es'
 import { XpraClient } from '../connection/client'
-import { renderXpraDrawData } from '../io/render'
 import { browserSaveFile, browserPrintFile } from '../utils/file'
 import { createNativeNotification } from '../utils/notification'
 import { getBrowserConnectionInfo } from '../utils/platform'
@@ -25,6 +24,7 @@ import {
   XpraSendFile,
   XpraWindowMoveResize,
   XpraNotification,
+  XpraDrawScrollData,
 } from '../types'
 
 export interface XpraWindowManagerWindow {
@@ -117,22 +117,20 @@ export class XpraWindowManager {
       }
     })
 
-    this.xpra.on('draw', (draw: XpraDraw) => {
+    this.xpra.on(
+      'drawBuffer',
+      (draw: XpraDraw, buffer: ImageData | ImageBitmap | null) => {
+        const found = this.getWindow(draw.wid)
+        if (found) {
+          this.renderWindow(found, draw, buffer)
+        }
+      }
+    )
+
+    this.xpra.on('drawScroll', (draw: XpraDraw) => {
       const found = this.getWindow(draw.wid)
       if (found) {
-        const len = found.renderQueue.push(draw)
-
-        // FIXME: This is temporarily just a solution for handling unfocused tab
-        if (len > 60) {
-          console.debug(
-            'XpraWindowManager <- draw',
-            'truncated draw queue for',
-            draw.wid
-          )
-
-          const removed = found.renderQueue.splice(-60)
-          removed.forEach((d) => d.callback())
-        }
+        this.renderWindow(found, draw)
       }
     })
 
@@ -243,30 +241,58 @@ export class XpraWindowManager {
     }
 
     this.windows.push(instance)
-
-    const anim = async () => {
-      if (!instance.destroyed) {
-        await this.renderWindow(instance)
-
-        window.requestAnimationFrame(anim)
-      }
-    }
-
-    window.requestAnimationFrame(anim)
-
     this.xpra.sendMapWindow(attributes)
   }
 
-  private async renderWindow(win: XpraWindowManagerWindow) {
-    const draw = win.renderQueue.shift()
-    if (draw && win.canvas) {
-      try {
-        await renderXpraDrawData(win.canvas, draw)
-        draw.callback()
-      } catch (e) {
-        draw.callback(e as Error)
+  private async renderWindow(
+    win: XpraWindowManagerWindow,
+    draw: XpraDraw,
+    buffer?: ImageData | ImageBitmap | null
+  ) {
+    const canvas = win.canvas
+    const context = win.canvas?.getContext('2d')
+
+    if (canvas && context) {
+      if (buffer) {
+        const [x, y] = draw.position
+        const [w, h] = draw.dimension
+
+        if (buffer instanceof ImageData) {
+          context.putImageData(buffer, x, y, 0, 0, w, h)
+        } else {
+          context.clearRect(x, y, w, h)
+          context.drawImage(buffer, x, y)
+        }
+      } else if (draw.encoding === 'scroll') {
+        ;(draw.image as XpraDrawScrollData).forEach(
+          ([sx, sy, sw, sh, xdelta, ydelta]) => {
+            context.drawImage(
+              canvas,
+              sx,
+              sy,
+              sw,
+              sh,
+              sx + xdelta,
+              sy + ydelta,
+              sw,
+              sh
+            )
+          }
+        )
       }
     }
+
+    const decodeTime = Math.round(
+      1000 * performance.now() - 1000 * draw.startTime
+    )
+
+    this.xpra.sendDamageSequence(
+      draw.packetSequence,
+      draw.wid,
+      draw.dimension,
+      decodeTime,
+      ''
+    )
   }
 
   removeWindow(id: number) {

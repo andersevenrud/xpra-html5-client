@@ -21,8 +21,8 @@ import { XpraAudio } from '../io/audio'
 import { XpraKeyboard } from '../io/keyboard'
 import { XpraMouse } from '../io/mouse'
 import { XpraWorkerProxy } from './proxy'
-import { XpraWorker } from '../io/worker'
-import { XpraNullWorker } from '../io/workers/null'
+import { XpraPacketWorker, XpraDecodeWorker } from '../io/worker'
+import { XpraPacketNullWorker, XpraDecodeNullWorker } from '../io/workers/null'
 import { XpraLogger, XpraLoggerArguments } from '../io/logger'
 import { createDefaultXpraConnectionOptions } from './options'
 import { createXpraChallengeResponse } from './auth'
@@ -81,7 +81,8 @@ import {
 } from '../types'
 
 export interface XpraClientConfiguration {
-  worker?: Worker | XpraWorker
+  worker?: Worker | XpraPacketWorker
+  decoder?: Worker | XpraDecodeWorker
 }
 
 export type XpraClientEventEmitters = {
@@ -101,6 +102,8 @@ export type XpraClientEventEmitters = {
   pong: (stats: XpraConnectionStats) => void
   cursor: (cursor: XpraCursor | null) => void
   draw: (draw: XpraDraw) => void
+  drawScroll: (draw: XpraDraw) => void
+  drawBuffer: (draw: XpraDraw, buffer: ImageData | ImageBitmap | null) => void
   hello: (capabilities: XpraServerCapabilities) => void
   sendFile: (file: XpraSendFile) => void
   infoResponse: (info: XpraInfoResponse) => void
@@ -188,13 +191,9 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
   constructor(config: Partial<XpraClientConfiguration>) {
     super()
 
-    const { worker } = config
-    if (worker) {
-      this.proxy.setWorker(worker)
-    } else {
-      console.warn('XpraClient#constructor', 'using null worker')
-      this.proxy.setWorker(new XpraNullWorker())
-    }
+    const { worker, decoder } = config
+    this.proxy.setWorker(worker || new XpraPacketNullWorker())
+    this.proxy.setDecodeWorker(decoder || new XpraDecodeNullWorker())
   }
 
   async init() {
@@ -213,9 +212,16 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     this.ws.on('disconnect', (s) => this.emit('disconnect', s))
     this.ws.on('message', (d: Uint8Array) => this.proxy.pushRecieve(d))
 
+    this.on('draw', (draw: XpraDraw) => this.proxy.pushDecode(draw))
+
     this.proxy.on('recieve', (p: XpraRecievePacket) => this.recieve(p))
     this.proxy.on('send', (d: ArrayBuffer) => this.ws.send(d))
     this.proxy.on('failure', (e: Error) => this.disconnect(e))
+    this.proxy.on(
+      'draw',
+      (draw: XpraDraw, buffer: ImageData | ImageBitmap | null) =>
+        this.emit('drawBuffer', draw, buffer)
+    )
 
     this.audio.on('start', () => this.sendSoundStart())
     this.audio.on('stop', () => this.sendSoundStop())
@@ -880,18 +886,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     rowStride: number,
     options: XpraDrawOptions
   ) {
-    const start = performance.now()
-
-    const sendDamage = (decodeTime: number, message = '') =>
-      this.sendDamageSequence(
-        packetSequence,
-        wid,
-        [width, height],
-        decodeTime,
-        message
-      )
-
-    this.emit('draw', {
+    const draw: XpraDraw = {
       wid,
       image,
       encoding,
@@ -900,16 +895,14 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
       options: options || {},
       position: [x, y],
       dimension: [width, height],
-      callback: (error?: Error) => {
-        const decodeTime = Math.round(1000 * performance.now() - 1000 * start)
-        if (error) {
-          console.warn('XpraConnection#processDraw -> callback', error)
-        }
+      startTime: performance.now(),
+    }
 
-        // TODO: Request redraw
-        sendDamage(decodeTime, error?.message)
-      },
-    })
+    if (encoding === 'scroll') {
+      this.emit('drawScroll', draw)
+    } else if (encoding !== 'void') {
+      this.emit('draw', draw)
+    }
   }
 
   private processSettingChange(setting: string, value: XpraSettingChangeValue) {

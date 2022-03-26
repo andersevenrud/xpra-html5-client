@@ -1,14 +1,18 @@
 import WS from 'jest-websocket-mock'
 import { XpraClient } from '../../src/connection/client'
-import { XpraNullWorker } from '../../src/io/workers/null'
 import { XpraEncodeBit, XpraWindow } from '../../src/types'
 import { createDefaultXpraConnectionOptions } from '../../src/connection/options'
 import { uint8fromString } from '../../src/utils/data'
 import { ord, bencode } from '../../src/lib/bencode'
+import {
+  XpraPacketNullWorker,
+  XpraDecodeNullWorker,
+} from '../../src/io/workers/null'
 
 const options = createDefaultXpraConnectionOptions()
 
-class JestWorker extends XpraNullWorker {}
+class JestWorker extends XpraPacketNullWorker {}
+class JestDecoder extends XpraDecodeNullWorker {}
 
 function createPacket(packet: any) {
   const data = bencode(packet) as any
@@ -44,6 +48,8 @@ jest.spyOn(global.console, 'warn').mockImplementation(() => jest.fn())
 jest.spyOn(global.console, 'error').mockImplementation(() => jest.fn())
 
 jest.mock('xpra-av')
+jest.mock('xpra-broadway')
+jest.mock('xpra-jsmpeg')
 
 describe('Client', () => {
   const testWindow: XpraWindow = {
@@ -62,7 +68,8 @@ describe('Client', () => {
   describe('Connection', () => {
     const server = new WS('ws://localhost:9999')
     const worker = new JestWorker()
-    const client = new XpraClient({ worker })
+    const decoder = new JestDecoder()
+    const client = new XpraClient({ worker, decoder })
 
     function checkResponse(eventName: any, packet: any, output?: any) {
       const fn = jest.fn()
