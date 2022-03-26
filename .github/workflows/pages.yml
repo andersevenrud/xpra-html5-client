@@ -5,27 +5,21 @@ on:
       - master
 jobs:
   deploy:
-    name: pages
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout branch
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
           submodules: true
-      - name: Use nodejs
-        uses: actions/setup-node@v2
+      - uses: actions/setup-node@v2
         with:
           node-version: '16'
           cache: 'yarn'
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Build
-        run: yarn workspaces run build
-      - name: Generate docs
-        run: yarn workspace xpra-html5-client docs
-      - name: Reduce
-        run: |
+      - run: |
+          yarn install --frozen-lockfile
+          yarn workspaces run build
+          yarn workspace xpra-html5-client docs
           mkdir -p public
           cp -r packages/ui/dist public/client
           cp -r packages/xpra/docs public/docs

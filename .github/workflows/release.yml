@@ -4,23 +4,20 @@ on:
     types: [created]
 jobs:
   build:
+    name: Publish on npmjs
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout branch
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
           submodules: true
-      - name: Use nodejs
-        uses: actions/setup-node@v2
+      - uses: actions/setup-node@v2
         with:
           node-version: '16'
           registry-url: 'https://registry.npmjs.org'
           cache: 'yarn'
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Build
-        run: |
+      - run: |
+          yarn install --frozen-lockfile
           yarn workspace xpra-av build
           yarn workspace xpra-jsmpeg build
           yarn workspace xpra-broadway build

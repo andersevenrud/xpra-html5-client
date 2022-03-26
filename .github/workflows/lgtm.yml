@@ -1,59 +1,56 @@
-name: LGTM Checks
+name: LGTM
 on:
   push:
     branches:
       - master
   pull_request:
 jobs:
-  lint:
-    name: lint
+  lint_xpra:
+    name: ESLint on Xpra Client
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout branch
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Use nodejs
-        uses: actions/setup-node@v2
+      - uses: actions/setup-node@v2
         with:
           node-version: '16'
           cache: 'yarn'
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Run tests
-        run: |
-          yarn workspace xpra-html5-client lint
-          yarn workspace xpra-html5-client-react lint
-      - name: Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/xpra/coverage/reports/
-  coverage:
-    name: coverage
+      - run: yarn install --frozen-lockfile
+      - run: yarn workspace xpra-html5-client lint
+  lint_ui:
+    name: ESLint on Xpra React UI
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout branch
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Use nodejs
-        uses: actions/setup-node@v2
+      - uses: actions/setup-node@v2
         with:
           node-version: '16'
           cache: 'yarn'
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Run tests
-        run: yarn workspace xpra-html5-client test:coverage
-      - name: Codecov
-        uses: codecov/codecov-action@v2
+      - run: yarn install --frozen-lockfile
+      - run: yarn workspace xpra-html5-client-react lint
+  coverage_xpra:
+    name: Code coverage on Xpra Client
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile
+      - run: yarn workspace xpra-html5-client test:coverage
+      - uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/xpra/coverage/
           name: xpra
   commit:
-    name: commitlint
+    name: Conventional Commits check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
