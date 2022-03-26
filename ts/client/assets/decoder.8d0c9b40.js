@@ -101,7 +101,7 @@ Private-MAC: `+x.digest().toHex()+`\r
  * @copyright Copyright (C) 2016-2022 Antoine Martin <antoine@devloop.org.uk>
  * @license Licensed under MPL 2.0, see: http://www.mozilla.org/MPL/2.0/
  * @link https://github.com/Xpra-org/xpra-html5
- */class fp extends Kd{async process(){if(this.queue.length>0&&this.connected){const r=this.queue.shift();if(r){const i=this.convertDrawData(r),a=await np(i);this.emit("message",[i,a])}}}convertDrawData(r){if(["rgb32","rgb24"].includes(r.encoding)){const i=this.decodeRGB(r);return t8(e8({},r),{rowStride:r.encoding==="rgb24"?r.dimension[0]*4:r.rowStride,encoding:"rgb32",image:Yu(i)})}return r}decodeRGB(r){const{rowStride:i,dimension:[a,A]}=r,h=Ap(r);return r.encoding=="rgb24"?lp(h,a,A,i):i===a*4?new Uint8Array(h):op(h,a,A,i)}}/**
+ */class fp extends Kd{async process(){if(this.queue.length>0&&this.connected){const r=this.queue.shift();if(r)try{const i=this.convertDrawData(r),a=await np(i);this.emit("message",[i,a])}catch(i){console.warn("XpraDecodeQueue#process",i),this.emit("message",[r,null])}}}convertDrawData(r){if(["rgb32","rgb24"].includes(r.encoding)){const i=this.decodeRGB(r);return t8(e8({},r),{rowStride:r.encoding==="rgb24"?r.dimension[0]*4:r.rowStride,encoding:"rgb32",image:Yu(i)})}return r}decodeRGB(r){const{rowStride:i,dimension:[a,A]}=r,h=Ap(r);return r.encoding=="rgb24"?lp(h,a,A,i):i===a*4?new Uint8Array(h):op(h,a,A,i)}}/**
  * Xpra Typescript Client
  * @link https://github.com/andersevenrud/xpra-html5-client
  * @author Anders Evenrud <andersevenrud@gmail.com>
