@@ -96,7 +96,7 @@
   "jest": {
     "coveragePathIgnorePatterns": [
       "node_modules",
-      "src/lib"
+      "\\.js$"
     ],
     "preset": "ts-jest/presets/js-with-ts-esm",
     "testEnvironment": "jsdom"
