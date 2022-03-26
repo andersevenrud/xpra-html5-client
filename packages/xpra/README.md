@@ -1,5 +1,7 @@
 # xpra-html5-client
 
+[![codecov](https://codecov.io/gh/andersevenrud/xpra-html5-client/branch/master/graph/badge.svg?token=ZqjjQcx45j)](https://codecov.io/gh/andersevenrud/xpra-html5-client)
+
 An Xpra HTML5 TypeScript implementation.
 
 See https://github.com/andersevenrud/xpra-html5-client for more information.
