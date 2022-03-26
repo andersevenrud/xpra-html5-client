@@ -30,9 +30,14 @@ export class XpraDecodeQueue extends XpraQueue<
     if (this.queue.length > 0 && this.connected) {
       const draw = this.queue.shift()
       if (draw) {
-        const newDraw = this.convertDrawData(draw)
-        const result = await encodeXpraDrawData(newDraw)
-        this.emit('message', [newDraw, result])
+        try {
+          const newDraw = this.convertDrawData(draw)
+          const result = await encodeXpraDrawData(newDraw)
+          this.emit('message', [newDraw, result])
+        } catch (e) {
+          console.warn('XpraDecodeQueue#process', e)
+          this.emit('message', [draw, null])
+        }
       }
     }
   }
