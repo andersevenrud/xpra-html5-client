@@ -5,8 +5,8 @@ on:
       - master
   pull_request:
 jobs:
-  codebase:
-    name: tests
+  lint:
+    name: lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
@@ -30,13 +30,40 @@ jobs:
         run: |
           yarn workspace xpra-html5-client lint
           yarn workspace xpra-html5-client-react lint
-          yarn workspace xpra-html5-client typecheck
-          yarn workspace xpra-html5-client test:coverage
       - name: Codecov
         uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/xpra/coverage/reports/
+  coverage:
+    name: coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Use nodejs
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Use cache
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - name: Install Yarn
+        run: npm install -g yarn
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Run tests
+        run: yarn workspace xpra-html5-client test:coverage
+      - name: Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./packages/xpra/coverage/
+          name: xpra
   commit:
     name: commitlint
     runs-on: ubuntu-latest
