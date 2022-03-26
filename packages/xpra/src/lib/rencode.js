@@ -39,12 +39,6 @@ var RENCODE = {
   SLASH_CHARCODE: '/'.charCodeAt(0), //for byte strings
 }
 
-Number.isSafeInteger =
-  Number.isSafeInteger ||
-  function (value) {
-    return Number.isInteger(value) && Math.abs(value) <= Number.MAX_SAFE_INTEGER
-  }
-
 function utf8ByteArrayToString(bytes) {
   var out = [],
     pos = 0,
@@ -424,9 +418,6 @@ function rdecode_intq(dec) {
     s = 2 ** 32 * left + right
   }
   dec.pos += 9
-  if (!Number.isSafeInteger(s)) {
-    //console.warn("value is not a safe integer: ", s);
-  }
   return parseInt(s)
 }
 function rdecode_true(dec) {
