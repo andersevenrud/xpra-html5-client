@@ -113,7 +113,7 @@ Private-MAC: `+x.digest().toHex()+`\r
  * @copyright Copyright (C) 2016-2022 Antoine Martin <antoine@devloop.org.uk>
  * @license Licensed under MPL 2.0, see: http://www.mozilla.org/MPL/2.0/
  * @link https://github.com/Xpra-org/xpra-html5
- */class hp extends y4{init(){}send(r,i){}setConnected(r){}processMessage(r,i){switch(r){case"connected":this.setConnected(i);break}}addEventListener(r,i){this.on(r,a=>i({data:a}))}postMessage(r){this.emit("post",r)}}class up extends hp{constructor(){super();ji(this,"queue",new fp),this.queue.on("message",r=>{this.send("imagedata",r)}),this.init()}setConnected(r){this.queue.setConnected(r),this.queue.clear()}processMessage(r,i){switch(super.processMessage(r,i),r){case"decode":this.queue.push(i),this.queue.process();break}}}/**
+ */class hp extends y4{init(){}send(r,i){}processMessage(r,i){}addEventListener(r,i){this.on(r,a=>i({data:a}))}postMessage(r){this.emit("post",r)}}class up extends hp{constructor(){super();ji(this,"queue",new fp),this.queue.on("message",r=>{this.send("imagedata",r)}),this.init()}setConnected(r){this.queue.setConnected(r),this.queue.clear()}processMessage(r,i){switch(r){case"connected":this.setConnected(i);break;case"decode":this.queue.push(i),this.queue.process();break}}}/**
  * Xpra Typescript Client
  * @link https://github.com/andersevenrud/xpra-html5-client
  * @author Anders Evenrud <andersevenrud@gmail.com>
