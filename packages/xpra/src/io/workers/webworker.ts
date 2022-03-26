@@ -21,7 +21,7 @@ import { XpraWorkerData } from '../../types'
  * Decoder Web worker instance.
  */
 export class XpraDecodeWebWorker extends XpraDecodeWorker {
-  init() {
+  protected init() {
     self.addEventListener('message', (ev: MessageEvent) => {
       const [cmd, data] = ev.data
       this.processMessage(cmd, data)
@@ -37,7 +37,7 @@ export class XpraDecodeWebWorker extends XpraDecodeWorker {
  * Web worker instance.
  */
 export class XpraPacketWebWorker extends XpraPacketWorker {
-  init() {
+  protected init() {
     self.addEventListener('message', (ev: MessageEvent) => {
       const [cmd, data] = ev.data
       this.processMessage(cmd, data)

@@ -51,16 +51,8 @@ export abstract class XpraWorker extends (EventEmitter as unknown as new () => T
   }
 
   /** @virtual */
-  protected setConnected(_connected: boolean) {
+  protected processMessage(_cmd: XpraWorkerMessage, _data: XpraWorkerData) {
     /* */
-  }
-
-  protected processMessage(cmd: XpraWorkerMessage, data: XpraWorkerData) {
-    switch (cmd) {
-      case 'connected':
-        this.setConnected(data)
-        break
-    }
   }
 
   /** behave like a WebWorker instance */
@@ -102,9 +94,11 @@ export abstract class XpraDecodeWorker extends XpraWorker {
   }
 
   protected processMessage(cmd: XpraWorkerMessage, data: XpraWorkerData) {
-    super.processMessage(cmd, data)
-
     switch (cmd) {
+      case 'connected':
+        this.setConnected(data)
+        break
+
       case 'decode':
         this.queue.push(data)
         this.queue.process()
@@ -147,9 +141,11 @@ export abstract class XpraPacketWorker extends XpraWorker {
   }
 
   protected processMessage(cmd: XpraWorkerMessage, data: XpraWorkerData) {
-    super.processMessage(cmd, data)
-
     switch (cmd) {
+      case 'connected':
+        this.setConnected(data)
+        break
+
       case 'send':
         this.sendQueue.push(data)
         this.sendQueue.process()
