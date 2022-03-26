@@ -14,8 +14,8 @@
 
 import TypedEmitter from 'typed-emitter'
 import EventEmitter from 'events'
-import { XpraSendQueue } from '../queues/send'
-import { XpraRecieveQueue } from '../queues/recieve'
+import { XpraSendQueue } from './queues/send'
+import { XpraRecieveQueue } from './queues/recieve'
 import { XpraRecievePacket, XpraWorkerMessage, XpraWorkerData } from '../types'
 
 /**

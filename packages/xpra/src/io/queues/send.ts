@@ -13,16 +13,19 @@
  */
 
 import forge from 'node-forge'
-import { ord } from '../lib/bencode'
-import { createXpraCipher, encryptXpraPacketData } from '../connection/crypto'
-import { encodeXpraPacket } from '../connection/encoding'
-import { XpraQueue } from '../connection/queue'
+import { ord } from '../../lib/bencode'
+import { XpraQueue } from '..//queue'
+import { encodeXpraPacket } from '../../connection/encoding'
+import {
+  createXpraCipher,
+  encryptXpraPacketData,
+} from '../../connection/crypto'
 import {
   XpraSendPacket,
   XpraPacketEncoder,
   XpraConnectionOptions,
   XpraCipherCapability,
-} from '../types'
+} from '../../types'
 
 /**
  * Processes packets that is to be sent to a Xpra server

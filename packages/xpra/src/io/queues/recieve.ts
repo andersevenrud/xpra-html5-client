@@ -13,24 +13,30 @@
  */
 
 import forge from 'node-forge'
-import { ord } from '../lib/bencode'
-import { rgb24ToRgb32, rgb32Restride } from '../utils/rgb'
-import { uint8fromStringOrString, uint8fromStringOrUint8 } from '../utils/data'
-import { createXpraCipher, decryptXpraPacketData } from '../connection/crypto'
-import { decodeXpraPacketData } from '../connection/encoding'
-import { XpraQueue } from '../connection/queue'
-import { XpraInvalidHeaderError, XpraPacketError } from '../errors'
+import { ord } from '../../lib/bencode'
+import { rgb24ToRgb32, rgb32Restride } from '../../utils/rgb'
+import { XpraQueue } from '../queue'
+import { decodeXpraPacketData } from '../../connection/encoding'
+import { XpraInvalidHeaderError, XpraPacketError } from '../../errors'
+import {
+  uint8fromStringOrString,
+  uint8fromStringOrUint8,
+} from '../../utils/data'
+import {
+  createXpraCipher,
+  decryptXpraPacketData,
+} from '../../connection/crypto'
 import {
   decompressXpraPacketData,
   decompressXpraDrawData,
-} from '../connection/compression'
+} from '../../connection/compression'
 import {
   XpraRecieveHeader,
   XpraRecievePacket,
   XpraRecievePacketType,
   XpraCipherCapability,
   XpraInflateBit,
-} from '../types'
+} from '../../types'
 
 /**
  * Processes packets that comes from an Xpra server
