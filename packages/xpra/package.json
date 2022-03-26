@@ -93,9 +93,6 @@
     "singleQuote": true
   },
   "jest": {
-    "testMatch": [
-      "**/tests/**/*.ts"
-    ],
     "coveragePathIgnorePatterns": [
       "node_modules",
       "src/lib"
