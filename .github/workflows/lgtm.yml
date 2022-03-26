@@ -31,7 +31,12 @@ jobs:
           yarn workspace xpra-html5-client lint
           yarn workspace xpra-html5-client-react lint
           yarn workspace xpra-html5-client typecheck
-          yarn workspace xpra-html5-client test
+          yarn workspace xpra-html5-client test:coverage
+      - name: Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./packages/xpra/coverage/reports/
   commit:
     name: commitlint
     runs-on: ubuntu-latest

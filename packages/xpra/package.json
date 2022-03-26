@@ -21,6 +21,7 @@
     "build": "tsc --noEmit && vite build",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "test": "jest --passWithNoTests",
+    "test:coverage": "jest --passWithNoTests --coverage",
     "typecheck": "tsc --noEmit",
     "docs": "typedoc --tsconfig tsconfig.docs.json src/index.ts"
   },
