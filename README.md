@@ -141,9 +141,9 @@ new XpraPacketWebWorker()
 ### `decoder.js`
 
 ```javascript
-import { XpraDecoderWebWorker } from 'xpra-html5-client'
+import { XpraDecodeWebWorker } from 'xpra-html5-client'
 
-new XpraDecoderWebWorker()
+new XpraDecodeWebWorker()
 ```
 
 ## License
