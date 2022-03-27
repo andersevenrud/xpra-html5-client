@@ -40,6 +40,7 @@ import {
 export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
   private header: XpraRecieveHeader = []
   private raw: Uint8Array[] = []
+  private busy = false
 
   setupCipher(caps: XpraCipherCapability, key: string) {
     const { iv, mode, cipher, secret, blockSize } = createXpraCipher(caps, key)
@@ -52,11 +53,14 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
   }
 
   process() {
-    if (this.queue.length > 0) {
+    if (this.queue.length > 0 && !this.busy) {
       try {
+        this.busy = true
         while (this.connected && this.processNext()) {}
       } catch (e) {
         this.emit('failure', e as Error)
+      } finally {
+        this.busy = false
       }
     }
   }
