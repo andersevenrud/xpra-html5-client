@@ -22,7 +22,7 @@ const CONCAT = true
 /**
  * Provides audio buffer queues to adapters
  */
-export abstract class XpraAudioAdapter {
+export /* abstract */ class XpraAudioAdapter {
   protected readonly audio: HTMLAudioElement
   protected readonly audioCodec: XpraAudioCodecType
 

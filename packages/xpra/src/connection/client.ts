@@ -377,7 +377,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
   private createCapabilities(append: Partial<XpraCapabilities> = {}) {
     this.capabilities = createXpraCapabilities({
       ...createXpraCapabilitiesFromOptions(this.options),
-      'sound.decoders': this.audio.getDecoders(),
+      'sound.decoders': XpraAudio.getAudioCodecs(),
       ...append,
     })
   }

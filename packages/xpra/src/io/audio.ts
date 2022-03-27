@@ -21,7 +21,6 @@ import { XPRA_AUDIO_PREFERRED_CODEC_ORDER } from '../constants/xpra'
 import {
   XpraServerCapabilities,
   XpraAudioFramework,
-  XpraAudioCodecMap,
   XpraAudioCodecType,
   XpraAudioMetadata,
 } from '../types'
@@ -37,17 +36,8 @@ export type XpraAudioEventEmitters = {
  */
 export class XpraAudio extends (EventEmitter as unknown as new () => TypedEmitter<XpraAudioEventEmitters>) {
   private readonly audio: HTMLAudioElement = document.createElement('audio')
-  private enabled = false
   private adapter: XpraAudioAdapter | null = null
   private audioCodec: XpraAudioCodecType | null = null
-  private audioFramework: XpraAudioFramework | null = null
-  private auroraCodecs: XpraAudioCodecMap = XpraAuroraAdapter.getCodecs()
-  private mediaCodecs: XpraAudioCodecMap = XpraMediaSourceAdapter.getCodecs()
-
-  private detectedCodecs: XpraAudioCodecMap = {
-    ...this.mediaCodecs,
-    ...this.auroraCodecs,
-  }
 
   async init() {
     this.audio.setAttribute('autoplay', String(true))
@@ -77,62 +67,26 @@ export class XpraAudio extends (EventEmitter as unknown as new () => TypedEmitte
     if (this.adapter) {
       this.adapter.stop()
     }
-    this.enabled = false
     this.adapter = null
     this.emit('stop')
   }
 
   async setup(serverCapabilities: XpraServerCapabilities) {
-    if (serverCapabilities['sound.send']) {
-      const encoders = serverCapabilities['sound.encoders']
-      const defaultCodec = this.getDefaultAudioCodec()
+    try {
+      const detected = this.detect(serverCapabilities)
+      if (detected) {
+        const [codec, Adapter] = detected
+        const adapter = new Adapter(this.audio, codec)
 
-      if (defaultCodec) {
-        const detected = this.getPreferedServerCodec(encoders) || defaultCodec
+        await adapter.setup()
 
-        if (detected) {
-          this.enabled = true
-          this.audioCodec = detected
-          this.audioFramework = this.auroraCodecs[detected]
-            ? 'aurora'
-            : 'mediasource'
-        }
+        this.adapter = adapter
+        this.audioCodec = codec
+        this.emit('start')
       }
-    }
-
-    if (this.enabled) {
-      let supported = {}
-      if (this.audioFramework === 'mediasource') {
-        supported = XpraMediaSourceAdapter.getSupportedCodecs()
-      } else if (this.audioFramework === 'aurora') {
-        supported = XpraAuroraAdapter.getSupportedCodecs()
-      }
-
-      const best = this.getBestCodec(supported)
-
-      if (best) {
-        const [framework, codec] = best.split(':')
-        this.audioFramework = framework as XpraAudioFramework
-        this.audioCodec = codec as XpraAudioCodecType
-      }
-
-      if (this.audioCodec) {
-        if (this.audioFramework === 'mediasource') {
-          this.adapter = new XpraMediaSourceAdapter(this.audio, this.audioCodec)
-        } else if (this.audioFramework === 'aurora') {
-          this.adapter = new XpraAuroraAdapter(this.audio, this.audioCodec)
-        }
-      }
-
-      try {
-        if (this.adapter) {
-          await this.adapter.setup()
-          this.emit('start')
-        }
-      } catch (e) {
-        console.error('XpraAudio#setup', e)
-        this.stop()
-      }
+    } catch (e) {
+      console.error('XpraAudio#setup', e)
+      this.stop()
     }
   }
 
@@ -144,19 +98,60 @@ export class XpraAudio extends (EventEmitter as unknown as new () => TypedEmitte
     }
   }
 
+  private detect(serverCapabilities: XpraServerCapabilities) {
+    const adapters = XpraAudio.getAudioAdapters()
+    let codec = XpraAudio.detectCodec(serverCapabilities)
+
+    if (codec) {
+      const found = Object.entries(adapters).find(
+        ([, v]) => !!v.getCodecs()[codec as string]
+      )
+
+      if (found) {
+        let [name, adapter] = found
+        const supported = adapter.getSupportedCodecs()
+        const best = XpraAudio.getBestCodec(supported)
+
+        if (best) {
+          ;[name, codec] = best.split(':') as [
+            XpraAudioFramework,
+            XpraAudioCodecType
+          ]
+        }
+
+        return [codec, adapters[name]] as [
+          XpraAudioCodecType,
+          typeof XpraAudioAdapter
+        ]
+      }
+    }
+
+    return null
+  }
+
   addQueue(buffer: Uint8Array, metadata?: XpraAudioMetadata) {
     if (this.adapter) {
       this.adapter.addQueue(buffer, metadata)
     }
   }
 
-  getDecoders() {
-    return Object.keys(this.detectedCodecs)
+  private static detectCodec(serverCapabilities: XpraServerCapabilities) {
+    if (serverCapabilities['sound.send']) {
+      const encoders = serverCapabilities['sound.encoders']
+      const defaultCodec = XpraAudio.getDefaultAudioCodec()
+
+      if (defaultCodec) {
+        return XpraAudio.getPreferedServerCodec(encoders) || defaultCodec
+      }
+    }
+
+    return null
   }
 
-  getPreferedServerCodec(encoders: string[]) {
+  private static getPreferedServerCodec(encoders: string[]) {
+    const codecs = XpraAudio.getAudioCodecs()
     return XPRA_AUDIO_PREFERRED_CODEC_ORDER.find((codec) => {
-      if (codec in this.detectedCodecs && encoders.includes(codec)) {
+      if (codecs.includes(codec) && encoders.includes(codec)) {
         return true
       }
 
@@ -164,7 +159,7 @@ export class XpraAudio extends (EventEmitter as unknown as new () => TypedEmitte
     })
   }
 
-  getBestCodec(supported: Record<string, string>) {
+  private static getBestCodec(supported: Record<string, string>) {
     let best = null
     let bestDistance = XPRA_AUDIO_PREFERRED_CODEC_ORDER.length
 
@@ -180,8 +175,8 @@ export class XpraAudio extends (EventEmitter as unknown as new () => TypedEmitte
     return best
   }
 
-  getDefaultAudioCodec() {
-    const keys = Object.keys(this.detectedCodecs)
+  private static getDefaultAudioCodec() {
+    const keys = XpraAudio.getAudioCodecs()
     if (keys.length > 0) {
       const found = XPRA_AUDIO_PREFERRED_CODEC_ORDER.find((c) =>
         keys.includes(c)
@@ -190,5 +185,22 @@ export class XpraAudio extends (EventEmitter as unknown as new () => TypedEmitte
     }
 
     return null
+  }
+
+  private static getAudioAdapters(): Record<
+    XpraAudioCodecType,
+    // FIXME: Find a better way to type the values
+    typeof XpraMediaSourceAdapter | typeof XpraAuroraAdapter
+  > {
+    return {
+      mediasource: XpraMediaSourceAdapter,
+      aurora: XpraAuroraAdapter,
+    }
+  }
+
+  static getAudioCodecs(): XpraAudioCodecType[] {
+    return Object.values(XpraAudio.getAudioAdapters()).flatMap((a) =>
+      Object.keys(a.getCodecs())
+    )
   }
 }
