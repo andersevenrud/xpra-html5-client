@@ -117,15 +117,12 @@ export class XpraWindowManager {
       }
     })
 
-    this.xpra.on(
-      'drawBuffer',
-      (draw: XpraDraw, buffer: ImageData | ImageBitmap | null) => {
-        const found = this.getWindow(draw.wid)
-        if (found) {
-          this.renderWindow(found, draw, buffer)
-        }
+    this.xpra.on('drawBuffer', (draw: XpraDraw, buffer: ImageBitmap | null) => {
+      const found = this.getWindow(draw.wid)
+      if (found) {
+        this.renderWindow(found, draw, buffer)
       }
-    )
+    })
 
     this.xpra.on('drawScroll', (draw: XpraDraw) => {
       const found = this.getWindow(draw.wid)
@@ -247,22 +244,18 @@ export class XpraWindowManager {
   private async renderWindow(
     win: XpraWindowManagerWindow,
     draw: XpraDraw,
-    buffer?: ImageData | ImageBitmap | null
+    buffer?: ImageBitmap | null
   ) {
     const canvas = win.canvas
-    const context = win.canvas?.getContext('2d')
+    const context = win.canvas?.getContext('2d', { alpha: false })
 
     if (canvas && context) {
       if (buffer) {
         const [x, y] = draw.position
         const [w, h] = draw.dimension
 
-        if (buffer instanceof ImageData) {
-          context.putImageData(buffer, x, y, 0, 0, w, h)
-        } else {
-          context.clearRect(x, y, w, h)
-          context.drawImage(buffer, x, y)
-        }
+        context.clearRect(x, y, w, h)
+        context.drawImage(buffer, x, y)
       } else if (draw.encoding === 'scroll') {
         ;(draw.image as XpraDrawScrollData).forEach(
           ([sx, sy, sw, sh, xdelta, ydelta]) => {

@@ -103,7 +103,7 @@ export type XpraClientEventEmitters = {
   cursor: (cursor: XpraCursor | null) => void
   draw: (draw: XpraDraw) => void
   drawScroll: (draw: XpraDraw) => void
-  drawBuffer: (draw: XpraDraw, buffer: ImageData | ImageBitmap | null) => void
+  drawBuffer: (draw: XpraDraw, buffer: ImageBitmap | null) => void
   hello: (capabilities: XpraServerCapabilities) => void
   sendFile: (file: XpraSendFile) => void
   infoResponse: (info: XpraInfoResponse) => void
@@ -217,10 +217,8 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     this.proxy.on('recieve', (p: XpraRecievePacket) => this.recieve(p))
     this.proxy.on('send', (d: ArrayBuffer) => this.ws.send(d))
     this.proxy.on('failure', (e: Error) => this.disconnect(e))
-    this.proxy.on(
-      'draw',
-      (draw: XpraDraw, buffer: ImageData | ImageBitmap | null) =>
-        this.emit('drawBuffer', draw, buffer)
+    this.proxy.on('draw', (draw: XpraDraw, buffer: ImageBitmap | null) =>
+      this.emit('drawBuffer', draw, buffer)
     )
 
     this.audio.on('start', () => this.sendSoundStart())

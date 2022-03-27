@@ -16,22 +16,86 @@ import BroadwayDecoder from 'xpra-broadway'
 import JSMpeg from 'xpra-jsmpeg'
 import { XpraDraw } from '../types'
 
+async function decodeH264(
+  data: Uint8Array,
+  width: number,
+  height: number
+): Promise<Uint8Array | null> {
+  let count = 0
+  const h264 = new BroadwayDecoder({
+    rgb: true,
+    size: {
+      width,
+      height,
+    },
+  })
+
+  return new Promise((resolve) => {
+    h264.onPictureDecoded = (buffer: Uint8Array) => {
+      count++
+      resolve(buffer)
+    }
+
+    h264.decode(data)
+    if (!count) {
+      resolve(null)
+    }
+  })
+}
+
+async function decodeMpeg(
+  data: Uint8Array,
+  width: number,
+  height: number,
+  startTime: number
+): Promise<ImageData | null> {
+  const surface = new JSMpeg.Renderer.Canvas2D({
+    width,
+    height,
+    canvas: document.createElement('canvas'),
+  })
+
+  return new Promise((resolve) => {
+    const mpeg1 = new JSMpeg.Decoder.MPEG1Video({
+      onVideoDecode: () => {
+        const ctx = surface.canvas.getContext('2d', { alpha: false })
+        if (ctx) {
+          const data = ctx.getImageData(0, 0, width, height)
+          resolve(data)
+        } else {
+          resolve(null)
+        }
+      },
+    })
+
+    mpeg1.connect(surface)
+    mpeg1.write(startTime, [data])
+  })
+}
+
 /**
  * Creates image data from draw data
  */
 export async function encodeXpraDrawData(
   draw: XpraDraw
-): Promise<ImageData | ImageBitmap | null> {
+): Promise<ImageBitmap | null> {
   const [width, height] = draw.dimension
+
+  const bitmapOptions: ImageBitmapOptions = {
+    premultiplyAlpha: 'none',
+  }
+
+  const createBitmap = (data: ImageData | Blob, w = width, h = height) =>
+    createImageBitmap(data, 0, 0, w, h, bitmapOptions)
+
+  const createBitmapFromBuffer = (data: Uint8Array, w = width, h = height) =>
+    createBitmap(new ImageData(Uint8ClampedArray.from(data), w, h), w, h)
+
   switch (draw.encoding) {
     case 'rgb':
     case 'rgb32':
     case 'rgb24':
-      return new ImageData(
-        new Uint8ClampedArray((draw.image as Uint8Array).buffer),
-        width,
-        height
-      )
+      return createBitmapFromBuffer(draw.image as Uint8Array)
 
     case 'avif':
     case 'jpeg':
@@ -43,59 +107,24 @@ export async function encodeXpraDrawData(
         type: 'image/' + draw.encoding.split('/')[0],
       })
 
-      return createImageBitmap(blob, 0, 0, width, height)
+      return createBitmap(blob)
 
     case 'h264':
-      return await new Promise((resolve, reject) => {
-        try {
-          const h264 = new BroadwayDecoder({
-            rgb: true,
-            size: {
-              width,
-              height,
-            },
-          })
-
-          h264.onPictureDecoded = (
-            buffer: Uint8Array,
-            w: number,
-            h: number
-          ) => {
-            const img = new ImageData(new Uint8ClampedArray(buffer), w, h)
-            createImageBitmap(img, 0, 0, w, h).then(resolve).catch(reject)
-          }
-
-          h264.decode(draw.image as Uint8Array)
-        } catch (e) {
-          reject(e)
-        }
-      })
+      const buffer = await decodeH264(draw.image as Uint8Array, width, height)
+      if (buffer) {
+        return createBitmapFromBuffer(buffer, width, height)
+      }
 
     case 'mpeg1':
-      return new Promise((resolve, reject) => {
-        try {
-          const surface = new JSMpeg.Renderer.Canvas2D({
-            width,
-            height,
-            canvas: document.createElement('canvas'),
-          })
-
-          const mpeg1 = new JSMpeg.Decoder.MPEG1Video({
-            onVideoDecode: () => {
-              const ctx = surface.canvas.getContext('2d')
-              if (ctx) {
-                const data = ctx.getImageData(0, 0, width, height)
-                resolve(data)
-              }
-            },
-          })
-
-          mpeg1.connect(surface)
-          mpeg1.write(performance.now(), [draw.image as Uint8Array])
-        } catch (e) {
-          reject(e)
-        }
-      })
+      const image = await decodeMpeg(
+        draw.image as Uint8Array,
+        width,
+        height,
+        draw.startTime
+      )
+      if (image) {
+        return createBitmap(image)
+      }
 
     default:
       console.warn('encodeXpraDrawData', 'Unhandled decode', draw)

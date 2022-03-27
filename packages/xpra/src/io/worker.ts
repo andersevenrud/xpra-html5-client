@@ -78,12 +78,9 @@ export abstract class XpraDecodeWorker extends XpraWorker {
   constructor() {
     super()
 
-    this.queue.on(
-      'message',
-      (message: [XpraDraw, ImageData | ImageBitmap | null]) => {
-        this.send('imagedata', message)
-      }
-    )
+    this.queue.on('message', (message: [XpraDraw, ImageBitmap | null]) => {
+      this.send('imagedata', message)
+    })
 
     this.init()
   }

@@ -24,18 +24,31 @@ import { rgb24ToRgb32, rgb32Restride } from '../../utils/rgb'
  */
 export class XpraDecodeQueue extends XpraQueue<
   XpraDraw,
-  [XpraDraw, ImageData | ImageBitmap | null]
+  [XpraDraw, ImageBitmap | null]
 > {
   async process() {
     if (this.queue.length > 0 && this.connected) {
       const draw = this.queue.shift()
       if (draw) {
         try {
-          const newDraw = this.convertDrawData(draw)
-          const result = await encodeXpraDrawData(newDraw)
-          this.emit('message', [newDraw, result])
+          const promise: Promise<void> = new Promise(
+            async (resolve, reject) => {
+              setTimeout(() => reject(new Error('Frame timed out')), 2000)
+
+              try {
+                const newDraw = this.convertDrawData(draw)
+                const result = await encodeXpraDrawData(newDraw)
+                this.emit('message', [newDraw, result])
+                resolve()
+              } catch (e) {
+                reject(e)
+              }
+            }
+          )
+
+          await promise
         } catch (e) {
-          console.warn('XpraDecodeQueue#process', e)
+          console.warn('XpraDecodeQueue#process', e, draw)
           this.emit('message', [draw, null])
         }
       }

@@ -33,7 +33,7 @@ export type XpraWorkerMessagePacket = [XpraWorkerMessage, XpraWorkerData]
 export type XpraWorkerProxyEventEmitters = {
   recieve: (packet: XpraRecievePacket) => void
   send: (data: ArrayBuffer) => void
-  draw: (draw: XpraDraw, buffer: ImageData | null) => void
+  draw: (draw: XpraDraw, buffer: ImageBitmap | null) => void
   failure: (error: Error) => void
 }
 
