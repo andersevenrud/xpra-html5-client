@@ -149,7 +149,7 @@ export const AppWindowCanvas: FC<{
   }
 
   useEffect(() => {
-    if (root.current) {
+    if (root.current && winstance?.canvas) {
       root.current.appendChild(winstance.canvas)
     }
   }, [root.current])
