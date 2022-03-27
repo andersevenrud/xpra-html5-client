@@ -38,6 +38,15 @@ const MODIFIERS = [
   'AltGraph',
 ]
 
+const CAPABILITY_MODIFIERS: Record<string, string> = {
+  Alt_L: 'alt',
+  Meta_L: 'meta',
+  ISO_Level3_Shift: 'altgr',
+  Mode_switch: 'altgr',
+  Control_L: 'ctrl',
+  Num_Lock: 'numlock',
+}
+
 export type XpraKeyboardEventEmitters = {
   layoutChanged: (layout: string) => void
 }
@@ -48,11 +57,10 @@ export type XpraKeyboardEventEmitters = {
  * @noInheritDoc
  */
 export class XpraKeyboard extends (EventEmitter as unknown as new () => TypedEmitter<XpraKeyboardEventEmitters>) {
-  private platform = getBrowserPlatform()
   private altgrState = false
-  private keyboardKayout = 'us'
-  private swapKeys = false
-  private modifiers: Record<string, string | null> = {
+  private keyboardLayout = 'us'
+  private readonly platform = getBrowserPlatform()
+  private readonly modifiers: Record<string, string | null> = {
     numlock: null,
     alt: null,
     ctrl: null,
@@ -64,44 +72,28 @@ export class XpraKeyboard extends (EventEmitter as unknown as new () => TypedEmi
     options: XpraConnectionOptions,
     capabilities: XpraServerCapabilities
   ) {
-    this.keyboardKayout = options.keyboardLayout
-    this.swapKeys = options.swapKeys
+    const serverModifiers = capabilities.modifier_keycodes
+    if (serverModifiers) {
+      const modifiers = { ...this.modifiers }
 
-    const modifiers = capabilities.modifier_keycodes
-    let numlockModifier = null
-    let altModifier = null
-    let ctrlModifier = null
-    let metaModifier = null
-    let altgrModifier = null
+      Object.entries(serverModifiers).forEach(([mod, keys]) => {
+        keys
+          .flat()
+          .filter((key) => !!CAPABILITY_MODIFIERS[key])
+          .forEach((key) => (modifiers[CAPABILITY_MODIFIERS[key]] = mod))
+      })
 
-    if (modifiers) {
-      for (const mod in modifiers) {
-        const keys = modifiers[mod]
-        for (let i = 0; i < keys.length; i++) {
-          const key = keys[i]
-          for (let j = 0; j < key.length; j++) {
-            if ('Alt_L' == key[j]) altModifier = mod
-            else if ('Meta_L' == key[j]) metaModifier = mod
-            else if ('ISO_Level3_Shift' == key[j] || 'Mode_switch' == key[j])
-              altgrModifier = mod
-            else if ('Control_L' == key[j]) ctrlModifier = mod
-            else if ('Num_Lock' === key[j]) numlockModifier = mod
-          }
-        }
+      if (options.swapKeys) {
+        Object.assign(modifiers, {
+          meta: modifiers.ctrl,
+          ctrl: modifiers.meta,
+        })
       }
 
-      if (this.swapKeys) {
-        ;[metaModifier, ctrlModifier] = [ctrlModifier, metaModifier]
-      }
+      Object.assign(this.modifiers, modifiers)
     }
 
-    Object.assign(this.modifiers, {
-      numlock: numlockModifier,
-      alt: altModifier,
-      ctrl: ctrlModifier,
-      meta: metaModifier,
-      altgr: altgrModifier,
-    })
+    this.keyboardLayout = options.keyboardLayout
   }
 
   getKey(event: KeyboardEvent) {
@@ -115,23 +107,18 @@ export class XpraKeyboard extends (EventEmitter as unknown as new () => TypedEmi
     let key = event.key || String.fromCharCode(code)
 
     if (name in KEY_TO_NAME) {
-      // some special keys are better mapped by name:
       name = KEY_TO_NAME[name]
     } else if (name != key && key in NUMPAD_TO_NAME) {
-      // special case for numpad, try to distinguish arrowpad and numpad:
       name = NUMPAD_TO_NAME[key]
     } else if (key in CHAR_TO_NAME) {
-      // next try mapping the actual character
       name = CHAR_TO_NAME[key]
     } else if (shifting && code in CHARCODE_TO_NAME_SHIFTED) {
-      // may override with shifted table:
       name = CHARCODE_TO_NAME_SHIFTED[code]
     } else if (code in CHARCODE_TO_NAME) {
-      // fallback to keycode map:
       name = CHARCODE_TO_NAME[code]
     }
 
-    if (name.match('_L$') && event.location == DOM_KEY_LOCATION_RIGHT) {
+    if (name.match(/_L$/) && event.location === DOM_KEY_LOCATION_RIGHT) {
       name = name.replace('_L', '_R')
     }
 
@@ -190,7 +177,7 @@ export class XpraKeyboard extends (EventEmitter as unknown as new () => TypedEmi
 
   onKeyPress(str: string, pressed: boolean) {
     const [layout] = getBrowserLanguages()
-    if (this.keyboardKayout !== layout) {
+    if (this.keyboardLayout !== layout) {
       this.emit('layoutChanged', layout)
     }
 

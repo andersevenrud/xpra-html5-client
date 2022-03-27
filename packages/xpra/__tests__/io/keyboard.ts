@@ -149,6 +149,16 @@ describe('Keyboard', () => {
         'lock',
         'mod2',
       ])
+
+      // FIXME: This does not actually set location :(
+      const ev2 = new KeyboardEvent('keydown', {
+        key: 'Control_L',
+        code: 'ControlLeft',
+        ctrlKey: true,
+        location: 2,
+      })
+
+      expect(keyboard.getModifiers(ev2)).toEqual(['control'])
     })
 
     it('should detect altgr state', () => {
