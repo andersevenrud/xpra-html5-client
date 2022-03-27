@@ -301,6 +301,7 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
     ev.stopPropagation()
 
     wm.raise(winstance)
+    wm.mouseButton(winstance, ev.nativeEvent, true)
 
     dispatch({
       type: ActionTypes.RaiseWindow,
