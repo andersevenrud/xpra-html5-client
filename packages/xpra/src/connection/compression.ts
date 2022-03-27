@@ -40,7 +40,7 @@ export function decompressXpraPacketData(
   packetData: Uint8Array,
   level: number
 ): Uint8Array {
-  if (level != 0) {
+  if (!!level) {
     if (level & XpraInflateBit.LZ4) {
       return lz4decompress(packetData)
     } else if (level & XpraInflateBit.BROTLI) {

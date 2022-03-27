@@ -199,7 +199,7 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
       protoFlags = protoFlags & ~0x8
     }
 
-    if (protoFlags > 1 && protoFlags != 0x10) {
+    if (protoFlags > 1 && protoFlags !== 0x10) {
       throw new XpraInvalidHeaderError(
         `we can't handle this protocol flag yet: ${protoFlags}`
       )
@@ -248,7 +248,7 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
     level: number
   ) {
     let packetData
-    if (this.queue[0].length == packetSize) {
+    if (this.queue[0].length === packetSize) {
       packetData = this.queue.shift()
     } else {
       packetData = new Uint8Array(packetSize)

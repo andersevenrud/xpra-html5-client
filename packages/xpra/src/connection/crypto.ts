@@ -122,7 +122,7 @@ export function createXpraCipher(
     throw new XpraCryptoError(`Invalid crypto iteration count: ${iterations}`)
   } else if (![32, 24, 16].includes(keySize)) {
     throw new XpraCryptoError(`Invalid crypto key size: ${keySize}`)
-  } else if (keyStretch.toUpperCase() != 'PBKDF2') {
+  } else if (keyStretch.toUpperCase() !== 'PBKDF2') {
     throw new XpraCryptoError(`Invalid key stretching function: ${keyStretch}`)
   } else if (!iv) {
     throw new XpraCryptoError('Missing IV')

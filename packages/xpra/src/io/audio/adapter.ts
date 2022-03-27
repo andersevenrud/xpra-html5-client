@@ -82,7 +82,7 @@ export /* abstract */ class XpraAudioAdapter {
     ) {
       if (CONCAT) {
         let buf
-        if (this.audioBuffer.length == 1) {
+        if (this.audioBuffer.length === 1) {
           buf = this.audioBuffer[0]
         } else {
           let size = 0

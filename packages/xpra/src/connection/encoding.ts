@@ -29,9 +29,9 @@ export function decodeXpraPacketData(
   packetData: Uint8Array | string,
   protoFlags: number
 ) {
-  if (protoFlags == XpraEncodeBit.RENCODELEGACY) {
+  if (protoFlags === XpraEncodeBit.RENCODELEGACY) {
     return rdecodelegacy(packetData)
-  } else if (protoFlags == XpraEncodeBit.RENCODEPLUS) {
+  } else if (protoFlags === XpraEncodeBit.RENCODEPLUS) {
     return rdecodeplus(packetData)
   } else {
     return bdecode(packetData)

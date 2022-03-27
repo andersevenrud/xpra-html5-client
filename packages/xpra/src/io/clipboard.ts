@@ -91,8 +91,8 @@ export class XpraClipboard extends (EventEmitter as unknown as new () => TypedEm
         await browserWriteClipboard(data)
       } else if (
         type === 'image/png' &&
-        format == 8 &&
-        wireEncoding == 'bytes'
+        format === 8 &&
+        wireEncoding === 'bytes'
       ) {
         await browserWriteClipboard(wireData as string, type)
       }
@@ -112,7 +112,7 @@ export class XpraClipboard extends (EventEmitter as unknown as new () => TypedEm
       }
     }
 
-    if (selection != 'CLIPBOARD') {
+    if (selection !== 'CLIPBOARD') {
       this.emit('send', requestId, selection, '')
       return
     }
@@ -123,9 +123,9 @@ export class XpraClipboard extends (EventEmitter as unknown as new () => TypedEm
 
       if (
         buffer &&
-        buffer[1] == 8 &&
-        buffer[2] == 'bytes' &&
-        result == buffer[3]
+        buffer[1] === 8 &&
+        buffer[2] === 'bytes' &&
+        result === buffer[3]
       ) {
         resend()
       } else if (result) {

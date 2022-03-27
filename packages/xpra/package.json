@@ -71,6 +71,7 @@
       "plugin:prettier/recommended"
     ],
     "rules": {
+      "eqeqeq": "error",
       "prefer-const": "warn",
       "semi": [
         "error",

@@ -108,7 +108,7 @@ export class XpraKeyboard extends (EventEmitter as unknown as new () => TypedEmi
 
     if (name in KEY_TO_NAME) {
       name = KEY_TO_NAME[name]
-    } else if (name != key && key in NUMPAD_TO_NAME) {
+    } else if (name !== key && key in NUMPAD_TO_NAME) {
       name = NUMPAD_TO_NAME[key]
     } else if (key in CHAR_TO_NAME) {
       name = CHAR_TO_NAME[key]
@@ -123,9 +123,9 @@ export class XpraKeyboard extends (EventEmitter as unknown as new () => TypedEmi
     }
 
     if (
-      key == 'AltGraph' ||
-      (name == 'Alt_R' && (isWin || isMac)) ||
-      (name == 'Alt_L' && isMac)
+      key === 'AltGraph' ||
+      (name === 'Alt_R' && (isWin || isMac)) ||
+      (name === 'Alt_L' && isMac)
     ) {
       name = 'ISO_Level3_Shift'
       key = 'AltGraph'

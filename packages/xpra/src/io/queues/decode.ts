@@ -71,7 +71,7 @@ export class XpraDecodeQueue extends XpraQueue<
 
     const data = decompressXpraDrawData(draw) as Uint8Array
 
-    if (draw.encoding == 'rgb24') {
+    if (draw.encoding === 'rgb24') {
       return rgb24ToRgb32(data, width, height, rowStride)
     } else if (rowStride === width * 4) {
       return new Uint8Array(data)

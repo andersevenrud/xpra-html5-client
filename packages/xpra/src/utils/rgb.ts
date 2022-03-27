@@ -47,7 +47,7 @@ export function rgb24ToRgb32(
   const uint = new Uint8Array(width * height * 4)
 
   //faster path, single loop:
-  if (rowStride == width * 3) {
+  if (rowStride === width * 3) {
     const l = data.length
     let i = 0
     let j = 0

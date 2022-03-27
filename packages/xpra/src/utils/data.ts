@@ -78,7 +78,7 @@ export function createHexUUID() {
   const s = []
   const hexDigits = '0123456789abcdef'
   for (let i = 0; i < 36; i++) {
-    if (i == 8 || i == 13 || i == 18 || i == 23) {
+    if (i === 8 || i === 13 || i === 18 || i === 23) {
       s[i] = '-'
     } else {
       s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1)
