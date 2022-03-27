@@ -45,6 +45,13 @@ export class XpraWorkerProxy extends (EventEmitter as unknown as new () => Typed
   private packetWorker: Worker | XpraPacketWorker | null = null
   private decodeWorker: Worker | XpraDecodeWorker | null = null
 
+  constructor() {
+    super()
+
+    this.onWorkerMessage = this.onWorkerMessage.bind(this)
+    this.onWorkerError = this.onWorkerError.bind(this)
+  }
+
   private postPacketMessage(msg: XpraWorkerMessage, data: XpraWorkerData) {
     if (this.packetWorker) {
       this.packetWorker.postMessage([msg, data])
@@ -79,30 +86,25 @@ export class XpraWorkerProxy extends (EventEmitter as unknown as new () => Typed
     }
   }
 
+  private onWorkerMessage(ev: MessageEvent) {
+    const [msg, data] = ev.data as XpraWorkerMessagePacket
+    this.onMessage(msg, data)
+  }
+
+  private onWorkerError(ev: ErrorEvent) {
+    this.emit('failure', ev as unknown as Error)
+  }
+
   setDecodeWorker(worker: Worker | XpraDecodeWorker) {
     this.decodeWorker = worker
-
-    this.decodeWorker.addEventListener('message', (ev: MessageEvent) => {
-      const [msg, data] = ev.data as XpraWorkerMessagePacket
-      this.onMessage(msg, data)
-    })
-
-    this.decodeWorker.addEventListener('error', (ev: ErrorEvent) => {
-      this.emit('failure', ev as unknown as Error)
-    })
+    this.decodeWorker.addEventListener('message', this.onWorkerMessage)
+    this.decodeWorker.addEventListener('error', this.onWorkerError)
   }
 
   setWorker(worker: Worker | XpraPacketWorker) {
     this.packetWorker = worker
-
-    this.packetWorker.addEventListener('message', (ev: MessageEvent) => {
-      const [msg, data] = ev.data as XpraWorkerMessagePacket
-      this.onMessage(msg, data)
-    })
-
-    this.packetWorker.addEventListener('error', (ev: ErrorEvent) => {
-      this.emit('failure', ev as unknown as Error)
-    })
+    this.packetWorker.addEventListener('message', this.onWorkerMessage)
+    this.packetWorker.addEventListener('error', this.onWorkerError)
   }
 
   setupRecieveCipher(capabilities: XpraCapabilities, key: string) {
