@@ -460,7 +460,6 @@ describe('Client', () => {
               'name',
               true,
               ['a', 'b', 'c'],
-              666,
               'str',
               555,
               10
@@ -471,7 +470,7 @@ describe('Client', () => {
             'name',
             true,
             ['a', 'b', 'c'],
-            666,
+            555,
             'str',
             555,
             10,
@@ -484,7 +483,6 @@ describe('Client', () => {
               'name',
               false,
               ['a', 'b', 'c'],
-              666,
               'str',
               555,
               10
@@ -495,7 +493,7 @@ describe('Client', () => {
             'name',
             false,
             ['a', 'b', 'c'],
-            666,
+            555,
             'str',
             555,
             10,

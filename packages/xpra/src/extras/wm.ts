@@ -363,19 +363,9 @@ export class XpraWindowManager {
   ) {
     const wid = win ? win.attributes.id : 0
     const modifiers = this.xpra.keyboard.getModifiers(ev)
-    const { keyname, keycode, keyval, group, str } =
-      this.xpra.keyboard.getKey(ev)
+    const { name, code, group, key } = this.xpra.keyboard.getKey(ev)
 
-    this.xpra.sendKeyAction(
-      wid,
-      keyname,
-      pressed,
-      modifiers,
-      keyval,
-      str,
-      keycode,
-      group
-    )
+    this.xpra.sendKeyAction(wid, name, pressed, modifiers, key, code, group)
   }
 
   raise(win: XpraWindowManagerWindow) {

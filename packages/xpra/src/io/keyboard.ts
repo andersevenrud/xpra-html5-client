@@ -26,6 +26,18 @@ import {
 
 const DOM_KEY_LOCATION_RIGHT = 2
 
+const TRANSLATIONS = ['', '', '', '', 'lock', '', 'altgr']
+
+const MODIFIERS = [
+  'Control',
+  'Alt',
+  'Meta',
+  'Shift',
+  'CapsLock',
+  'NumLock',
+  'AltGraph',
+]
+
 export type XpraKeyboardEventEmitters = {
   layoutChanged: (layout: string) => void
 }
@@ -40,7 +52,7 @@ export class XpraKeyboard extends (EventEmitter as unknown as new () => TypedEmi
   private altgrState = false
   private keyboardKayout = 'us'
   private swapKeys = false
-  private modifiers = {
+  private modifiers: Record<string, string | null> = {
     numlock: null,
     alt: null,
     ctrl: null,
@@ -93,91 +105,58 @@ export class XpraKeyboard extends (EventEmitter as unknown as new () => TypedEmi
   }
 
   getKey(event: KeyboardEvent) {
-    const shifting = event.getModifierState('Shift')
-    const keycode = event.which || event.keyCode
-    const keyval = keycode
     const group = 0
+    const shifting = event.getModifierState('Shift') || event.shiftKey
+    const code = event.which || event.keyCode
     const isMac = this.platform.type === 'darwin'
     const isWin = this.platform.type === 'win32'
 
-    let keyname = event.code || ''
-    let str = event.key || String.fromCharCode(keycode)
+    let name = event.code
+    let key = event.key || String.fromCharCode(code)
 
-    if (keyname in KEY_TO_NAME) {
+    if (name in KEY_TO_NAME) {
       // some special keys are better mapped by name:
-      keyname = KEY_TO_NAME[keyname]
-    } else if (keyname == '' && str in KEY_TO_NAME) {
-      keyname = KEY_TO_NAME[str]
-    } else if (keyname != str && str in NUMPAD_TO_NAME) {
+      name = KEY_TO_NAME[name]
+    } else if (name != key && key in NUMPAD_TO_NAME) {
       // special case for numpad, try to distinguish arrowpad and numpad:
-      keyname = NUMPAD_TO_NAME[str]
-    } else if (str in CHAR_TO_NAME) {
+      name = NUMPAD_TO_NAME[key]
+    } else if (key in CHAR_TO_NAME) {
       // next try mapping the actual character
-      keyname = CHAR_TO_NAME[str]
-    } else {
+      name = CHAR_TO_NAME[key]
+    } else if (shifting && code in CHARCODE_TO_NAME_SHIFTED) {
+      // may override with shifted table:
+      name = CHARCODE_TO_NAME_SHIFTED[code]
+    } else if (code in CHARCODE_TO_NAME) {
       // fallback to keycode map:
-      if (keycode in CHARCODE_TO_NAME) {
-        keyname = CHARCODE_TO_NAME[keycode]
-      }
-
-      //may override with shifted table:
-      if (shifting && keycode in CHARCODE_TO_NAME_SHIFTED) {
-        keyname = CHARCODE_TO_NAME_SHIFTED[keycode]
-      }
+      name = CHARCODE_TO_NAME[code]
     }
 
-    if (keyname.match('_L$') && event.location == DOM_KEY_LOCATION_RIGHT) {
-      keyname = keyname.replace('_L', '_R')
+    if (name.match('_L$') && event.location == DOM_KEY_LOCATION_RIGHT) {
+      name = name.replace('_L', '_R')
     }
 
-    // AltGr: keep track of pressed state
     if (
-      str == 'AltGraph' ||
-      (keyname == 'Alt_R' && (isWin || isMac)) ||
-      (keyname == 'Alt_L' && isMac)
+      key == 'AltGraph' ||
+      (name == 'Alt_R' && (isWin || isMac)) ||
+      (name == 'Alt_L' && isMac)
     ) {
-      keyname = 'ISO_Level3_Shift'
-      str = 'AltGraph'
+      name = 'ISO_Level3_Shift'
+      key = 'AltGraph'
     }
 
     return {
-      keyname,
-      keycode,
-      keyval,
+      name,
+      code,
       group,
-      str,
+      key,
     }
   }
 
   getModifiers(ev: KeyboardEvent | MouseEvent): string[] {
     const original = this.getBaseModifiers(ev)
-    const newModifiers = original.slice()
-
-    let index = original.indexOf('meta')
-    if (index >= 0 && this.modifiers.meta)
-      newModifiers[index] = this.modifiers.meta
-
-    index = original.indexOf('control')
-    if (index >= 0 && this.modifiers.ctrl)
-      newModifiers[index] = this.modifiers.ctrl
-
-    index = original.indexOf('alt')
-    if (index >= 0 && this.modifiers.alt)
-      newModifiers[index] = this.modifiers.alt
-
-    index = original.indexOf('numlock')
-    if (index >= 0) {
-      if (this.modifiers.numlock) {
-        newModifiers[index] = this.modifiers.numlock
-      } else {
-        newModifiers.splice(index, 1)
-      }
-    }
-
-    index = original.indexOf('capslock')
-    if (index >= 0) {
-      newModifiers[index] = 'lock'
-    }
+    const newModifiers = original.map((str) => {
+      return this.modifiers[str] || str
+    })
 
     if (
       this.altgrState &&
@@ -186,21 +165,26 @@ export class XpraKeyboard extends (EventEmitter as unknown as new () => TypedEmi
     ) {
       newModifiers.push(this.modifiers.altgr)
 
-      index = newModifiers.indexOf(this.modifiers.altgr)
-      if (index >= 0) newModifiers.splice(index, 1)
-
-      index = newModifiers.indexOf(this.modifiers.ctrl!)
-      if (index >= 0) newModifiers.splice(index, 1)
+      return newModifiers.filter((str) => {
+        return ![this.modifiers.altgr, this.modifiers.ctrl].includes(str)
+      })
     }
 
     return newModifiers
   }
 
   private getBaseModifiers(event: KeyboardEvent | MouseEvent) {
-    const modifiers = ['Control', 'Alt', 'Meta', 'Shift', 'CapsLock', 'NumLock']
+    const fallbacks = [
+      event.ctrlKey,
+      event.altKey,
+      event.metaKey,
+      event.shiftKey,
+    ]
 
-    return modifiers
-      .filter((str) => event.getModifierState(str))
+    return MODIFIERS.filter(
+      (str, index) => event.getModifierState(str) || fallbacks[index]
+    )
+      .map((str, index) => TRANSLATIONS[index] || str)
       .map((str) => str.toLowerCase())
   }
 

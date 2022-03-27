@@ -567,26 +567,25 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
 
   sendKeyAction(
     wid: number,
-    keyname: string,
+    name: string,
     pressed: boolean,
     modifiers: string[],
-    keyval: number,
-    str: string,
-    keycode: number,
+    key: string,
+    code: number,
     group: number
   ) {
     if (this.options.keyboard) {
-      this.keyboard.onKeyPress(str, pressed)
+      this.keyboard.onKeyPress(key, pressed)
 
       this.send([
         'key-action',
         wid,
-        keyname,
+        name,
         pressed,
         modifiers,
-        keyval,
-        str,
-        keycode,
+        code,
+        key,
+        code,
         group,
       ])
     }
