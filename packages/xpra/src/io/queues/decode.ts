@@ -58,13 +58,15 @@ export class XpraDecodeQueue extends XpraQueue<
   private convertDrawData(draw: XpraDraw): XpraDraw {
     if (['rgb32', 'rgb24'].includes(draw.encoding)) {
       const decoded = this.decodeRGB(draw)
+      const image = uint8fromStringOrUint8(decoded)
+      const rowStride =
+        draw.encoding === 'rgb24' ? draw.dimension[0] * 4 : draw.rowStride
 
       return {
         ...draw,
-        rowStride:
-          draw.encoding === 'rgb24' ? draw.dimension[0] * 4 : draw.rowStride,
+        rowStride,
+        image,
         encoding: 'rgb32',
-        image: uint8fromStringOrUint8(decoded),
       }
     }
 

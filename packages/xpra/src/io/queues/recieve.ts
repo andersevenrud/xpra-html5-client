@@ -14,6 +14,7 @@
 
 import forge from 'node-forge'
 import { ord } from '../../lib/bencode'
+import { XPRA_HEADER_SIZE } from '../../constants/xpra'
 import { XpraQueue } from '../queue'
 import { decodeXpraPacketData } from '../../connection/encoding'
 import { XpraInvalidHeaderError, XpraPacketError } from '../../errors'
@@ -147,10 +148,12 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
   }
 
   private processPacketHeader() {
-    if (this.header.length < 8 && this.queue.length > 0) {
-      while (this.header.length < 8 && this.queue.length > 0) {
-        const slice = this.queue[0]
-        const needed = 8 - this.header.length
+    const s = XPRA_HEADER_SIZE
+
+    if (this.header.length < s && this.queue.length > 0) {
+      while (this.header.length < s && this.queue.length > 0) {
+        const [slice] = this.queue
+        const needed = s - this.header.length
         const n = Math.min(needed, slice.length)
         for (let i = 0; i < n; i++) {
           this.header.push(slice[i])
@@ -166,35 +169,28 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
       this.checkPacketHeader()
     }
 
-    return this.header.length >= 8
+    return this.header.length >= s
   }
 
   private checkPacketHeader() {
-    if (this.header[0] !== ord('P')) {
-      let msg = 'invalid packet header format: ' + this.header[0]
-      if (this.header.length > 1) {
-        let hex = ''
-        for (let p = 0; p < this.header.length; p++) {
-          const v = this.header[p].toString(16)
-          if (v.length < 2) {
-            hex += '0' + v
-          } else {
-            hex += v
-          }
-        }
-        msg += ': 0x' + hex
-      }
+    const [leader] = this.header
 
-      throw new XpraInvalidHeaderError(msg)
+    if (leader !== ord('P')) {
+      const hex = this.header
+        .map((p) => p.toString(16).padStart(2, '0'))
+        .join('')
+
+      throw new XpraInvalidHeaderError(
+        `Invalid packet header format: ${leader} (0x${hex || ''})`
+      )
     }
   }
 
   private parsePacketHeader() {
-    let protoFlags = this.header[1]
-    const level = this.header[2]
-    const index = this.header[3]
-    const protoCrypto = protoFlags & 0x2
+    let [, protoFlags] = this.header
+    const [, , level, index] = this.header
 
+    const protoCrypto = protoFlags & 0x2
     if (protoCrypto) {
       protoFlags = protoFlags & ~0x2
     }
@@ -207,13 +203,9 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
       throw new XpraInvalidHeaderError(
         `we can't handle this protocol flag yet: ${protoFlags}`
       )
-    }
-
-    if (level & XpraInflateBit.LZO) {
+    } else if (level & XpraInflateBit.LZO) {
       throw new XpraInvalidHeaderError('lzo compression is not supported')
-    }
-
-    if (index >= 20) {
+    } else if (index >= 20) {
       throw new XpraInvalidHeaderError(`invalid packet index: ${index}`)
     }
 
@@ -251,13 +243,13 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
     padding: number,
     level: number
   ) {
-    let packetData
+    let packetData: Uint8Array
     if (this.queue[0].length === packetSize) {
-      packetData = this.queue.shift()
+      packetData = this.queue.shift() as Uint8Array
     } else {
       packetData = new Uint8Array(packetSize)
-      let rsize = 0
 
+      let rsize = 0
       while (rsize < packetSize) {
         const slice = this.queue[0]
         const needed = packetSize - rsize
@@ -287,25 +279,33 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
       }
     }
 
-    return decompressXpraPacketData(packetData as Uint8Array, level)
+    return decompressXpraPacketData(packetData, level)
   }
 
   private fixPacketData(packet: XpraRecievePacket) {
     packet[0] = uint8fromStringOrString(packet[0]) as XpraRecievePacketType
 
-    if (packet[0] === 'draw') {
-      packet[6] = uint8fromStringOrString(packet[6])
-      packet[7] = uint8fromStringOrUint8(packet[7])
-    } else if (packet[0] === 'sound-data') {
-      packet[2] = uint8fromStringOrUint8(packet[2])
-    } else if (packet[0] === 'notify_show') {
-      packet[6] = uint8fromStringOrString(packet[6])
-      packet[7] = uint8fromStringOrString(packet[7])
-    } else if (packet[0] === 'challenge') {
-      packet[1] = uint8fromStringOrString(packet[1])
-      packet[3] = uint8fromStringOrString(packet[3])
-      packet[4] = uint8fromStringOrString(packet[4])
-      packet[5] = uint8fromStringOrString(packet[5])
+    switch (packet[0]) {
+      case 'draw':
+        packet[6] = uint8fromStringOrString(packet[6])
+        packet[7] = uint8fromStringOrUint8(packet[7])
+        break
+
+      case 'sound-data':
+        packet[2] = uint8fromStringOrUint8(packet[2])
+        break
+
+      case 'notify_show':
+        packet[6] = uint8fromStringOrString(packet[6])
+        packet[7] = uint8fromStringOrString(packet[7])
+        break
+
+      case 'challenge':
+        packet[1] = uint8fromStringOrString(packet[1])
+        packet[3] = uint8fromStringOrString(packet[3])
+        packet[4] = uint8fromStringOrString(packet[4])
+        packet[5] = uint8fromStringOrString(packet[5])
+        break
     }
 
     return packet

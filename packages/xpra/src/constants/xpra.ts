@@ -28,6 +28,8 @@ export const XPRA_CHUNK_SZ = 0x8000
 
 export const XPRA_MAX_AUDIO_BUFFERS = 250
 
+export const XPRA_HEADER_SIZE = 8
+
 export const XPRA_READ_ONLY_PACKETS: string[] = [
   'pointer-position',
   'button-action',
