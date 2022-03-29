@@ -127,11 +127,14 @@ export const AppContextProvider: FC<AppContextProps> = ({
       payload: attributes,
     })
 
-  const removeWindow = (wid: number) =>
+  const removeWindow = (wid: number) => {
     dispatch({
       type: ActionTypes.RemoveWindow,
       payload: wid,
     })
+
+    wm.removeWindow(wid)
+  }
 
   const addWindowIcon = (icon: XpraWindowIcon) =>
     dispatch({
