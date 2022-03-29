@@ -296,12 +296,22 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
     isDragging = value
   }
 
+  const onRootMouseUp = (ev: React.MouseEvent<HTMLDivElement>) => {
+    ev.preventDefault()
+    ev.stopPropagation()
+  }
+
   const onRootMouseDown = (ev: React.MouseEvent<HTMLDivElement>) => {
     ev.preventDefault()
     ev.stopPropagation()
 
     wm.raise(winstance)
-    wm.mouseButton(winstance, ev.nativeEvent, true)
+
+    // FIXME: This was supposed to hide certain override redirect
+    // windows, but it doesn't work that well in pracice. We can useRef
+    // window attributes instead and kill them manually. Or re-position
+    // the ones with transient value ?
+    //wm.mouseButton(winstance, ev.nativeEvent, true)
 
     dispatch({
       type: ActionTypes.RaiseWindow,
@@ -435,6 +445,7 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
           ref={root}
           style={style}
           onMouseDown={onRootMouseDown}
+          onMouseUp={onRootMouseUp}
         >
           <AppWindowCanvas id={id} />
         </div>
@@ -449,6 +460,7 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
         style={style}
         className="absolute"
         onMouseDown={onRootMouseDown}
+        onMouseUp={onRootMouseUp}
         onMouseMove={onRootMouseMove}
       >
         <div
