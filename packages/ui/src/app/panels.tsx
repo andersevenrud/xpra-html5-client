@@ -426,6 +426,25 @@ export const AppTrayPanel: FC = () => {
       ],
     },
     {
+      title: 'Windows',
+      items: state.windows
+        .filter((win) => !win.tray)
+        .map((win) => ({
+          title: win.title,
+          icon: win.icon?.image,
+          callback: () => {
+            const winstance = wm.getWindow(win.id)
+            if (winstance) {
+              wm.raise(winstance)
+              dispatch({
+                type: ActionTypes.RaiseWindow,
+                payload: winstance.attributes,
+              })
+            }
+          },
+        })),
+    },
+    {
       title: 'Disconnect',
       callback: () => xpra.disconnect(),
     },
