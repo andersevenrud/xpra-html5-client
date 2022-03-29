@@ -54,16 +54,17 @@ export class XpraRecieveQueue extends XpraQueue<Uint8Array, XpraRecievePacket> {
   }
 
   process() {
-    if (this.queue.length > 0 && !this.busy) {
+    if (this.queue.length > 0 && this.connected && !this.busy) {
+      this.busy = true
+
       try {
-        this.busy = true
         while (this.connected && this.processNext()) {}
       } catch (e) {
         this.emit('failure', e as Error)
-      } finally {
-        this.busy = false
       }
     }
+
+    this.busy = false
   }
 
   clear() {

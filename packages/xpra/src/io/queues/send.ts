@@ -32,6 +32,7 @@ import {
  */
 export class XpraSendQueue extends XpraQueue<XpraSendPacket, ArrayBufferLike> {
   private packetEncoder: XpraPacketEncoder = 'bencode'
+  private busy = false
 
   setupCipher(caps: XpraCipherCapability, key: string) {
     const { iv, mode, cipher, secret, blockSize } = createXpraCipher(caps, key)
@@ -44,11 +45,17 @@ export class XpraSendQueue extends XpraQueue<XpraSendPacket, ArrayBufferLike> {
   }
 
   process() {
-    while (this.queue.length > 0 && this.connected) {
-      if (!this.processNext()) {
-        break
+    if (this.queue.length > 0 && this.connected && !this.busy) {
+      this.busy = true
+
+      while (this.queue.length > 0 && this.connected) {
+        if (!this.processNext()) {
+          break
+        }
       }
     }
+
+    this.busy = false
   }
 
   private processNext() {
