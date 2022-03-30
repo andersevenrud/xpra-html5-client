@@ -506,7 +506,8 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
 
   sendMouseWheel(
     wid: number,
-    scroll: XpraVector,
+    button: number,
+    distance: number,
     position: XpraVector,
     modifiers: string[]
   ) {
@@ -514,24 +515,33 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
       return
     }
 
-    const [isx, isy] = scroll
-    const precise = !!this.serverCapabilities['wheel.precise']
-    const sx = this.options.reverseScrollX ? -isx : isx
-    const sy = this.options.reverseScrollY ? -isy : isy
     const buttons: number[] = []
-    const btnX = sx > 0 ? 6 : 7
-    const btnY = sy > 0 ? 5 : 4
-    const btn = sx > 0 ? btnX : btnY
-    const dist = 100 // FIXME: Add a proper value here
+    const precise = !!this.serverCapabilities['wheel.precise']
 
     if (precise) {
-      this.send(['wheel-motion', wid, btn, dist, position, modifiers, buttons])
+      this.send([
+        'wheel-motion',
+        wid,
+        button,
+        distance,
+        position,
+        modifiers,
+        buttons,
+      ])
     } else {
-      this.send(['button-action', wid, btn, true, position, modifiers, buttons])
       this.send([
         'button-action',
         wid,
-        btn,
+        button,
+        true,
+        position,
+        modifiers,
+        buttons,
+      ])
+      this.send([
+        'button-action',
+        wid,
+        button,
         false,
         position,
         modifiers,
@@ -751,6 +761,7 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     this.started = true
     this.serverCapabilities = capabilities
 
+    this.mouse.configure(this.options)
     this.keyboard.configure(this.options, capabilities)
 
     if (this.options.audio) {

@@ -12,11 +12,21 @@
  * @link https://github.com/Xpra-org/xpra-html5
  */
 
+import { XpraVector, XpraConnectionOptions } from '../types'
+
 /**
  * Mouse wrapper to handle input across a range of platforms
  * as well as translate into native input data.
  */
 export class XpraMouse {
+  private reverseScrollX = false
+  private reverseScrollY = false
+
+  configure(options: XpraConnectionOptions) {
+    this.reverseScrollX = options.reverseScrollX
+    this.reverseScrollY = options.reverseScrollY
+  }
+
   getButton(ev: MouseEvent) {
     let button = 0
 
@@ -34,7 +44,7 @@ export class XpraMouse {
     return [ev.clientX, ev.clientY]
   }
 
-  getScroll(event: WheelEvent | MouseEvent | Event): [number, number] {
+  private getRawScroll(event: WheelEvent | MouseEvent | Event): XpraVector {
     const ev = event as WheelEvent
     const normalize = (num: number) => (num > 1 ? 1 : num < 0 ? -1 : 0)
 
@@ -48,5 +58,23 @@ export class XpraMouse {
 
     // TODO: ev.axis
     return [0, 0]
+  }
+
+  getScroll(event: WheelEvent | MouseEvent | Event): XpraVector {
+    const [isx, isy] = this.getRawScroll(event)
+    const sx = this.reverseScrollX ? -isx : isx
+    const sy = this.reverseScrollY ? -isy : isy
+
+    return [sx, sy]
+  }
+
+  getScrollWheel(event: WheelEvent | MouseEvent | Event) {
+    const [sx, sy] = this.getScroll(event)
+    const btnX = sx > 0 ? 6 : 7
+    const btnY = sy > 0 ? 5 : 4
+    const btn = sx > 0 ? btnX : btnY
+    const dist = 100 // FIXME: Add a proper value here
+
+    return [btn, dist]
   }
 }

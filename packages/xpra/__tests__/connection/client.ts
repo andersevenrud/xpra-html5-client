@@ -436,7 +436,7 @@ describe('Client', () => {
 
       it('wheel-motion', () => {
         checkRequest(
-          () => client.sendMouseWheel(123, [1, 2], [3, 4], ['a', 'b', 'c']),
+          () => client.sendMouseWheel(123, 6, 100, [3, 4], ['a', 'b', 'c']),
           ['wheel-motion', 123, 6, 100, [3, 4], ['a', 'b', 'c'], []]
         )
       })

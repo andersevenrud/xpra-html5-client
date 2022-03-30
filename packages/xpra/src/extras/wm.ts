@@ -336,9 +336,9 @@ export class XpraWindowManager {
   ) {
     const modifiers = this.xpra.keyboard.getModifiers(ev as MouseEvent)
     const position = this.xpra.mouse.getPosition(ev as MouseEvent)
-    const wheel = this.xpra.mouse.getScroll(ev)
+    const [btn, dist] = this.xpra.mouse.getScrollWheel(ev)
 
-    this.xpra.sendMouseWheel(win.attributes.id, wheel, position, modifiers)
+    this.xpra.sendMouseWheel(win.attributes.id, btn, dist, position, modifiers)
   }
 
   mouseMove(win: XpraWindowManagerWindow | null, ev: MouseEvent) {
