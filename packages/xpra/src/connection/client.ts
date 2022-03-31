@@ -201,9 +201,9 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
       return
     }
 
-    await this.audio.init()
-
     this.inited = true
+
+    await this.audio.init()
 
     this.ws.on('open', () => this.handshake())
     this.ws.on('error', (err: Error) => this.disconnect(err))

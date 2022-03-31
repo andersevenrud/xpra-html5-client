@@ -14,6 +14,7 @@
 
 import BroadwayDecoder from 'xpra-broadway'
 import JSMpeg from 'xpra-jsmpeg'
+import { NullSurface } from '../lib/jsmpeg'
 import { XpraDraw } from '../types'
 
 async function decodeH264(
@@ -49,19 +50,13 @@ async function decodeMpeg(
   height: number,
   startTime: number
 ): Promise<ImageData | null> {
-  const surface = new JSMpeg.Renderer.Canvas2D({
-    width,
-    height,
-    canvas: document.createElement('canvas'),
-  })
-
   return new Promise((resolve) => {
+    const surface = new NullSurface(width, height)
+
     const mpeg1 = new JSMpeg.Decoder.MPEG1Video({
       onVideoDecode: () => {
-        const ctx = surface.canvas.getContext('2d', { alpha: false })
-        if (ctx) {
-          const data = ctx.getImageData(0, 0, width, height)
-          resolve(data)
+        if (surface.imageData) {
+          resolve(surface.imageData)
         } else {
           resolve(null)
         }

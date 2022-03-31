@@ -11,6 +11,7 @@ export default {
   },
   plugins: [
     prepend('var document = typeof document === "undefined" ? { addEventListener: function() {} } : document;'),
+    prepend('var window = self;'),
     append('export default JSMpeg;'),
     babel({
       babelHelpers: "bundled",
