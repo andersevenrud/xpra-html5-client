@@ -46,14 +46,17 @@ export class XpraMouse {
 
   private getRawScroll(event: WheelEvent | MouseEvent | Event): XpraVector {
     const ev = event as WheelEvent
-    const normalize = (num: number) => (num > 1 ? 1 : num < 0 ? -1 : 0)
+    const normalize = (num: number) => (num >= 1 ? 1 : num < 0 ? -1 : 0)
 
-    if (typeof ev.deltaX === 'number') {
+    if (typeof ev.deltaX === 'number' || typeof ev.deltaY === 'number') {
       return [normalize(ev.deltaX), normalize(ev.deltaY)]
+    } else if (
+      typeof ev.wheelDeltaX === 'number' ||
+      typeof ev.wheelDeltaY === 'number'
+    ) {
+      return [ev.wheelDeltaX / 120, ev.wheelDeltaY / 120]
     } else if (typeof ev.wheelDelta === 'number') {
       return [0, ev.wheelDelta / 120]
-    } else if (typeof ev.wheelDeltaX === 'number') {
-      return [ev.wheelDeltaX / 120, ev.wheelDeltaY / 120]
     }
 
     // TODO: ev.axis
@@ -72,7 +75,7 @@ export class XpraMouse {
     const [sx, sy] = this.getScroll(event)
     const btnX = sx > 0 ? 6 : 7
     const btnY = sy > 0 ? 5 : 4
-    const btn = sx > 0 ? btnX : btnY
+    const btn = sx > 0 || sx < 0 ? btnX : btnY
     const dist = 100 // FIXME: Add a proper value here
 
     return [btn, dist]
