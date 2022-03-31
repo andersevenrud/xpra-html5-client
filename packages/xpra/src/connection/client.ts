@@ -247,6 +247,8 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     }
 
     try {
+      this.started = false
+
       this.createCapabilities()
       this.clipboard.configure(this.options)
       this.proxy.configure(this.options)
@@ -285,8 +287,9 @@ export class XpraClient extends (EventEmitter as unknown as new () => TypedEmitt
     this.audio.stop()
     this.proxy.setConnected(false)
     this.clipboard.reset()
-    this.serverCapabilities = null
     this.ws.disconnect(reconnect)
+    this.serverCapabilities = null
+    this.started = false
   }
 
   private handshake() {
