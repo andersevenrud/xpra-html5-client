@@ -15,6 +15,11 @@
 import TypedEmitter from 'typed-emitter'
 import EventEmitter from 'events'
 import { XPRA_READ_ONLY_PACKETS } from '../constants/xpra'
+import { createDefaultXpraConnectionOptions } from './options'
+import { createXpraChallengeResponse } from './auth'
+import { createXDGMenu } from '../utils/xdg'
+import { imageSourceFromData } from '../utils/image'
+import { uint8toString, unescapeUri } from '../utils/data'
 import { XpraWebsocket, XpraConnectionStatus } from '../io/ws'
 import { XpraClipboard } from '../io/clipboard'
 import { XpraAudio } from '../io/audio'
@@ -24,11 +29,6 @@ import { XpraWorkerProxy } from './proxy'
 import { XpraPacketWorker, XpraDecodeWorker } from '../io/worker'
 import { XpraPacketNullWorker, XpraDecodeNullWorker } from '../io/workers/null'
 import { XpraLogger, XpraLoggerArguments } from '../io/logger'
-import { createDefaultXpraConnectionOptions } from './options'
-import { createXpraChallengeResponse } from './auth'
-import { createXDGMenu } from '../utils/xdg'
-import { imageSourceFromData } from '../utils/image'
-import { uint8toString, unescapeUri } from '../utils/data'
 import {
   XpraConnectionError,
   XpraChallengeError,
