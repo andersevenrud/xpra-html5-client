@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.3.0 - 2022-04-04
+
+9539bc9 build(xpra): move internal library deps to devDependencies
+1fae8ce fix(xpra): make jsmpeg work inside a worker
+ac6bb77 fix(xpra): reset started state on connection changes
+aaa57e1 test(xpra): add mouse tests
+daa2ac5 fix(xpra): improved mouse scroll handling
+f48b90f refactor(xpra): minor cleanup
+471da0d refactor(xpra)!: move scroll data creation to mouse class
+116cbd9 chore(xpra): update queue busy state
+22e21cb refactor(xpra): minor readability updates
+6f343b6 chore(xpra): version bump
+598503d docs(xpra): add CHANGELOG
+
+
 ## 2.2.0 - 2022-03-28
 
 * 86dd183 fix(xpra): prevent recieve queue collisions
