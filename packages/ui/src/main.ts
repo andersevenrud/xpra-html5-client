@@ -8,7 +8,7 @@
 import '@fontsource/inter'
 import './style.css'
 import './app/icons'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { createElement } from 'react'
 import { XpraClient, XpraWindowManager } from 'xpra-html5-client'
 import { initDarkMode } from './app/utils'
@@ -27,7 +27,8 @@ async function main() {
   wm.init()
 
   if (app) {
-    ReactDOM.render(createElement(App, { xpra, wm }), app)
+    const root = createRoot(app)
+    root.render(createElement(App, { xpra, wm }))
   }
 }
 
