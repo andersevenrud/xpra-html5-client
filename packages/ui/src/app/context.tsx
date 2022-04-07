@@ -12,6 +12,7 @@ import React, {
   createContext,
   FC,
   Dispatch,
+  PropsWithChildren,
 } from 'react'
 import {
   XpraClient,
@@ -90,7 +91,7 @@ const initialCreatedState = {
   },
 }
 
-export const AppContextProvider: FC<AppContextProps> = ({
+export const AppContextProvider: FC<PropsWithChildren<AppContextProps>> = ({
   children,
   wm,
   xpra,

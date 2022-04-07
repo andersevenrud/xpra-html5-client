@@ -5,7 +5,14 @@
  * @license Mozilla Public License Version 2.0
  */
 
-import React, { useContext, useState, useRef, useEffect, FC } from 'react'
+import React, {
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+  FC,
+  PropsWithChildren,
+} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cs } from './utils'
 import { ValueOf } from './types'
@@ -124,7 +131,7 @@ export const AppMenu: FC<{
 /**
  * Panel Wrapper
  */
-export const AppPanel: FC<{ classNames: string[] }> = ({
+export const AppPanel: FC<PropsWithChildren<{ classNames: string[] }>> = ({
   classNames,
   children,
 }) => {

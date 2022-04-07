@@ -5,16 +5,18 @@
  * @license Mozilla Public License Version 2.0
  */
 
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import { CSSTransition } from 'react-transition-group'
 
 const duration = 300
 
-export const FadeInOutTransition: FC<{
-  toggled: boolean
-  mountOnEnter?: boolean
-  unmountOnExit?: boolean
-}> = ({ toggled, children, mountOnEnter = true, unmountOnExit = true }) => {
+export const FadeInOutTransition: FC<
+  PropsWithChildren<{
+    toggled: boolean
+    mountOnEnter?: boolean
+    unmountOnExit?: boolean
+  }>
+> = ({ toggled, children, mountOnEnter = true, unmountOnExit = true }) => {
   return (
     <CSSTransition
       in={toggled}

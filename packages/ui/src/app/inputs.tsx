@@ -5,7 +5,7 @@
  * @license Mozilla Public License Version 2.0
  */
 
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import { cs } from './utils'
 
 let lastElementId = 1
@@ -15,14 +15,16 @@ const themeStyles = 'bg-white/80 dark:bg-black/80 dark:text-white'
 const baseStyles =
   'rounded border-none p-1 px-2 disabled:opacity-40 disabled:cursor-not-allowed hover:outline hover:outline-1 w-full'
 
-export const AppSelect: FC<{
-  disabled?: boolean
-  label?: string
-  required?: boolean
-  value: string
-  options: Record<string, string>
-  onChange: (ev: React.ChangeEvent<HTMLSelectElement>) => void
-}> = ({ disabled, label, value, required, options, onChange }) => {
+export const AppSelect: FC<
+  PropsWithChildren<{
+    disabled?: boolean
+    label?: string
+    required?: boolean
+    value: string
+    options: Record<string, string>
+    onChange: (ev: React.ChangeEvent<HTMLSelectElement>) => void
+  }>
+> = ({ disabled, label, value, required, options, onChange }) => {
   const htmlFor = `xpra_${++lastElementId}`
   const inputClassNames = cs(baseStyles, themeStyles)
 
@@ -52,13 +54,15 @@ export const AppSelect: FC<{
 /**
  * Button Component
  */
-export const AppButton: FC<{
-  disabled?: boolean
-  label?: string
-  type?: 'button' | 'submit' | 'reset'
-  transparent?: boolean
-  onClick?: (ev: React.MouseEvent<HTMLButtonElement>) => void
-}> = ({ children, disabled, label, type, transparent, onClick }) => {
+export const AppButton: FC<
+  PropsWithChildren<{
+    disabled?: boolean
+    label?: string
+    type?: 'button' | 'submit' | 'reset'
+    transparent?: boolean
+    onClick?: (ev: React.MouseEvent<HTMLButtonElement>) => void
+  }>
+> = ({ children, disabled, label, type, transparent, onClick }) => {
   const inputClassNames = []
 
   if (!transparent) {

@@ -13,6 +13,7 @@ import React, {
   useCallback,
   createRef,
   RefObject,
+  PropsWithChildren,
   FC,
 } from 'react'
 import { throttle } from 'lodash-es'
@@ -505,7 +506,7 @@ export const AppWindow: FC<{ win: AppWindowState }> = ({ win }) => {
 /**
  * Desktop Component
  */
-export const AppDesktop: FC = ({ children }) => {
+export const AppDesktop: FC<PropsWithChildren<any>> = ({ children }) => {
   const root = createRef<HTMLDivElement>()
   const cursor = createRef<HTMLDivElement>()
   const { wm, state, setRoot, setCursor } = useContext(AppContext)
@@ -518,12 +519,12 @@ export const AppDesktop: FC = ({ children }) => {
     ev.preventDefault()
   }
 
-  const onMouseDown = useCallback((ev) => {
-    wm.mouseButton(null, ev, true)
+  const onMouseDown = useCallback((ev: React.MouseEvent<HTMLDivElement>) => {
+    wm.mouseButton(null, ev.nativeEvent, true)
   }, [])
 
-  const onMouseUp = useCallback((ev) => {
-    wm.mouseButton(null, ev, false)
+  const onMouseUp = useCallback((ev: React.MouseEvent<HTMLDivElement>) => {
+    wm.mouseButton(null, ev.nativeEvent, false)
   }, [])
 
   const sharedCursor = {
