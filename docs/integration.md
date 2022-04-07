@@ -2,9 +2,9 @@
 
 You can build your own clients and user interfaces by using the shipped libraries.
 
-## Installation
+> This example assumes a toolchain with loader support, like Vite or Webpack in order to set up webworkers.
 
-> Assuming a bundler with loader support, i.e. Vite
+## Installation
 
 ```bash
 npm install xpra-html5-client@latest
